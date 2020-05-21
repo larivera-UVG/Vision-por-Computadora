@@ -34,10 +34,8 @@ def thread(num):
     print('Hilo: %s' % num)
 
 
-
 for i in range(5):
-    t = threading.Thread(target=thread, args=(i,)) #asignacion de los hilos a una variable
-
+    t = threading.Thread(target = thread, args=(i,)) #asignacion de los hilos a una variable
     t.start() #inicializa el hilo.
 
 
