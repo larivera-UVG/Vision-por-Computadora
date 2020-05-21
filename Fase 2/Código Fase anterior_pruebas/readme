@@ -18,6 +18,16 @@ Para su correcto funcionamiento seguir estos pasos:
 7. En caso de tener otro error, irse a la pestaña de RUN, buscar RUN ENVIROMENT
 8. Darle unset a la variable con el nombre DYLD_LIBRARY_PATH
 
+Finalmente, editar el .pro del proyecto y agregar esto al final:
+
+
+QT_CONFIG -= no-pkg-config
+CONFIG  += link_pkgconfig
+PKGCONFIG += opencv
+
+Si aparece algo con una libreria "hello-opencv" o similar a este nombre, eliminar todo eso y dejar solo lo listado arriba. 
+NO TOCAR OTRA CONFIGURACION DEL ARCHIVO. 
+
 PROBADO CON LA LIBRERIA OPENCV 3.4.1 y el uso de los siguientes links:
 	•	https://www.learnopencv.com/configuring-qt-for-opencv-on-osx/
 	•	https://medium.com/@romogo17/how-to-build-and-install-from-source-opencv-with-qt-support-in-macos-921989518ab5
