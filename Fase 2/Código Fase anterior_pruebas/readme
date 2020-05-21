@@ -28,6 +28,8 @@ PKGCONFIG += opencv
 Si aparece algo con una libreria "hello-opencv" o similar a este nombre, eliminar todo eso y dejar solo lo listado arriba. 
 NO TOCAR OTRA CONFIGURACION DEL ARCHIVO. 
 
+Para un ejemplo, referirse a "example.pro"
+
 PROBADO CON LA LIBRERIA OPENCV 3.4.1 y el uso de los siguientes links:
 	•	https://www.learnopencv.com/configuring-qt-for-opencv-on-osx/
 	•	https://medium.com/@romogo17/how-to-build-and-install-from-source-opencv-with-qt-support-in-macos-921989518ab5
