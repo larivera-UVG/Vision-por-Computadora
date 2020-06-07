@@ -38,7 +38,7 @@ def read_1():
     while(True):
         sem.acquire()
         linea = f.readline()
-        f2 = open ('Lab6_reconstruido.txt','a')
+Pe        f2 = open ('Lab6_reconstruido.txt','a')
         f2.write(linea)
         f2.close()
         sem.release()
