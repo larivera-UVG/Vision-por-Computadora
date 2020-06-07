@@ -27,48 +27,104 @@ Version:
     
 """
 
+"""
+Anotacion inicial:
+    El programa se ejecuta con exito (casi al 98% en orden la mayoria de los casos) si el archivo Lab6_reconstruido
+    no existe al inicio. Si ya existe y se desea sobreescribirle, genera ciertos problemas en la sincronizacion 
+    (normalmente suele empezar en el dos y seguir en orden.)
+"""
 
 import threading #importando la libreria de multi-hilos
-import time as t #para los delay
 
-sem = threading.Semaphore()
+lock = threading.Lock() #Funciona como el semaphore en C. Aunque python tiene una funcion 'semaphore' se tiene un 
+                        #mejor control en cuanto a sincronizacion usando este recurso de Lock()
+
+buffer = [] #buffer comun para tener una sola via de escritura. 
+cont = 0 #variable que indica que hilo esta trabajando, visualmente ayuda a ver el orden de escritura. 
+
 
 def read_1():
-    f = open ('Lab6_primero.txt','r')
+    
+    """
+    Las variables globales se definen de esta manera en Python: global x
+    Esto sirve para que varias funciones, hilos o tareas, puedan acceder a la misma variable.
+    Si esto no se hace, la variable, aunque con el mismo nombre, se toma como local.
+    """
+    global buffer #buffer general para ambos hilos. Se define global en la funcion, no en la declaracion inicial
+    global cont #bandera para ver que hilo funciona. Se define como global para usar solo una y que ambos hilos
+                #cambien su valor.
+    f = open ('Lab6_primero.txt','r') #Abriendo el primer archivo de texto.
     while(True):
-        sem.acquire()
-        linea = f.readline()
-Pe        f2 = open ('Lab6_reconstruido.txt','a')
-        f2.write(linea)
-        f2.close()
-        sem.release()
-        if not linea:
-            break
-    f.close()
+        linea = f.readline() #obteniendo las lineas totales del documento
+        
+        lock.acquire() #Analogo a semaphore. Bloquea el recurso hasta que se envie la orden de liberarlo.
+        cont = 1
+        buffer = linea
+        f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
+        f2.write(buffer) #escribiendo linea por linea
+        f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
+        lock.release() #libera el recurso para alguien mas 
+        
+        print(cont)
+        #print(buffer)
+        if not linea: 
+            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una ciclo
+    f.close() #cierra el archivo 1. 
     
 def read_2():
-    f = open ('Lab6_segundo.txt','r')
+    global buffer #buffer general para ambos hilos. Se define global en la funcion, no en la declaracion inicial
+    global cont#bandera para ver que hilo funciona. Se define como global para usar solo una y que ambos hilos
+                #cambien su valor.
+                
+    f = open ('Lab6_segundo.txt','r') #Abriendo el segundo archivo de texto.
     while(True):
-        sem.acquire()
-        linea = f.readline()
-        f2 = open ('Lab6_reconstruido.txt','a')
-        f2.write(linea)
-        f2.close()
-        sem.release()
+        linea = f.readline() #obteniendo las lineas totales del documento
+        
+        lock.acquire()#Analogo a semaphore. Bloquea el recurso hasta que se envie la orden de liberarlo.
+        cont = 2
+        buffer = linea
+        f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
+        f2.write(buffer) #escribiendo linea por linea
+        f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
+        lock.release() #libera el recurso para alguien mas 
+        
+        print(cont)
         if not linea:
-            break
-    f.close()
+            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una ciclo
+    f.close() #cierra el archivo 2. 
     
-    
+"""
+
+Creacion de un thread o hilo:
+Se llama a la librearia de threading.
+Se usa la funcion Thread(), esta es la encargada de crear los hilos. En general, puede llevar varios 
+parametros pero en este caso se puede usar solamente uno que es el 'target'. Los hilos en python se definen
+como funciones normales (como cualquier funcion) pero son llamadas como un target en la funcion Thread. Esto
+permite que sea usado como un hilo al momento de ejecutar el programa. 
+
+Para inicializar los threads se recurre a la funcion start().
+
+Es posible tener un hilo 'demonio' o daemon, esto es un tipo de hilo que nunca muere hasta que se le indica.
+Al inicializar este hilo como se hace en este programa, una vez finalice su proceso, 'mata' al hilo tambien. 
+
+"""
+
+"""___main___"""
     
 read1 = threading.Thread(target = read_1) #asignacion de los hilos a una variable
 read2 = threading.Thread(target = read_2) #asignacion de los hilos a una variable
+#escribiendo = threading.Thread(target = Escritura) #asignacion de los hilos a una variable
 read1.start() #inicializa el hilo.
 read2.start() #inicializa el hilo.
+#escribiendo.start() #inicializa el hilo.
+
+read1.join()
+read2.join()
+#escribiendo.join()
 
     
     
-"""___main___"""
+
 
 
 
