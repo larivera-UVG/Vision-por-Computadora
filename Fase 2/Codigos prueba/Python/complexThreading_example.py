@@ -36,35 +36,34 @@ Anotacion inicial:
 
 import threading #importando la libreria de multi-hilos
 
-lock = threading.Lock()
+lock = threading.Lock() #Funciona como el semaphore en C. Aunque python tiene una funcion 'semaphore' se tiene un 
+                        #mejor control en cuanto a sincronizacion usando este recurso de Lock()
 
-buffer = []
-cont = 0
-sem = threading.Semaphore()
+buffer = [] #buffer comun para tener una sola via de escritura. 
+cont = 0 #variable que indica que hilo esta trabajando, visualmente ayuda a ver el orden de escritura. 
 
-def Escritura():
-    global buffer
-    if buffer is not []:
-        while (True):
-            print(buffer)
-            f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
-            f2.write(buffer) #escribiendo linea por linea
-            f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
 
 def read_1():
-    global buffer
-    global cont
+    
+    """
+    Las variables globales se definen de esta manera en Python: global x
+    Esto sirve para que varias funciones, hilos o tareas, puedan acceder a la misma variable.
+    Si esto no se hace, la variable, aunque con el mismo nombre, se toma como local.
+    """
+    global buffer #buffer general para ambos hilos. Se define global en la funcion, no en la declaracion inicial
+    global cont #bandera para ver que hilo funciona. Se define como global para usar solo una y que ambos hilos
+                #cambien su valor.
     f = open ('Lab6_primero.txt','r') #Abriendo el primer archivo de texto.
     while(True):
         linea = f.readline() #obteniendo las lineas totales del documento
         
-        lock.acquire()
+        lock.acquire() #Analogo a semaphore. Bloquea el recurso hasta que se envie la orden de liberarlo.
         cont = 1
         buffer = linea
         f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
         f2.write(buffer) #escribiendo linea por linea
         f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
-        lock.release()
+        lock.release() #libera el recurso para alguien mas 
         
         print(cont)
         #print(buffer)
@@ -73,19 +72,21 @@ def read_1():
     f.close() #cierra el archivo 1. 
     
 def read_2():
-    global buffer
-    global cont
+    global buffer #buffer general para ambos hilos. Se define global en la funcion, no en la declaracion inicial
+    global cont#bandera para ver que hilo funciona. Se define como global para usar solo una y que ambos hilos
+                #cambien su valor.
+                
     f = open ('Lab6_segundo.txt','r') #Abriendo el segundo archivo de texto.
     while(True):
         linea = f.readline() #obteniendo las lineas totales del documento
         
-        lock.acquire()
+        lock.acquire()#Analogo a semaphore. Bloquea el recurso hasta que se envie la orden de liberarlo.
         cont = 2
         buffer = linea
         f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
         f2.write(buffer) #escribiendo linea por linea
         f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
-        lock.release()
+        lock.release() #libera el recurso para alguien mas 
         
         print(cont)
         if not linea:
