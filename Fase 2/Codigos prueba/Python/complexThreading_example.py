@@ -27,6 +27,12 @@ Version:
     
 """
 
+"""
+Anotacion inicial:
+    El programa se ejecuta con exito (casi al 98% en orden la mayoria de los casos) si el archivo Lab6_reconstruido
+    no existe al inicio. Si ya existe y se desea sobreescribirle, genera ciertos problemas en la sincronizacion 
+    (normalmente suele empezar en el dos y seguir en orden.)
+"""
 
 import threading #importando la libreria de multi-hilos
 
