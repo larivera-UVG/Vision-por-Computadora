@@ -68,7 +68,7 @@ def read_1():
         print(cont)
         #print(buffer)
         if not linea: 
-            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una funcion
+            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una ciclo
     f.close() #cierra el archivo 1. 
     
 def read_2():
@@ -90,7 +90,7 @@ def read_2():
         
         print(cont)
         if not linea:
-            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una funcion
+            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una ciclo
     f.close() #cierra el archivo 2. 
     
 """
