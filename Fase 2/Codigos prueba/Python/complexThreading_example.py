@@ -29,46 +29,95 @@ Version:
 
 
 import threading #importando la libreria de multi-hilos
-import time as t #para los delay
 
+lock = threading.Lock()
+
+buffer = []
+cont = 0
 sem = threading.Semaphore()
 
+def Escritura():
+    global buffer
+    if buffer is not []:
+        while (True):
+            print(buffer)
+            f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
+            f2.write(buffer) #escribiendo linea por linea
+            f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
+
 def read_1():
-    f = open ('Lab6_primero.txt','r')
+    global buffer
+    global cont
+    f = open ('Lab6_primero.txt','r') #Abriendo el primer archivo de texto.
     while(True):
-        sem.acquire()
-        linea = f.readline()
-Pe        f2 = open ('Lab6_reconstruido.txt','a')
-        f2.write(linea)
-        f2.close()
-        sem.release()
-        if not linea:
-            break
-    f.close()
+        linea = f.readline() #obteniendo las lineas totales del documento
+        
+        lock.acquire()
+        cont = 1
+        buffer = linea
+        f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
+        f2.write(buffer) #escribiendo linea por linea
+        f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
+        lock.release()
+        
+        print(cont)
+        #print(buffer)
+        if not linea: 
+            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una funcion
+    f.close() #cierra el archivo 1. 
     
 def read_2():
-    f = open ('Lab6_segundo.txt','r')
+    global buffer
+    global cont
+    f = open ('Lab6_segundo.txt','r') #Abriendo el segundo archivo de texto.
     while(True):
-        sem.acquire()
-        linea = f.readline()
-        f2 = open ('Lab6_reconstruido.txt','a')
-        f2.write(linea)
-        f2.close()
-        sem.release()
+        linea = f.readline() #obteniendo las lineas totales del documento
+        
+        lock.acquire()
+        cont = 2
+        buffer = linea
+        f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
+        f2.write(buffer) #escribiendo linea por linea
+        f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
+        lock.release()
+        
+        print(cont)
         if not linea:
-            break
-    f.close()
+            break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una funcion
+    f.close() #cierra el archivo 2. 
     
-    
+"""
+
+Creacion de un thread o hilo:
+Se llama a la librearia de threading.
+Se usa la funcion Thread(), esta es la encargada de crear los hilos. En general, puede llevar varios 
+parametros pero en este caso se puede usar solamente uno que es el 'target'. Los hilos en python se definen
+como funciones normales (como cualquier funcion) pero son llamadas como un target en la funcion Thread. Esto
+permite que sea usado como un hilo al momento de ejecutar el programa. 
+
+Para inicializar los threads se recurre a la funcion start().
+
+Es posible tener un hilo 'demonio' o daemon, esto es un tipo de hilo que nunca muere hasta que se le indica.
+Al inicializar este hilo como se hace en este programa, una vez finalice su proceso, 'mata' al hilo tambien. 
+
+"""
+
+"""___main___"""
     
 read1 = threading.Thread(target = read_1) #asignacion de los hilos a una variable
 read2 = threading.Thread(target = read_2) #asignacion de los hilos a una variable
+#escribiendo = threading.Thread(target = Escritura) #asignacion de los hilos a una variable
 read1.start() #inicializa el hilo.
 read2.start() #inicializa el hilo.
+#escribiendo.start() #inicializa el hilo.
+
+read1.join()
+read2.join()
+#escribiendo.join()
 
     
     
-"""___main___"""
+
 
 
 
