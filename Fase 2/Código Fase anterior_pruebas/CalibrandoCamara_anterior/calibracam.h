@@ -76,7 +76,7 @@ float distancia2puntos(Point p1, Point p2)
 Point* get_esquinas(Mat src, int valueCanny, void*)
 {
     Mat src_gray, canny_out;
-    vector<vector<Point> > contours;
+    vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
     static Point esquina[4];
 
@@ -86,7 +86,7 @@ Point* get_esquinas(Mat src, int valueCanny, void*)
     findContours(canny_out, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
     imshow("Res", canny_out);
-    /// Draw contours
+    // Draw contours
     Mat drawing = Mat::zeros(canny_out.size(), CV_8UC3);
     bool a = true;
 
