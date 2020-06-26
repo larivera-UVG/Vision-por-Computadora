@@ -7,10 +7,15 @@
  * Se realiza una captura con mi mesa de pruebas de manera exitosa, la calibracion esta en un 70% correcta
  * Se debe consultar con Andre una explicacion del codigo para entender como funciona la calibracion
  *
+ * De momento, se toma un parametro en el boton calibracion que ajusta la manera en como se calibra la imagen.
+ *
+ *
 */
 
 using namespace cv;
 using namespace std;
+
+#define Calib_param 8
 
 VideoCapture cam(0);
 Mat Snapshot, CaliSnapshot;
@@ -42,7 +47,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_botonCalibrar_pressed()
 {
 
-    Esqui = get_esquinas(Snapshot, 7, 0);
+    Esqui = get_esquinas(Snapshot, Calib_param, 0);
     lambda = getHomogenea(Esqui);
     MyWiHe = getWiHe(Esqui);
     cv::warpPerspective(Snapshot, CaliSnapshot, lambda, { MyWiHe[0],  MyWiHe[1] });
