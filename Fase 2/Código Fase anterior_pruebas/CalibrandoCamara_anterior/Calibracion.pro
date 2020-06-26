@@ -43,8 +43,6 @@ unix: !macx{
     PKGCONFIG += opencv
 }
 
-
-
 QT_CONFIG -= no-pkg-config
 CONFIG  += link_pkgconfig
 PKGCONFIG += opencv

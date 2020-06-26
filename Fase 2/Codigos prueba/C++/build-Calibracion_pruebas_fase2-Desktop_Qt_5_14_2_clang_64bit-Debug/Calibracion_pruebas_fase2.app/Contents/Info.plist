@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>Hello_Qt_OpenCV</string>
+	<string>Calibracion_pruebas_fase2</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>com.yourcompany.Hello-Qt-OpenCV</string>
+	<string>com.yourcompany.Calibracion-pruebas-fase2</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
