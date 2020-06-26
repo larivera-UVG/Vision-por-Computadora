@@ -2,12 +2,17 @@
 #include "ui_mainwindow.h"
 #include "calibracam.h"
 #include <QPixmap>
-//#include <opencv2/core.hpp>
+/*
+ * Revision al 26 de junio de 2020
+ * Se realiza una captura con mi mesa de pruebas de manera exitosa, la calibracion esta en un 70% correcta
+ * Se debe consultar con Andre una explicacion del codigo para entender como funciona la calibracion
+ *
+*/
 
 using namespace cv;
 using namespace std;
 
-VideoCapture cam;
+VideoCapture cam(0);
 Mat Snapshot, CaliSnapshot;
 Point *Esqui;
 int* MyWiHe;
@@ -22,8 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     loadSettings();
-    cam.open(0);
-    //setCam();
+    setCam();
     ui->botonCalibrar->setEnabled(false);
     ui->botonGuardar->setEnabled(false);
 }
@@ -37,21 +41,23 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_botonCalibrar_pressed()
 {
-    imshow("Output Image", Snapshot);
-    Esqui = get_esquinas(Snapshot, 100, 0);
+
+    Esqui = get_esquinas(Snapshot, 7, 0);
     lambda = getHomogenea(Esqui);
     MyWiHe = getWiHe(Esqui);
     cv::warpPerspective(Snapshot, CaliSnapshot, lambda, { MyWiHe[0],  MyWiHe[1] });
-    imwrite("calisnap.jpg",CaliSnapshot);
+    imshow("Output Image", CaliSnapshot);
+    //imwrite("calisnap.jpg",CaliSnapshot);
     QImage img((const uchar*)CaliSnapshot.data, CaliSnapshot.cols, CaliSnapshot.rows, CaliSnapshot.step, QImage::Format_RGB888);
     QPixmap pixmap = QPixmap::fromImage(img.rgbSwapped());
+    //imshow("Output Image", CaliSnapshot);
     ui->label_cali->setPixmap(pixmap.scaled(ui->label_ori->width(),ui->label_ori->height(),Qt::KeepAspectRatio));
     ui->botonGuardar->setEnabled(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-   /* int result = QMessageBox::warning(this, "Exit", "Are you sure you want to close this program?", QMessageBox::Yes, QMessageBox::No);
+    /*int result = QMessageBox::warning(this, "Exit", "Are you sure you want to close this program?", QMessageBox::Yes, QMessageBox::No);
     if(result == QMessageBox::Yes)
     {
         saveSettings();
@@ -75,11 +81,12 @@ void MainWindow::saveSettings()
 
 void MainWindow::on_botonTomar_pressed()
 {
-    ui->botonCalibrar->setEnabled(true);
+
     Snapshot = takePicture();
     QImage img((const uchar*)Snapshot.data, Snapshot.cols, Snapshot.rows, Snapshot.step, QImage::Format_RGB888);
     QPixmap pixmap = QPixmap::fromImage(img.rgbSwapped());
     ui->label_ori->setPixmap(pixmap.scaled(ui->label_ori->width(),ui->label_ori->height(),Qt::KeepAspectRatio));
+    ui->botonCalibrar->setEnabled(true);
     ui->label_cali->clear();
 }
 
@@ -110,9 +117,9 @@ Mat takePicture() {
     Mat pic;
 
 
-    //cam >> pic;
-    //imshow("eje", pic);
-    pic = imread("tab1.jpg");
+    cam >> pic;
+    imshow("eje", pic);
+    //pic = imread("tab1.jpg");
 
     return pic;
 }
