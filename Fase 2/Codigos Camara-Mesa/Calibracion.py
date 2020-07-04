@@ -24,6 +24,12 @@ Basado en el codigo realizado por Andre Rodas
 
 import cv2 as cv #importando libreria para opencv 
 import ctypes
+import pathlib
 
-cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
-cap.close()
+#cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
+#cap.close()
+
+if __name__ == "__main__":
+    # Load the shared library into ctypes
+    libname = pathlib.Path().absolute() / "calibracam.h"
+    c_lib = ctypes.CDLL(libname)
