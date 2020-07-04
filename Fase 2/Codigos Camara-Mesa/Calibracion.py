@@ -123,12 +123,13 @@ class camara():
         frame_gray = cv.blur(frame_gray, ksize)
         edge = cv.Canny(frame_gray, canny_value, canny_value*1.4)
         contour = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-        cv.imshow("prueba", edge)
-        img_name = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
+        edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
-        cv.imwrite(img_name, frame) #Guarda la foro
-        print("{} Canny Guardado!".format(img_name)) #mensaje de Ok para el save de la foto.
+        cv.imwrite(edge_img, edge) #Guarda la foro
+        print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
         img_counter += 1 #aumenta el contador. 
+        cv.imshow("prueba", edge)
+        
         
 """
 Objeto = mi clase() -> instancia de una clase. 
