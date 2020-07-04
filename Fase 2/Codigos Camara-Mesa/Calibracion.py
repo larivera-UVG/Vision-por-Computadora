@@ -25,4 +25,4 @@ Basado en el codigo realizado por Andre Rodas
 import cv2 as cv #importando libreria para opencv 
 import ctypes
 
-cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
+#cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
