@@ -34,11 +34,43 @@ Aqui se agregan las funciones que van a ser usadas dentro de los diferentes meto
 
 """
 def distancia2puntos(punto1, punto2):
+    """
+    
+
+    Parameters
+    ----------
+    punto1 : TYPE
+        DESCRIPTION.
+    punto2 : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
     distanciax = (punto1[0] - punto2[0])**2
     distanciay = (punto1[1] - punto2[1])**2
     return mt.sqrt(distanciax + distanciay) + 0.5
 
 def mayor2float(X1, X2):
+    """
+    
+
+    Parameters
+    ----------
+    X1 : TYPE
+        DESCRIPTION.
+    X2 : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
     if (X1 > X2):
         return X1
     else:
@@ -46,6 +78,20 @@ def mayor2float(X1, X2):
     
     
 def getWiHe(esquina):
+    """
+    
+
+    Parameters
+    ----------
+    esquina : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    WiHeMax : TYPE
+        DESCRIPTION.
+
+    """
 
     WiHeMax= []
     W1 = distancia2puntos(esquina[0], esquina[2])
@@ -54,9 +100,82 @@ def getWiHe(esquina):
     H1 = distancia2puntos(esquina[0], esquina[1])
     H2 = distancia2puntos(esquina[2], esquina[3])
     HeMax = mayor2float(H1, H2)
-    WiHeMax[0].append(WiMax)
-    WiHeMax[1].append(HeMax)
+    WiHeMax[0].append(int(WiMax))
+    WiHeMax[1].append(int(HeMax))
     return WiHeMax
+
+
+def get_esquinas(frame, canny_value, pixelTreshold):
+    """
+    
+
+    Parameters
+    ----------
+    frame : TYPE
+        DESCRIPTION.
+    canny_value : TYPE
+        DESCRIPTION.
+    pixelTreshold : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    PixCircleValue = 10
+    bandera = 1
+    esquinas = []
+    esquinas_final = []
+    img_counter = 0 #contador de imagenes guardadas
+
+    ksize = (3,3) #para el metodo de Canny
+    frame_gray = cv.cvtColor(frame,cv.COLOR_BGR2GRAY) #a blanco y negro para una matriz bidimensional
+                                                #es mas facil procesar blanco y negro que color.
+    frame_gray = cv.blur(frame_gray, ksize) #difuminado, para quitar detalles extras
+    edge = cv.Canny(frame_gray, canny_value, canny_value*1.1) #Con canny busca los bordes.
+        
+        #obtiene los contornos de la imagen
+    image, contour, hierarchy = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
+    #print(contour)
+    height_im, width_im = edge.shape[:2]
+    boardMax = ([0,0], [0,height_im], [width_im, 0], [width_im, height_im]) #define el borde maximo de la mesa
+
+    #print(len(contour) - 1)       
+    for i in range (0, len(contour)-1):
+        print(i)
+        rect = cv.minAreaRect(contour[i])
+        (x, y), (width, height), angle = rect
+        print("este es el width", width)
+        print("este es el height", height)           
+        print("este es el centro: ", (x,y))
+        if (abs(width - height)< (pixelTreshold - 1)
+            or height > PixCircleValue-pixelTreshold 
+            or height < PixCircleValue+pixelTreshold
+            or width > PixCircleValue-pixelTreshold 
+            or width < PixCircleValue+pixelTreshold):
+            #print("se cumple la condicion")
+            #print(bandera)
+            if(bandera == 1):
+                print("Primera tirada")
+                for i in range(0,4):
+                    esquinas.append([x,y])
+                bandera = 2
+                    #print("Estas son las esquinas al inicio: ", esquinas)
+            else:
+                for i in range(0,4):
+                    if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
+                        esquinas_final.append([x,y]);
+    print("Estas son las esquinas al final: ", esquinas_final)
+    print("Esquina 1", esquinas_final[1])
+    edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
+                                                    #Guarda el numero de frame (foto) que se tomo.
+    cv.imwrite(edge_img, edge) #Guarda la foro
+    print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
+    img_counter += 1 #aumenta el contador. 
+    cv.imshow("prueba", edge)
+
+
 
 """
 #cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
@@ -98,7 +217,15 @@ def Capturar2():
     
     
 class camara():
-    def tomar_foto(self):
+    def set_camera(self,WIDTH,HEIGHT):
+        cam = cv.VideoCapture(0) #abre la camara web
+        cam.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        cam.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        cv.namedWindow("test") #crea la ventana
+        return cam
+        
+    def tomar_foto(self,cam):
+        #self.set_camera(WIDTH, HEIGHT)
         """
         
         Returns
@@ -106,11 +233,7 @@ class camara():
         frame : Foto capturada.
 
         """
-        cam = cv.VideoCapture(0) #abre la camara web
-        cam.set(cv.CAP_PROP_FRAME_WIDTH, 960)
-        cam.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
-            
-        cv.namedWindow("test") #crea la ventana
+
         
         img_counter = 0 #contador para las imagenes capturadas (opcional)
         
@@ -139,74 +262,7 @@ class camara():
         return frame #retorna el frame que se va a utilizar
 
         
-    def get_esquinas(self,frame, canny_value, pixelTreshold):
-        PixCircleValue = 8
-        bandera = 1
-        esquinas = []
-        img_counter = 0 #contador de imagenes guardadas
-        """
-        Metodo que obtiene la imagen capturada y obtiene las esquinas de la mesa.
-        Utiliza el metodo de Canny como detector de los bordes
-
-        Parameters
-        ----------
-        frame : frame fotografico (foto a la que se le aplica el procesamiento)
-        canny_value : Threshold para el metodo de Canny.
-
-        Returns
-        -------
-        None.
-
-        """
-        ksize = (3,3) #para el metodo de Canny
-        frame_gray = cv.cvtColor(frame,cv.COLOR_BGR2GRAY) #a blanco y negro para una matriz bidimensional
-                                                #es mas facil procesar blanco y negro que color.
-        frame_gray = cv.blur(frame_gray, ksize) #difuminado, para quitar detalles extras
-        edge = cv.Canny(frame_gray, canny_value, canny_value*1.1) #Con canny busca los bordes.
-        
-        #obtiene los contornos de la imagen
-        image, contour, hierarchy = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-        #print(contour)
-        height_im, width_im = edge.shape[:2]
-        boardMax = ([0,0], [0,height_im], [width_im, 0], [width_im, height_im]) #define el borde maximo de la mesa
-
-        #print(len(contour) - 1)       
-        for i in range (0, len(contour)-1):
-            #print(i)
-            rect = cv.minAreaRect(contour[i])
-            (x, y), (width, height), angle = rect
-            #print("este es el width", width)
-            #print("este es el height", height)           
-            #print("este es el centro: ", (x,y))
-            
-            
-            
-            if (abs(width - height)< (pixelTreshold - 1)
-                or height > PixCircleValue-pixelTreshold 
-                or height < PixCircleValue+pixelTreshold
-                or width > PixCircleValue-pixelTreshold 
-                or width < PixCircleValue+pixelTreshold):
-                #print("se cumple la condicion")
-                #print(bandera)
-                if(bandera == 1):
-                    #print("Primera tirada")
-                    for i in range(0,4):
-                        esquinas.append([x,y])
-                    bandera = 2
-                    #print("Estas son las esquinas al inicio: ", esquinas)
-                else:
-                    for i in range(0,4):
-                        if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
-                            esquinas[i].append([x,y]);
-        #print("Estas son las esquinas al final: ", esquinas)
-        print(esquinas[1])
-        
-        edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
-                                                    #Guarda el numero de frame (foto) que se tomo.
-        cv.imwrite(edge_img, edge) #Guarda la foro
-        print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
-        img_counter += 1 #aumenta el contador. 
-        cv.imshow("prueba", edge)
+   
         
         
 """
@@ -217,5 +273,6 @@ Tengo un objeto, ahora, vamos a acceder a las propiedades del objeto.
 Objeto.metodo
 """      
 Camara = camara()
-foto =  Camara.tomar_foto()
-Camara.get_esquinas(foto,60,3)
+cam = Camara.set_camera(960,720)
+foto =  Camara.tomar_foto(cam)
+get_esquinas(foto,60,3)
