@@ -137,11 +137,11 @@ class camara():
         frame_gray = cv.cvtColor(frame,cv.COLOR_BGR2GRAY) #a blanco y negro para una matriz bidimensional
                                                 #es mas facil procesar blanco y negro que color.
         frame_gray = cv.blur(frame_gray, ksize) #difuminado, para quitar detalles extras
-        edge = cv.Canny(frame_gray, canny_value, canny_value*1.4) #Con canny busca los bordes.
+        edge = cv.Canny(frame_gray, canny_value, canny_value*1.1) #Con canny busca los bordes.
         
         #obtiene los contornos de la imagen
         image, contour, hierarchy = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-        draw = np.zeros(len(contour),dtype=np.uint8) #crea aray de ceros con el tama;o de los contornos
+        print(contour)
         
         width, height = edge.shape[:2] #para el ancho y alto de la imagen del contorno.
         
@@ -185,4 +185,4 @@ Objeto.metodo
 """      
 Camara = camara()
 foto =  Camara.tomar_foto()
-Camara.get_esquinas(foto,1)
+Camara.get_esquinas(foto,50)
