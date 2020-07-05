@@ -9,6 +9,10 @@ Programa de calibracion para la camara utilizando OpenCV
 Versionado:
 ***********************
 4/07/2020: Creacion inicial del archivo
+5/07/2020: Version 1.0.0 -- falta agregar dos funciones mas de la version origninal en c++
+
+Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
+Version con Programacion Orientada a Objetos. 
 
 ***********************
 Anotaciones iniciales:
@@ -18,17 +22,22 @@ De preferencia utilizar la suite de anaconda, esto permite instalar los paquetes
 de manera mas adecuada y evitar errores entre versionres o que las librerias 
 no esten correctamente linkeadas al compilador. 
 
+Que la mesa no tenga objetos ninguno sobre ella y que tenga bordes circulares 
+de alto contraste para mejores resultados.
+
 Basado en el codigo realizado por Andre Rodas 
 """
 
 
+#Importando las librerias necesarias
 import cv2 as cv #importando libreria para opencv 
-import numpy as np
-import math as mt
+import numpy as np #para la creacion de arrays
+import math as mt #para el uso de herramientas matematicas como raiz cuadrada
 
 
-Canny_Factor = 2.5
-Calib_param = 18
+Canny_Factor = 2.5 #factor de multiplicacion para el limite superior de Canny
+Calib_param = 20 #Factor de calibracion para Canny, este factor se puede variar
+               #para una mejor deteccion de los bordes circulares.
 Treshold = 1
 
 
@@ -46,15 +55,13 @@ def distancia2puntos(punto1, punto2):
 
     Parameters
     ----------
-    punto1 : TYPE
-        DESCRIPTION.
-    punto2 : TYPE
-        DESCRIPTION.
+    punto1 : Primer punto.
+    punto2 : Segundo punto.
 
     Returns
     -------
     TYPE
-        DESCRIPTION.
+        Obtiene dos puntos y calcula su distancia
 
     """
     distanciax = (punto1[0] - punto2[0])**2
@@ -67,15 +74,13 @@ def mayor2float(X1, X2):
 
     Parameters
     ----------
-    X1 : TYPE
-        DESCRIPTION.
-    X2 : TYPE
-        DESCRIPTION.
+    X1 : Numero 1.
+    X2 : Numero 2
 
     Returns
     -------
     TYPE
-        DESCRIPTION.
+        obtiene el mayor de los numeros
 
     """
     if (X1 > X2):
@@ -90,13 +95,11 @@ def getWiHe(esquina):
 
     Parameters
     ----------
-    esquina : TYPE
-        DESCRIPTION.
+    esquina : Recibe una coordenada (x,y) de la ubicacion de la esquina (4 esquinas, 4 parejas)
 
     Returns
     -------
-    WiHeMax : TYPE
-        DESCRIPTION.
+    WiHeMax : El punto mayor entre las diferentes esquinas.
 
     """
 
@@ -118,22 +121,18 @@ def get_esquinas(frame, canny_value, pixelTreshold):
 
     Parameters
     ----------
-    frame : TYPE
-        DESCRIPTION.
-    canny_value : TYPE
-        DESCRIPTION.
-    pixelTreshold : TYPE
-        DESCRIPTION.
+    frame : La foto o frame de la mesa.
+    canny_value : El valor de Canny para el metodo.
+    pixelTreshold : NO USADO.
 
     Returns
     -------
-    None.
+    esquinas_final : Retorna un array con las coordenadas finales de cada esquina, basado en el 
+                    borde circular.
 
     """
-    PixCircleValue = 2
-    bandera = 1
-    esquinas = []
-    esquinas_final = []
+
+    esquinas_final = [] #array de las esquinas, ubica los puntos circulares para la calibracion
     img_counter = 0 #contador de imagenes guardadas
 
     ksize = (3,3) #para el metodo de Canny
@@ -144,41 +143,62 @@ def get_esquinas(frame, canny_value, pixelTreshold):
         
         #obtiene los contornos de la imagen
     image, contour, hierarchy = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-    #print(contour)
-    height_im, width_im = edge.shape[:2]
-    boardMax = ([0,0], [0,height_im], [width_im, 0], [width_im, height_im]) #define el borde maximo de la mesa
+    #print(contour) #para debug
+    height_im, width_im = edge.shape[:2] #obtiene el tama;o maximo de la imagen
+    boardMax = ([0,0], [0,height_im], [width_im, 0], [width_im, height_im]) #define el borde maximo de la mesa, esquinas maximas
 
-    #print(len(contour) - 1)       
+    #print(len(contour) - 1) #para debug   
     for i in range (0, len(contour)-1):
-        #print(i)
-        rect = cv.minAreaRect(contour[i])
-        contour_list = []
+        #print(i) #para debug
+        #rect = cv.minAreaRect(contour[i]) #obtiene el area minima del contorno, no usado
+        contour_list = [] #array que guarda los contornos circulares encontrados
         for i in contour:
-            approx = cv.approxPolyDP(i,0.01*cv.arcLength(i,True),True)
-            area = cv.contourArea(i)
-            if ((len(approx) > 8) & (area > 5) ):
-                contour_list.append(i)
-        cv.drawContours(frame, contour_list,  -1, (255,0,0), 2)
-        cv.imshow('Objects Detected',frame)
+            approx = cv.approxPolyDP(i,0.01*cv.arcLength(i,True),True) #utiliza el metodo de aproximacion
+                            #approxPolyDP para encontrar los contornos circulares.
+            area = cv.contourArea(i) #calcula el area de este contorno.
+            
+            if ((len(approx) > 8) & (area > 5) ): #Treshold aproximado, puede variar si se desea para detectar circulos 
+                                                #diferentes tama;os
+                contour_list.append(i) #si esta dentro del rango, lo agrega a la lista
+                
+        #PARA DEBUG:
+            
+        cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
+        cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
+        
         #cv.circle(img,center,radius,(0,255,0),2)
         #cv.circle(img,center,radius,(0,255,0),2)
-        (x, y), (width, height), angle = rect
+        #(x, y), (width, height), angle = rect
         #print("este es el width", width)
         #print("este es el height", height)           
         #print("esta es la diferencia ", (width - height))
-        Cx = 0
-        Cy = 0
         
-        for c in contour_list:
-            # compute the center of the contour
+        Cx = 0 #coordenada en x
+        Cy = 0 #coordenada en y
+        
+        esquinas_final = [[1,1], [1,2], [2,1], [2,2]] #un valor inicial para la comparativa
+        
+        for c in contour_list: #recorre la lista de contornos para buscar el centro
+            # calcula el centro
             M = cv.moments(c)
-            old_Cx = Cx
-            old_Cy = Cy
+            
+            #ver documentacion para obtener mas informacion de como se calcula la coordenada (x,y)
             Cx = int(M["m10"] / M["m00"])
             Cy = int(M["m01"] / M["m00"])
+            
+            esquinas_final[0] = [Cx,Cy] #agrega la primera esquina en la posicion inicial.
+            
             for i in range (0,4):
-                if (distancia2puntos(boardMax[i], (Cx,Cy))<distancia2puntos(boardMax[i], (old_Cx,old_Cy))):
-                    esquinas_final.append([Cx,Cy])
+                if (distancia2puntos(boardMax[i], (Cx,Cy))<distancia2puntos(boardMax[i], esquinas_final[i])):
+                    esquinas_final[i] = [Cx,Cy]
+                """
+                Posterior a eso, recorre las 4 esquinas maximas de la imagen y las 4 esquinas iniciales.
+                Calcula la distancia entre esos puntos y el centro del borde para ver cual es mas peque;o
+                si el centro del borde es mas peque;o, esta mas cerca del borde maximo, por lo tanto es 
+                un circulo en la esquina de la mesa. Sino, no lo toca. 
+                
+                Finalmente crea el array con las esquinas de cada borde circular.
+                """
             
         """    
         if (abs(width - height)< 2
@@ -199,23 +219,40 @@ def get_esquinas(frame, canny_value, pixelTreshold):
                     if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
                         esquinas_final.append([x,y])
           """              
-    print("Estas son las esquinas al final: ", esquinas_final)
+    print("Estas son las esquinas al final: ", esquinas_final) #para debug
     #print("Esquina 1", esquinas_final[1])
+    
+    #guarda la imagen de Canny solamente como referencia, se puede comentar. 
     edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
     cv.imwrite(edge_img, edge) #Guarda la foro
     print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
     img_counter += 1 #aumenta el contador. 
     cv.imshow("prueba", edge)
-    return esquinas_final
+    return esquinas_final 
 
 def getHomogenea(esquina):
-    WH = getWiHe(esquina)
-    #box0 = np.array([[0, 0], [width, 0], [width, height], [0, height], ], np.float32)
-    esquinaFloat= np.array([esquina[0],esquina[2],esquina[1] ,esquina[3],], np.float32)
-    print(esquinaFloat)
+    """
+    
+
+    Parameters
+    ----------
+    esquina : array de esquinas.
+
+    Returns
+    -------
+    M : la matriz de la transformada de la perspectiva
+
+    """
+    WH = getWiHe(esquina) #Obtiene el valor del W y el H
+
+    esquinaFloat= np.array([esquina[0],esquina[2],esquina[1] ,esquina[3],], np.float32) #se hace
+                    #este arreglo con numpy para que OpenCV reconozca las esquinas como un tipo de dato correcto.
+    
+    #print(esquinaFloat) #para debug
     esquinasFinales = np.array([[ 0, 0],[float(WH[0]), 0 ],[ 0,float(WH[1])],[float(WH[0]),float(WH[1])],],np.float32)
-    M = cv.getPerspectiveTransform(esquinaFloat, esquinasFinales)
+    
+    M = cv.getPerspectiveTransform(esquinaFloat, esquinasFinales) #obtiene la matriz de la perspectiva.
     #lambda = getPerspectiveTransform(esquinaFloat, esquinasFinales);
     return M
 
@@ -224,7 +261,26 @@ def getHomogenea(esquina):
     
     
 class camara():
+    """
+    Definicion de la clase de camara, incluye los siguientes metodos:
+        set_camara(): para setear configuracion inicial de la camara
+        tomar_foto(): para capturar el frame.
+        Calibrar(): Calibracion de la camara.
+    """
     def set_camera(self,WIDTH,HEIGHT):
+        """
+        
+
+        Parameters
+        ----------
+        WIDTH : Width del frame
+        HEIGHT : Height del frame.
+
+        Returns
+        -------
+        cam : variable de tipo VideoCapture, para ser usado en la toma de foto..
+
+        """
         cam = cv.VideoCapture(0) #abre la camara web
         cam.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
         cam.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
@@ -232,15 +288,18 @@ class camara():
         return cam
         
     def tomar_foto(self,cam):
-        #self.set_camera(WIDTH, HEIGHT)
         """
         
+
+        Parameters
+        ----------
+        cam : Objeto de tipo VideoCapture, configuracion inicial de la camara.
+
         Returns
         -------
-        frame : Foto capturada.
+        frame: fotograma tomado con la camara.
 
         """
-
         
         img_counter = 0 #contador para las imagenes capturadas (opcional)
         
@@ -269,6 +328,20 @@ class camara():
         return frame #retorna el frame que se va a utilizar
     
     def Calibrar(self,Snapshot,Calib_param, Treshold):
+        """
+        
+
+        Parameters
+        ----------
+        Snapshot : Foto o frame capturado.
+        Calib_param : Parametro de calibracion para Canny.
+        Treshold : NO USADO.
+
+        Returns
+        -------
+        None.
+
+        """
         Esqui = get_esquinas(Snapshot, Calib_param, Treshold)
         Matrix = getHomogenea(Esqui)
         MyWiHe = getWiHe(Esqui)
