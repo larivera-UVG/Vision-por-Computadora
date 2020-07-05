@@ -11,6 +11,8 @@ Versionado:
 4/07/2020: Creacion inicial del archivo
 5/07/2020: Version 1.0.0 -- falta agregar dos funciones mas de la version origninal en c++
 
+
+Descripcion:
 Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
 Version con Programacion Orientada a Objetos. 
 
