@@ -21,7 +21,7 @@ Anotaciones iniciales:
 ***********************
 
 De preferencia utilizar la suite de anaconda, esto permite instalar los paquetes 
-de manera mas adecuada y evitar errores entre versionres o que las librerias 
+de manera mas adecuada y evitar errores entre versiones o que las librerias 
 no esten correctamente linkeadas al compilador. 
 
 Que la mesa no tenga objetos ninguno sobre ella y que tenga bordes circulares 
