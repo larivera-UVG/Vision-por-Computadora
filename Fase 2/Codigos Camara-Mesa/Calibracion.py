@@ -24,8 +24,18 @@ Basado en el codigo realizado por Andre Rodas
 
 import cv2 as cv #importando libreria para opencv 
 import numpy as np
+"""
+**********
+FUNCIONES
+**********
 
+Aqui se agregan las funciones que van a ser usadas dentro de los diferentes metodos. 
 
+"""
+def distancia2puntos(punto1, punto2):
+    pass
+
+"""
 #cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
 #cap.close()
 
@@ -59,7 +69,7 @@ def Capturar2():
     return frame
     cam.release()
     cv.destroyAllWindows()
-
+"""
     
 #metodo -> que es capaz de hacer nuestra clase, comportamiento
     
@@ -73,26 +83,26 @@ class camara():
         frame : Foto capturada.
 
         """
-        cam = cv.VideoCapture(0)
+        cam = cv.VideoCapture(0) #abre la camara web
             
-        cv.namedWindow("test")
+        cv.namedWindow("test") #crea la ventana
         
-        img_counter = 0
+        img_counter = 0 #contador para las imagenes capturadas (opcional)
         
-        while True:
-            ret, frame = cam.read()
+        while True: #bucle infinito
+            ret, frame = cam.read() #obtiene la informacion de la lectura de la camara
             if not ret:
-                print("Error, frame no encontrado")
+                print("Error, frame no encontrado") #No hay frame, camara no encontrada
                 break
-            cv.imshow("test", frame)
+            cv.imshow("test", frame) #muestra el video. 
         
-            k = cv.waitKey(1)
+            k = cv.waitKey(1) #k = 1 es para espacio
             if k%256 == 27:
-                # ESC presionado
+                # ESC presionado para cerrar
                 print("Escape presionado, cerrando...")
                 break
             elif k%256 == 32:
-                # SPACE presionado
+                # SPACE presionado para capturar foto
                 img_name = "opencv_frame_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
                 cv.imwrite(img_name, frame) #Guarda la foro
@@ -101,13 +111,17 @@ class camara():
 
         #cam.release()
         #cv.destroyAllWindows()            
-        return frame
+        return frame #retorna el frame que se va a utilizar
 
         
     def get_esquinas(self,frame, canny_value):
-        img_counter = 0
+        PixCircleValue = 10
+        bandera = True
+        esquinas = []
+        img_counter = 0 #contador de imagenes guardadas
         """
-        
+        Metodo que obtiene la imagen capturada y obtiene las esquinas de la mesa.
+        Utiliza el metodo de Canny como detector de los bordes
 
         Parameters
         ----------
@@ -119,19 +133,46 @@ class camara():
         None.
 
         """
-        ksize = (3,3)
-        frame_gray = cv.cvtColor(frame,cv.COLOR_BGR2GRAY)
-        frame_gray = cv.blur(frame_gray, ksize)
-        edge = cv.Canny(frame_gray, canny_value, canny_value*1.4)
-        contour = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
+        ksize = (3,3) #para el metodo de Canny
+        frame_gray = cv.cvtColor(frame,cv.COLOR_BGR2GRAY) #a blanco y negro para una matriz bidimensional
+                                                #es mas facil procesar blanco y negro que color.
+        frame_gray = cv.blur(frame_gray, ksize) #difuminado, para quitar detalles extras
+        edge = cv.Canny(frame_gray, canny_value, canny_value*1.4) #Con canny busca los bordes.
+        
+        #obtiene los contornos de la imagen
+        image, contour, hierarchy = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
+        draw = np.zeros(len(contour),dtype=np.uint8) #crea aray de ceros con el tama;o de los contornos
+        
+        width, height = edge.shape[:2] #para el ancho y alto de la imagen del contorno.
+        
+        print("este es el width", width)
+        print("este es el height", height)
+        boardMax = ([0,0], [0,height], [width, 0], [width, height]) #define el borde maximo de la mesa (aproximado)
+        
+        for i in (0, len(contour)-1):
+            center,areaMin, angle = cv.minAreaRect(contour[i])
+            print("este es el centro: ", center)
+            if (abs(width - height)<3 
+                and(height > PixCircleValue-3 
+                and (height < PixCircleValue+3) 
+                and (width > PixCircleValue-3 and width < PixCircleValue+3))):
+                
+                if(bandera):
+                    for i in range(0,4):
+                        esquinas[i] = center
+                        bandera = False
+                    print("Estas son las esquinas al inicio: ", esquinas)
+                else:
+                    for i in range(0,4):
+                        if (distancia2puntos(boardMax[i], center)<distancia2puntos(boardMax[i], esquinas[i])):
+                            esquinas[i] = center;
+                    print("Estas son las esquinas al final: ", esquinas)
+        
         edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
         cv.imwrite(edge_img, edge) #Guarda la foro
         print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
         img_counter += 1 #aumenta el contador. 
-        
-        draw = np.zeros
-        
         cv.imshow("prueba", edge)
         
         
@@ -144,5 +185,4 @@ Objeto.metodo
 """      
 Camara = camara()
 foto =  Camara.tomar_foto()
-print(foto.dtype)
-Camara.get_esquinas(foto,3)
+Camara.get_esquinas(foto,1)
