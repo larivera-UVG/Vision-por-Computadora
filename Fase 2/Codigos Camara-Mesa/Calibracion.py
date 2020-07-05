@@ -10,23 +10,16 @@ Versionado:
 ***********************
 4/07/2020: Creacion inicial del archivo
 5/07/2020: Version 1.0.0 -- falta agregar dos funciones mas de la version origninal en c++
-
-
-Descripcion:
 Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
 Version con Programacion Orientada a Objetos. 
-
 ***********************
 Anotaciones iniciales:
 ***********************
-
 De preferencia utilizar la suite de anaconda, esto permite instalar los paquetes 
-de manera mas adecuada y evitar errores entre versiones o que las librerias 
+de manera mas adecuada y evitar errores entre versionres o que las librerias 
 no esten correctamente linkeadas al compilador. 
-
 Que la mesa no tenga objetos ninguno sobre ella y que tenga bordes circulares 
 de alto contraste para mejores resultados.
-
 Basado en el codigo realizado por Andre Rodas 
 """
 
@@ -38,7 +31,7 @@ import math as mt #para el uso de herramientas matematicas como raiz cuadrada
 
 
 Canny_Factor = 2.5 #factor de multiplicacion para el limite superior de Canny
-Calib_param = 20 #Factor de calibracion para Canny, este factor se puede variar
+Calib_param = 40 #Factor de calibracion para Canny, este factor se puede variar
                #para una mejor deteccion de los bordes circulares.
 Treshold = 1
 
@@ -47,24 +40,19 @@ Treshold = 1
 **********
 FUNCIONES
 **********
-
 Aqui se agregan las funciones que van a ser usadas dentro de los diferentes metodos. 
-
 """
 def distancia2puntos(punto1, punto2):
     """
     
-
     Parameters
     ----------
     punto1 : Primer punto.
     punto2 : Segundo punto.
-
     Returns
     -------
     TYPE
         Obtiene dos puntos y calcula su distancia
-
     """
     distanciax = (punto1[0] - punto2[0])**2
     distanciay = (punto1[1] - punto2[1])**2
@@ -73,17 +61,14 @@ def distancia2puntos(punto1, punto2):
 def mayor2float(X1, X2):
     """
     
-
     Parameters
     ----------
     X1 : Numero 1.
     X2 : Numero 2
-
     Returns
     -------
     TYPE
         obtiene el mayor de los numeros
-
     """
     if (X1 > X2):
         return X1
@@ -94,15 +79,12 @@ def mayor2float(X1, X2):
 def getWiHe(esquina):
     """
     
-
     Parameters
     ----------
     esquina : Recibe una coordenada (x,y) de la ubicacion de la esquina (4 esquinas, 4 parejas)
-
     Returns
     -------
     WiHeMax : El punto mayor entre las diferentes esquinas.
-
     """
 
     WiHeMax= []
@@ -120,18 +102,15 @@ def getWiHe(esquina):
 def get_esquinas(frame, canny_value, pixelTreshold):
     """
     
-
     Parameters
     ----------
     frame : La foto o frame de la mesa.
     canny_value : El valor de Canny para el metodo.
     pixelTreshold : NO USADO.
-
     Returns
     -------
     esquinas_final : Retorna un array con las coordenadas finales de cada esquina, basado en el 
                     borde circular.
-
     """
 
     esquinas_final = [] #array de las esquinas, ubica los puntos circulares para la calibracion
@@ -159,7 +138,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
                             #approxPolyDP para encontrar los contornos circulares.
             area = cv.contourArea(i) #calcula el area de este contorno.
             
-            if ((len(approx) > 8) & (area > 5) ): #Treshold aproximado, puede variar si se desea para detectar circulos 
+            if ((len(approx) > 8) & (area > 3) ): #Treshold aproximado, puede variar si se desea para detectar circulos 
                                                 #diferentes tama;os
                 contour_list.append(i) #si esta dentro del rango, lo agrega a la lista
                 
@@ -179,7 +158,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
         Cy = 0 #coordenada en y
         
         esquinas_final = [[1,1], [1,2], [2,1], [2,2]] #un valor inicial para la comparativa
-        
+        a = True
         for c in contour_list: #recorre la lista de contornos para buscar el centro
             # calcula el centro
             M = cv.moments(c)
@@ -188,11 +167,17 @@ def get_esquinas(frame, canny_value, pixelTreshold):
             Cx = int(M["m10"] / M["m00"])
             Cy = int(M["m01"] / M["m00"])
             
-            esquinas_final[0] = [Cx,Cy] #agrega la primera esquina en la posicion inicial.
+            #esquinas_final[0] = [Cx,Cy] #agrega la primera esquina en la posicion inicial.
             
+            if (a):
+                esquinas_final[0] = [Cx,Cy]
+                a = False
+                
             for i in range (0,4):
                 if (distancia2puntos(boardMax[i], (Cx,Cy))<distancia2puntos(boardMax[i], esquinas_final[i])):
                     esquinas_final[i] = [Cx,Cy]
+
+                
                 """
                 Posterior a eso, recorre las 4 esquinas maximas de la imagen y las 4 esquinas iniciales.
                 Calcula la distancia entre esos puntos y el centro del borde para ver cual es mas peque;o
@@ -236,15 +221,12 @@ def get_esquinas(frame, canny_value, pixelTreshold):
 def getHomogenea(esquina):
     """
     
-
     Parameters
     ----------
     esquina : array de esquinas.
-
     Returns
     -------
     M : la matriz de la transformada de la perspectiva
-
     """
     WH = getWiHe(esquina) #Obtiene el valor del W y el H
 
@@ -272,16 +254,13 @@ class camara():
     def set_camera(self,WIDTH,HEIGHT):
         """
         
-
         Parameters
         ----------
         WIDTH : Width del frame
         HEIGHT : Height del frame.
-
         Returns
         -------
         cam : variable de tipo VideoCapture, para ser usado en la toma de foto..
-
         """
         cam = cv.VideoCapture(0) #abre la camara web
         cam.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
@@ -292,15 +271,12 @@ class camara():
     def tomar_foto(self,cam):
         """
         
-
         Parameters
         ----------
         cam : Objeto de tipo VideoCapture, configuracion inicial de la camara.
-
         Returns
         -------
         frame: fotograma tomado con la camara.
-
         """
         
         img_counter = 0 #contador para las imagenes capturadas (opcional)
@@ -332,17 +308,14 @@ class camara():
     def Calibrar(self,Snapshot,Calib_param, Treshold):
         """
         
-
         Parameters
         ----------
         Snapshot : Foto o frame capturado.
         Calib_param : Parametro de calibracion para Canny.
         Treshold : NO USADO.
-
         Returns
         -------
         None.
-
         """
         Esqui = get_esquinas(Snapshot, Calib_param, Treshold)
         Matrix = getHomogenea(Esqui)
@@ -358,9 +331,7 @@ class camara():
         
 """
 Objeto = mi clase() -> instancia de una clase. 
-
 Tengo un objeto, ahora, vamos a acceder a las propiedades del objeto.
-
 Objeto.metodo
 """      
 
@@ -372,4 +343,3 @@ print("-------Toma de foto ----------")
 foto =  Camara.tomar_foto(cam)
 print("-------Calibracion ----------")
 Camara.Calibrar(foto,Calib_param,Treshold)
-
