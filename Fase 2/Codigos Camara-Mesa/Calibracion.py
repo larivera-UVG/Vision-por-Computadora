@@ -23,6 +23,7 @@ Basado en el codigo realizado por Andre Rodas
 
 
 import cv2 as cv #importando libreria para opencv 
+import numpy as np
 
 
 #cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
@@ -128,6 +129,9 @@ class camara():
         cv.imwrite(edge_img, edge) #Guarda la foro
         print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
         img_counter += 1 #aumenta el contador. 
+        
+        draw = np.zeros
+        
         cv.imshow("prueba", edge)
         
         
@@ -140,4 +144,5 @@ Objeto.metodo
 """      
 Camara = camara()
 foto =  Camara.tomar_foto()
+print(foto.dtype)
 Camara.get_esquinas(foto,3)
