@@ -24,7 +24,8 @@ Basado en el codigo realizado por Andre Rodas
 
 import cv2 as cv #importando libreria para opencv 
 import numpy as np
-"""
+import math as mt
+""" 
 **********
 FUNCIONES
 **********
@@ -33,7 +34,9 @@ Aqui se agregan las funciones que van a ser usadas dentro de los diferentes meto
 
 """
 def distancia2puntos(punto1, punto2):
-    pass
+    distanciax = (punto1[0] - punto2[0])**2
+    distanciay = (punto1[1] - punto2[1])**2
+    return mt.sqrt(distanciax + distanciay) + 0.5
 
 """
 #cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
@@ -84,6 +87,8 @@ class camara():
 
         """
         cam = cv.VideoCapture(0) #abre la camara web
+        cam.set(cv.CAP_PROP_FRAME_WIDTH, 960)
+        cam.set(cv.CAP_PROP_FRAME_HEIGHT, 720)
             
         cv.namedWindow("test") #crea la ventana
         
@@ -114,9 +119,9 @@ class camara():
         return frame #retorna el frame que se va a utilizar
 
         
-    def get_esquinas(self,frame, canny_value):
-        PixCircleValue = 10
-        bandera = True
+    def get_esquinas(self,frame, canny_value, pixelTreshold):
+        PixCircleValue = 8
+        bandera = 1
         esquinas = []
         img_counter = 0 #contador de imagenes guardadas
         """
@@ -141,32 +146,39 @@ class camara():
         
         #obtiene los contornos de la imagen
         image, contour, hierarchy = cv.findContours(edge, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-        print(contour)
-        
-        width, height = edge.shape[:2] #para el ancho y alto de la imagen del contorno.
-        
-        print("este es el width", width)
-        print("este es el height", height)
-        boardMax = ([0,0], [0,height], [width, 0], [width, height]) #define el borde maximo de la mesa (aproximado)
-        
-        for i in (0, len(contour)-1):
-            center,areaMin, angle = cv.minAreaRect(contour[i])
-            print("este es el centro: ", center)
-            if (abs(width - height)<3 
-                and(height > PixCircleValue-3 
-                and (height < PixCircleValue+3) 
-                and (width > PixCircleValue-3 and width < PixCircleValue+3))):
-                
-                if(bandera):
+        #print(contour)
+        height_im, width_im = edge.shape[:2]
+        boardMax = ([0,0], [0,height_im], [width_im, 0], [width_im, height_im]) #define el borde maximo de la mesa
+
+        #print(len(contour) - 1)       
+        for i in range (0, len(contour)-1):
+            #print(i)
+            rect = cv.minAreaRect(contour[i])
+            (x, y), (width, height), angle = rect
+            #print("este es el width", width)
+            #print("este es el height", height)           
+            #print("este es el centro: ", (x,y))
+            
+            
+            
+            if (abs(width - height)< (pixelTreshold - 1)
+                or height > PixCircleValue-pixelTreshold 
+                or height < PixCircleValue+pixelTreshold
+                or width > PixCircleValue-pixelTreshold 
+                or width < PixCircleValue+pixelTreshold):
+                #print("se cumple la condicion")
+                #print(bandera)
+                if(bandera == 1):
+                    #print("Primera tirada")
                     for i in range(0,4):
-                        esquinas[i] = center
-                        bandera = False
-                    print("Estas son las esquinas al inicio: ", esquinas)
+                        esquinas.append([x,y])
+                    bandera = 2
+                    #print("Estas son las esquinas al inicio: ", esquinas)
                 else:
                     for i in range(0,4):
-                        if (distancia2puntos(boardMax[i], center)<distancia2puntos(boardMax[i], esquinas[i])):
-                            esquinas[i] = center;
-                    print("Estas son las esquinas al final: ", esquinas)
+                        if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
+                            esquinas[i].append([x,y]);
+        #print("Estas son las esquinas al final: ", esquinas)
         
         edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
@@ -185,4 +197,4 @@ Objeto.metodo
 """      
 Camara = camara()
 foto =  Camara.tomar_foto()
-Camara.get_esquinas(foto,50)
+Camara.get_esquinas(foto,60,3)
