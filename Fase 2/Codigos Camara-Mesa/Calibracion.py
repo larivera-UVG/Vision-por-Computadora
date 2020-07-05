@@ -38,6 +38,26 @@ def distancia2puntos(punto1, punto2):
     distanciay = (punto1[1] - punto2[1])**2
     return mt.sqrt(distanciax + distanciay) + 0.5
 
+def mayor2float(X1, X2):
+    if (X1 > X2):
+        return X1
+    else:
+        return X2;
+    
+    
+def getWiHe(esquina):
+
+    WiHeMax= []
+    W1 = distancia2puntos(esquina[0], esquina[2])
+    W2 = distancia2puntos(esquina[1], esquina[3])
+    WiMax = mayor2float(W1, W2)
+    H1 = distancia2puntos(esquina[0], esquina[1])
+    H2 = distancia2puntos(esquina[2], esquina[3])
+    HeMax = mayor2float(H1, H2)
+    WiHeMax[0].append(WiMax)
+    WiHeMax[1].append(HeMax)
+    return WiHeMax
+
 """
 #cap = cv.VideoCapture(0) #VideoCapture(n) n = 0 para otras que no sean la camara principal.
 #cap.close()
@@ -179,6 +199,7 @@ class camara():
                         if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
                             esquinas[i].append([x,y]);
         #print("Estas son las esquinas al final: ", esquinas)
+        print(esquinas[1])
         
         edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
