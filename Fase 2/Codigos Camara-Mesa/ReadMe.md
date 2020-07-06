@@ -9,4 +9,4 @@ Pruebas realizadas, exitosas. Calibración OK.
 Para una mejor calibración, utilizar figuras circulares en los bordes de la mesa, esto hace que el algoritmo funcione mejor.
 Luego de eso, con estas esquinas, se ajusta la perspectiva de la imagen, se guarda la matriz y ya se puede usar esa información.
 
-Función de guardar la matriz pendiente. 
+Función de guardar la matriz pendiente.
