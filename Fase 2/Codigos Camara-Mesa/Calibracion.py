@@ -145,6 +145,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
         #PARA DEBUG:
             
         cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
+        #print(frame.shape)
         cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
         
         #cv.circle(img,center,radius,(0,255,0),2)
@@ -241,6 +242,9 @@ def getHomogenea(esquina):
     return M
 
     
+def saveMat(name, src):
+    cv.FileStorage(name,src)
+
 #metodo -> que es capaz de hacer nuestra clase, comportamiento
     
     
@@ -265,7 +269,8 @@ class camara():
         cam = cv.VideoCapture(0) #abre la camara web
         cam.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
         cam.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
-        cv.namedWindow("test") #crea la ventana
+        print("saliendo")
+        #cv.namedWindow("test") #crea la ventana
         return cam
         
     def tomar_foto(self,cam):
@@ -301,8 +306,8 @@ class camara():
                 print("{} Guardado!".format(img_name)) #mensaje de Ok para el save de la foto.
                 img_counter += 1 #aumenta el contador. 
 
-        #cam.release()
-        #cv.destroyAllWindows()            
+        cam.release()
+        cv.destroyAllWindows()            
         return frame #retorna el frame que se va a utilizar
     
     def Calibrar(self,Snapshot,Calib_param, Treshold):
