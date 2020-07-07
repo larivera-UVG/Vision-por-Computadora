@@ -19,10 +19,10 @@ def CodeGenerator(val):
         Cod = np.zeros([200,200], dtype = np.uint8)
         return Cod
     num = '{0:08b}'.format(val)
-    print(num)
+    #print(num)
     k = -1
     Cod = np.zeros([200,200], dtype = np.uint8)
-    print(Cod)
+    #print(Cod)
     for u in range (0,3):
         #print(u)
         for v in range (0,3):
@@ -33,7 +33,7 @@ def CodeGenerator(val):
             else:
                 t = num[7-k]
                 n = int(t)
-                print(n)
+                #print(n)
                 for i3 in range(u*50+25, u*50+75):
                     for i4 in range(v*50+25,v*50+75):
                         #print("escala de grises")
