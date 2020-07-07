@@ -363,7 +363,7 @@ Objeto = mi clase() -> instancia de una clase.
 Tengo un objeto, ahora, vamos a acceder a las propiedades del objeto.
 Objeto.metodo
 """      
-
+"""
 print("-------Inicializacion del objeto camara ----------")
 Camara = camara()
 print("-------Seteo de la camara ----------")
@@ -374,3 +374,4 @@ print("-------Calibracion ----------")
 Camara.Calibrar(foto,Calib_param,Treshold)
 print("-------Generacion de codigo ----------")
 Camara.Generar_codigo(10)
+"""
