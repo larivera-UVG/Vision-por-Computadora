@@ -330,6 +330,30 @@ class camara():
     #imwrite("calisnap.jpg",CaliSnapshot
     #imshow("Output Image", CaliSnapshot);
 
+    def Generar_codigo(self,val):
+        if val < 0 or val > 255:
+            print("Ingrese un numero valido entre 0 y 255")
+            Cod = np.zeros([200,200], dtype = np.uint8)
+            return Cod
+        num = '{0:08b}'.format(val)
+    #print(num)
+        k = -1
+        Cod = np.zeros([200,200], dtype = np.uint8)
+    #print(Cod)
+        for u in range (0,3):
+            for v in range (0,3):
+                if k == -1:
+                    for i in range(u*50+25, u*50+75):
+                        for i2 in range(v*50+25,v*50+75):
+                            Cod[i,i2] = 255
+                else:
+                    t = num[7-k]
+                    n = int(t)
+                    for i3 in range(u*50+25, u*50+75):
+                        for i4 in range(v*50+25,v*50+75):
+                            Cod[i3,i4] = n * 125
+                k = k + 1
+        return Cod
         
    
         
@@ -348,3 +372,5 @@ print("-------Toma de foto ----------")
 foto =  Camara.tomar_foto(cam)
 print("-------Calibracion ----------")
 Camara.Calibrar(foto,Calib_param,Treshold)
+print("-------Generacion de codigo ----------")
+Camara.Generar_codigo(10)
