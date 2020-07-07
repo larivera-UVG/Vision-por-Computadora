@@ -3,7 +3,12 @@
 """
 Created on Mon Jul  6 22:12:29 2020
 
-@author: joseguerra
+Jose Pablo Guerra 
+
+Generador de codigos para detectar los robots. 
+Basado en el codigo escrito por Andre Rodas
+
+Julio 6 - version final.
 """
 import numpy as np
 import cv2 as cv
@@ -40,20 +45,9 @@ def CodeGenerator(val):
     return Cod
             
     
-M = CodeGenerator(-1)
-#print(M.shape)
-cam = cv.VideoCapture(0) #abre la camara web
-#ret, frame = cam.read() #obtiene la informacion de la lectura de la camar
+M = CodeGenerator(30)
+
 cv.namedWindow("Cod")
 cv.imshow("Cod",M)
 cv.imwrite("Cod.jpg",M) 
 cv.waitKey(0)  
-"""
-while True:
-    ret, frame = cam.read() #obtiene la informacion de la lectura de la camar
-    if not ret:
-        print("Error, frame no encontrado")
-        break
-    cv.imshow("Frame",frame)   
-    #cv.imshow("Cod",M)   
-"""
