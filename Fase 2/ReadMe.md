@@ -1,6 +1,7 @@
-Continuación Fase 1 de Algoritmo de Visión por Computadora.
+# Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
-Pruebas de OpenCV en C++ y migración de código a Python.
-Aplicación de programación orientada a objetos y multi-hilos.
+## Fase 2
 
-La carpeta "Codigo Fase anterior_prueba" incluye todos los archivos modificados para pruebas de OpenCV en C++ y la carpeta "Codigo Prueba" incluye archivos en Python y C++ para probar multi-hilos y algunos otros ejemplos de la cámara.
+Contiene dos carpetas "Codigos" y "Doc".
+En "Codigos" estan los codigos en Python y C++ con implementación de POO y programación multi-hilos.
+En "Doc" se tienen los archivos referentes a guías, manuales y documentación en general.
