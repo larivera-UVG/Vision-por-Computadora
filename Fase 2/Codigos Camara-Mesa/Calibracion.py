@@ -12,6 +12,9 @@ Versionado:
 5/07/2020: Version 1.0.0 -- falta agregar dos funciones mas de la version origninal en c++
 Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
 Version con Programacion Orientada a Objetos. 
+
+7/07/2020: Version 2.0.0 -- 
+
 ***********************
 Anotaciones iniciales:
 ***********************
@@ -98,6 +101,8 @@ def getWiHe(esquina):
     WiHeMax.append(int(HeMax))
     return WiHeMax
 
+def pipe(frame):
+    return frame
 
 def get_esquinas(frame, canny_value, pixelTreshold):
     """
@@ -301,8 +306,12 @@ class camara():
                 break
             
         return self.last_frame
+    
+    def update_frame(self):
+        ret, self.last_frame = self.cap.read()
+        return self.last_frame
                                  
-    def destroy_window():
+    def destroy_window(self):
         cv.destroyAllWindows()
         cv.waitKey(1)
         
