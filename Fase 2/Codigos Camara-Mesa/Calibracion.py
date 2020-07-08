@@ -147,7 +147,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
         cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
         #print(frame.shape)
         cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
-        
+        cv.waitKey(1)
         #cv.circle(img,center,radius,(0,255,0),2)
         #cv.circle(img,center,radius,(0,255,0),2)
         #(x, y), (width, height), angle = rect
@@ -217,6 +217,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
     print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
     img_counter += 1 #aumenta el contador. 
     cv.imshow("prueba", edge)
+    cv.waitKey(1)
     return esquinas_final 
 
 def getHomogenea(esquina):
@@ -255,6 +256,56 @@ class camara():
         tomar_foto(): para capturar el frame.
         Calibrar(): Calibracion de la camara.
     """
+    
+    def __init__(self,cam_num):
+        """
+        
+
+        Parameters
+        ----------
+        cam_num : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cap = cv.VideoCapture(cam_num)
+        self.cam_num = cam_num
+        
+    def initialize(self,WIDTH,HEIGHT):
+        self.cap = cv.VideoCapture(self.cam_num)
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        
+    def get_frame(self):
+        """
+        
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        while True:
+            ret, self.last_frame = self.cap.read()
+            cv.imshow("test", self.last_frame) #muestra el video. 
+            k = cv.waitKey(1) #k = 1 es para espacio
+            if k%256 == 27:
+                    # ESC presionado para cerrar
+                cv.destroyWindow("test")
+                cv.waitKey(1)
+                print("Escape presionado, cerrando...")
+                break
+            
+        return self.last_frame
+                                 
+    def destroy_window():
+        cv.destroyAllWindows()
+        cv.waitKey(1)
+        
     def set_camera(self,WIDTH,HEIGHT):
         """
         
@@ -266,15 +317,14 @@ class camara():
         -------
         cam : variable de tipo VideoCapture, para ser usado en la toma de foto..
         """
-        cam = cv.VideoCapture(0) #abre la camara web
-        cam.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
-        cam.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
-        print("saliendo")
+        #cam = cv.VideoCapture(0) #abre la camara web
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        #print("saliendo")
         #cv.namedWindow("test") #crea la ventana
-        return cam
-        
+    """
     def tomar_foto(self,cam):
-        """
+        #
         
         Parameters
         ----------
@@ -282,7 +332,7 @@ class camara():
         Returns
         -------
         frame: fotograma tomado con la camara.
-        """
+        #
         
         img_counter = 0 #contador para las imagenes capturadas (opcional)
         
@@ -308,28 +358,33 @@ class camara():
 
         cam.release()
         cv.destroyAllWindows()            
-        return frame #retorna el frame que se va a utilizar
-    
+        return frame #retorna el frame que se va a utilizar  
+     """    
     def Calibrar(self,Snapshot,Calib_param, Treshold):
         """
         
+
         Parameters
         ----------
-        Snapshot : Foto o frame capturado.
-        Calib_param : Parametro de calibracion para Canny.
-        Treshold : NO USADO.
+        Snapshot : TYPE
+            DESCRIPTION.
+        Calib_param : TYPE
+            DESCRIPTION.
+        Treshold : TYPE
+            DESCRIPTION.
+
         Returns
         -------
         None.
+
         """
         Esqui = get_esquinas(Snapshot, Calib_param, Treshold)
         Matrix = getHomogenea(Esqui)
         MyWiHe = getWiHe(Esqui)
         CaliSnapshot = cv.warpPerspective(Snapshot, Matrix, (MyWiHe[0],  MyWiHe[1]))
         cv.imshow("Output Image", CaliSnapshot)
-    #imwrite("calisnap.jpg",CaliSnapshot
-    #imshow("Output Image", CaliSnapshot);
-
+        cv.waitKey(1)
+        
     def Generar_codigo(self,val):
         if val < 0 or val > 255:
             print("Ingrese un numero valido entre 0 y 255")
