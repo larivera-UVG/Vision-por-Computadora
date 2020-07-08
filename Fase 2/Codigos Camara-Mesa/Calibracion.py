@@ -13,7 +13,9 @@ Versionado:
 Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
 Version con Programacion Orientada a Objetos. 
 
-7/07/2020: Version 2.0.0 -- 
+7/07/2020: Version 2.0.0 -- Se ajustan algunos metodos, se agrega un init mejorado 
+                            y una captura de fotograma mejor para incluirlo en la GUI.
+                            Se agrega el metodo de la generacion de codigos.
 
 ***********************
 Anotaciones iniciales:
@@ -21,8 +23,10 @@ Anotaciones iniciales:
 De preferencia utilizar la suite de anaconda, esto permite instalar los paquetes 
 de manera mas adecuada y evitar errores entre versionres o que las librerias 
 no esten correctamente linkeadas al compilador. 
-Que la mesa no tenga objetos ninguno sobre ella y que tenga bordes circulares 
+
+Que la mesa no tenga objetos sobre ella y que tenga bordes circulares 
 de alto contraste para mejores resultados.
+
 Basado en el codigo realizado por Andre Rodas 
 """
 
@@ -192,26 +196,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
                 
                 Finalmente crea el array con las esquinas de cada borde circular.
                 """
-            
-        """    
-        if (abs(width - height)< 2
-            and height > PixCircleValue-pixelTreshold 
-            and height < PixCircleValue+pixelTreshold
-            and width > PixCircleValue-pixelTreshold 
-            and width < PixCircleValue+pixelTreshold):
-            print("se cumple la condicion")
-            #print(bandera)
-            if(bandera == 1):
-                print("Primera tirada")
-                for i in range(0,4):
-                    esquinas.append([x,y])
-                bandera = 2
-                    #print("Estas son las esquinas al inicio: ", esquinas)
-            #else:
-                #for i in range(0,4):
-                    if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
-                        esquinas_final.append([x,y])
-          """              
+                       
     print("Estas son las esquinas al final: ", esquinas_final) #para debug
     #print("Esquina 1", esquinas_final[1])
     
@@ -268,8 +253,7 @@ class camara():
 
         Parameters
         ----------
-        cam_num : TYPE
-            DESCRIPTION.
+        cam_num : El numero del dispositivo que se quiere abrir, normalmente es 0.
 
         Returns
         -------
@@ -280,6 +264,19 @@ class camara():
         self.cam_num = cam_num
         
     def initialize(self,WIDTH,HEIGHT):
+        """
+        
+
+        Parameters
+        ----------
+        WIDTH : Ancho del frame.
+        HEIGHT : Largo del frame.
+
+        Returns
+        -------
+        None.
+
+        """
         self.cap = cv.VideoCapture(self.cam_num)
         self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
         self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
@@ -290,8 +287,7 @@ class camara():
 
         Returns
         -------
-        TYPE
-            DESCRIPTION.
+        Retorna el frame capturado al momento de presionar la tecla ESC.
 
         """
         while True:
@@ -308,10 +304,27 @@ class camara():
         return self.last_frame
     
     def update_frame(self):
+        """
+        
+
+        Returns
+        -------
+        Modelo, de momento no se usa.
+        Sirve para actualizar el frame capturado.
+
+        """
         ret, self.last_frame = self.cap.read()
         return self.last_frame
                                  
     def destroy_window(self):
+        """
+        
+
+        Returns
+        -------
+        Destruye las ventanas abiertas por OpenCV.
+
+        """
         cv.destroyAllWindows()
         cv.waitKey(1)
         
@@ -375,12 +388,9 @@ class camara():
 
         Parameters
         ----------
-        Snapshot : TYPE
-            DESCRIPTION.
-        Calib_param : TYPE
-            DESCRIPTION.
-        Treshold : TYPE
-            DESCRIPTION.
+        Snapshot : Fotografia para la calibracion.
+        Calib_param : Parametro de calibracion para Canny.
+        Treshold : NO USADO.
 
         Returns
         -------
@@ -395,47 +405,51 @@ class camara():
         cv.waitKey(1)
         
     def Generar_codigo(self,val):
+        """
+        
+
+        Parameters
+        ----------
+        val : Un valor entre 0 y 255 para generar los codigos de deteccion de los robots.
+
+        Returns
+        -------
+        Cod : El codigo luego de la construccion de la matriz.
+
+        """
+        
+        #Si el valor no esta en el rango, retorna una matriz vacia
         if val < 0 or val > 255:
             print("Ingrese un numero valido entre 0 y 255")
             Cod = np.zeros([200,200], dtype = np.uint8)
-            return Cod
-        num = '{0:08b}'.format(val)
+            return Cod #matriz de 0 para evitar errores.
+        
+        num = '{0:08b}'.format(val) #toma el valor y lo convierte en un string binario
+                                #el formato es '0bxxx' por lo que se elimina el '0b' 
+                                #y se garantiza que siempre sean 8 bits.
     #print(num)
-        k = -1
-        Cod = np.zeros([200,200], dtype = np.uint8)
+        k = -1 #parametro de control
+        
+        Cod = np.zeros([200,200], dtype = np.uint8) #crea un array de zeros que sera la 
+                            #matriz donde se genera el codigo. Debe ser de tipo int de 8 bits
+                            #para que pueda reconocer los tonos de grises
     #print(Cod)
         for u in range (0,3):
             for v in range (0,3):
+                
+                #para generar el pivote (ver la tesis de Andre)
+                #El pivote sirve para saber que cuadro debe estar alineado.
                 if k == -1:
                     for i in range(u*50+25, u*50+75):
                         for i2 in range(v*50+25,v*50+75):
-                            Cod[i,i2] = 255
+                            Cod[i,i2] = 255 #llena el pivote, 255 = blanco
                 else:
+                    #genera los otros cuadros en escala de grises, 125 = gris
                     t = num[7-k]
                     n = int(t)
                     for i3 in range(u*50+25, u*50+75):
                         for i4 in range(v*50+25,v*50+75):
                             Cod[i3,i4] = n * 125
                 k = k + 1
-        return Cod
+        return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
-   
-        
-        
-"""
-Objeto = mi clase() -> instancia de una clase. 
-Tengo un objeto, ahora, vamos a acceder a las propiedades del objeto.
-Objeto.metodo
-"""      
-"""
-print("-------Inicializacion del objeto camara ----------")
-Camara = camara()
-print("-------Seteo de la camara ----------")
-cam = Camara.set_camera(960,720)
-print("-------Toma de foto ----------")
-foto =  Camara.tomar_foto(cam)
-print("-------Calibracion ----------")
-Camara.Calibrar(foto,Calib_param,Treshold)
-print("-------Generacion de codigo ----------")
-Camara.Generar_codigo(10)
-"""
