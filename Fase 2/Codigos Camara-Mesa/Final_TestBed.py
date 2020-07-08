@@ -22,6 +22,9 @@ from PySide2.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QV
 import sys
 from PySide2.QtGui import QIcon
 
+n = 50 #para el boton1 de capturar
+n2 = 50 #para el boton3 del codigo
+
 Canny_Factor = 2.5 #factor de multiplicacion para el limite superior de Canny
 Calib_param = 40 #Factor de calibracion para Canny, este factor se puede variar
                #para una mejor deteccion de los bordes circulares.
@@ -49,24 +52,24 @@ class Window(QWidget):
 
     def capturar_button(self):
         btn1 = QPushButton("Capturar", self)
-        btn1.move(50,50)
+        btn1.move(n,50)
         self.Init_Cam
         btn1.clicked.connect(self.capturar)
     
     def limpiar_button(self):
         btn2 = QPushButton("Limpiar", self)
-        btn2.move(50,70)
+        btn2.move(n+90,50)
         btn2.clicked.connect(self.limpiar_pantalla)
         
     def codigo_button(self):
         btn3 = QPushButton("Codigo", self)
-        btn3.move(50,90)
+        btn3.move(n2,90)
         btn3.clicked.connect(self.codigo)
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
         self.lineEdit.setFixedWidth(120)
-        self.lineEdit.move(142,93)
+        self.lineEdit.move(n2+92,93)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
         
@@ -86,14 +89,28 @@ class Window(QWidget):
     def capturar(self):
         foto = camara.get_frame()
         camara.Calibrar(foto,Calib_param,Treshold)
+        
+    def cleanUp(self):
+        # Clean up everything
+        for i in self.__dict__:
+            item = self.__dict__[i]
+            clean(item)
     
-
-myapp = QApplication(sys.argv)
+def clean(item):
+    """Clean up the memory by closing and deleting the item if possible."""
+    if isinstance(item, list) or isinstance(item, dict):
+        for _ in range(len(item)):
+            clean(list(item).pop())
+        
+            
+myapp = QApplication.instance()
+if myapp is None: 
+    myapp = QApplication(sys.argv)
+#myapp = QApplication(sys.argv)
 window = Window()
-window.show()
- 
-myapp.exec_()
-sys.exit()
+window.show() 
+sys.exit(myapp.exec_())
+myapp.quit()
 
 
 
