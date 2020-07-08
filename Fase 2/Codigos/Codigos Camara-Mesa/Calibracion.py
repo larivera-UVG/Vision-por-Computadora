@@ -9,17 +9,24 @@ Programa de calibracion para la camara utilizando OpenCV
 Versionado:
 ***********************
 4/07/2020: Creacion inicial del archivo
-5/07/2020: Version 1.0.0 -- falta agregar dos funciones mas de la version origninal en c++
+5/07/2020: Version 0.1.0 -- falta agregar dos funciones mas de la version origninal en c++
 Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
 Version con Programacion Orientada a Objetos. 
+
+7/07/2020: Version 0.2.0 -- Se ajustan algunos metodos, se agrega un init mejorado 
+                            y una captura de fotograma mejor para incluirlo en la GUI.
+                            Se agrega el metodo de la generacion de codigos.
+
 ***********************
 Anotaciones iniciales:
 ***********************
 De preferencia utilizar la suite de anaconda, esto permite instalar los paquetes 
 de manera mas adecuada y evitar errores entre versionres o que las librerias 
 no esten correctamente linkeadas al compilador. 
-Que la mesa no tenga objetos ninguno sobre ella y que tenga bordes circulares 
+
+Que la mesa no tenga objetos sobre ella y que tenga bordes circulares 
 de alto contraste para mejores resultados.
+
 Basado en el codigo realizado por Andre Rodas 
 """
 
@@ -98,6 +105,8 @@ def getWiHe(esquina):
     WiHeMax.append(int(HeMax))
     return WiHeMax
 
+def pipe(frame):
+    return frame
 
 def get_esquinas(frame, canny_value, pixelTreshold):
     """
@@ -145,8 +154,9 @@ def get_esquinas(frame, canny_value, pixelTreshold):
         #PARA DEBUG:
             
         cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
+        #print(frame.shape)
         cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
-        
+        cv.waitKey(1)
         #cv.circle(img,center,radius,(0,255,0),2)
         #cv.circle(img,center,radius,(0,255,0),2)
         #(x, y), (width, height), angle = rect
@@ -186,26 +196,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
                 
                 Finalmente crea el array con las esquinas de cada borde circular.
                 """
-            
-        """    
-        if (abs(width - height)< 2
-            and height > PixCircleValue-pixelTreshold 
-            and height < PixCircleValue+pixelTreshold
-            and width > PixCircleValue-pixelTreshold 
-            and width < PixCircleValue+pixelTreshold):
-            print("se cumple la condicion")
-            #print(bandera)
-            if(bandera == 1):
-                print("Primera tirada")
-                for i in range(0,4):
-                    esquinas.append([x,y])
-                bandera = 2
-                    #print("Estas son las esquinas al inicio: ", esquinas)
-            #else:
-                #for i in range(0,4):
-                    if (distancia2puntos(boardMax[i], (x,y))<distancia2puntos(boardMax[i], esquinas[i])):
-                        esquinas_final.append([x,y])
-          """              
+                       
     print("Estas son las esquinas al final: ", esquinas_final) #para debug
     #print("Esquina 1", esquinas_final[1])
     
@@ -216,6 +207,7 @@ def get_esquinas(frame, canny_value, pixelTreshold):
     print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
     img_counter += 1 #aumenta el contador. 
     cv.imshow("prueba", edge)
+    cv.waitKey(1)
     return esquinas_final 
 
 def getHomogenea(esquina):
@@ -241,6 +233,9 @@ def getHomogenea(esquina):
     return M
 
     
+def saveMat(name, src):
+    cv.FileStorage(name,src)
+
 #metodo -> que es capaz de hacer nuestra clase, comportamiento
     
     
@@ -251,6 +246,88 @@ class camara():
         tomar_foto(): para capturar el frame.
         Calibrar(): Calibracion de la camara.
     """
+    
+    def __init__(self,cam_num):
+        """
+        
+
+        Parameters
+        ----------
+        cam_num : El numero del dispositivo que se quiere abrir, normalmente es 0.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cap = cv.VideoCapture(cam_num)
+        self.cam_num = cam_num
+        
+    def initialize(self,WIDTH,HEIGHT):
+        """
+        
+
+        Parameters
+        ----------
+        WIDTH : Ancho del frame.
+        HEIGHT : Largo del frame.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.cap = cv.VideoCapture(self.cam_num)
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        
+    def get_frame(self):
+        """
+        
+
+        Returns
+        -------
+        Retorna el frame capturado al momento de presionar la tecla ESC.
+
+        """
+        while True:
+            ret, self.last_frame = self.cap.read()
+            cv.imshow("test", self.last_frame) #muestra el video. 
+            k = cv.waitKey(1) #k = 1 es para espacio
+            if k%256 == 27:
+                    # ESC presionado para cerrar
+                cv.destroyWindow("test")
+                cv.waitKey(1)
+                print("Escape presionado, cerrando...")
+                break
+            
+        return self.last_frame
+    
+    def update_frame(self):
+        """
+        
+
+        Returns
+        -------
+        Modelo, de momento no se usa.
+        Sirve para actualizar el frame capturado.
+
+        """
+        ret, self.last_frame = self.cap.read()
+        return self.last_frame
+                                 
+    def destroy_window(self):
+        """
+        
+
+        Returns
+        -------
+        Destruye las ventanas abiertas por OpenCV.
+
+        """
+        cv.destroyAllWindows()
+        cv.waitKey(1)
+        
     def set_camera(self,WIDTH,HEIGHT):
         """
         
@@ -262,14 +339,14 @@ class camara():
         -------
         cam : variable de tipo VideoCapture, para ser usado en la toma de foto..
         """
-        cam = cv.VideoCapture(0) #abre la camara web
-        cam.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
-        cam.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
-        cv.namedWindow("test") #crea la ventana
-        return cam
-        
+        #cam = cv.VideoCapture(0) #abre la camara web
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        #print("saliendo")
+        #cv.namedWindow("test") #crea la ventana
+    """
     def tomar_foto(self,cam):
-        """
+        #
         
         Parameters
         ----------
@@ -277,7 +354,7 @@ class camara():
         Returns
         -------
         frame: fotograma tomado con la camara.
-        """
+        #
         
         img_counter = 0 #contador para las imagenes capturadas (opcional)
         
@@ -301,45 +378,80 @@ class camara():
                 print("{} Guardado!".format(img_name)) #mensaje de Ok para el save de la foto.
                 img_counter += 1 #aumenta el contador. 
 
-        #cam.release()
-        #cv.destroyAllWindows()            
-        return frame #retorna el frame que se va a utilizar
-    
+        cam.release()
+        cv.destroyAllWindows()            
+        return frame #retorna el frame que se va a utilizar  
+     """    
     def Calibrar(self,Snapshot,Calib_param, Treshold):
         """
         
+
         Parameters
         ----------
-        Snapshot : Foto o frame capturado.
+        Snapshot : Fotografia para la calibracion.
         Calib_param : Parametro de calibracion para Canny.
         Treshold : NO USADO.
+
         Returns
         -------
         None.
+
         """
         Esqui = get_esquinas(Snapshot, Calib_param, Treshold)
         Matrix = getHomogenea(Esqui)
         MyWiHe = getWiHe(Esqui)
         CaliSnapshot = cv.warpPerspective(Snapshot, Matrix, (MyWiHe[0],  MyWiHe[1]))
         cv.imshow("Output Image", CaliSnapshot)
-    #imwrite("calisnap.jpg",CaliSnapshot
-    #imshow("Output Image", CaliSnapshot);
+        cv.waitKey(1)
+        
+    def Generar_codigo(self,val):
+        """
+        
 
-        
-   
-        
-        
-"""
-Objeto = mi clase() -> instancia de una clase. 
-Tengo un objeto, ahora, vamos a acceder a las propiedades del objeto.
-Objeto.metodo
-"""      
+        Parameters
+        ----------
+        val : Un valor entre 0 y 255 para generar los codigos de deteccion de los robots.
 
-print("-------Inicializacion del objeto camara ----------")
-Camara = camara()
-print("-------Seteo de la camara ----------")
-cam = Camara.set_camera(960,720)
-print("-------Toma de foto ----------")
-foto =  Camara.tomar_foto(cam)
-print("-------Calibracion ----------")
-Camara.Calibrar(foto,Calib_param,Treshold)
+        Returns
+        -------
+        Cod : El codigo luego de la construccion de la matriz.
+
+        """
+        
+        #Si el valor no esta en el rango, retorna una matriz vacia
+        if val < 0 or val > 255:
+            print("Ingrese un numero valido entre 0 y 255")
+            Cod = np.zeros([200,200], dtype = np.uint8)
+            return Cod #matriz de 0 para evitar errores.
+        
+        num = '{0:08b}'.format(val) #toma el valor y lo convierte en un string binario
+                                #el formato es '0bxxx' por lo que se elimina el '0b' 
+                                #y se garantiza que siempre sean 8 bits.
+    #print(num)
+        k = -1 #parametro de control
+        
+        Cod = np.zeros([200,200], dtype = np.uint8) #crea un array de zeros que sera la 
+                            #matriz donde se genera el codigo. Debe ser de tipo int de 8 bits
+                            #para que pueda reconocer los tonos de grises
+    #print(Cod)
+        for u in range (0,3):
+            for v in range (0,3):
+                
+                #para generar el pivote (ver la tesis de Andre)
+                #El pivote sirve para saber que cuadro debe estar alineado.
+                if k == -1:
+                    for i in range(u*50+25, u*50+75):
+                        for i2 in range(v*50+25,v*50+75):
+                            Cod[i,i2] = 255 #llena el pivote, 255 = blanco
+                else:
+                    #genera los otros cuadros en escala de grises, 125 = gris
+                    t = num[7-k]
+                    n = int(t)
+                    for i3 in range(u*50+25, u*50+75):
+                        for i4 in range(v*50+25,v*50+75):
+                            Cod[i3,i4] = n * 125
+                k = k + 1
+                cv.imshow('cod', Cod)
+                cv.waitKey(1)
+        return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
+        

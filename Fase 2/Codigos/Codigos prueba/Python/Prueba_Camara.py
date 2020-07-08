@@ -35,7 +35,8 @@ while True:
         break
 
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY) #captura de video y procesamiento de imagen a tono de grises.
-
+    print(gray)
+    print(gray.dtype)
     cv.imshow('frame', gray) #despliega los cambios hechos en el frame
     if cv.waitKey(1) == ord('q'): #para salir presione q. 
         break
