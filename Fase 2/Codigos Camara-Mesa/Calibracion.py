@@ -9,11 +9,11 @@ Programa de calibracion para la camara utilizando OpenCV
 Versionado:
 ***********************
 4/07/2020: Creacion inicial del archivo
-5/07/2020: Version 1.0.0 -- falta agregar dos funciones mas de la version origninal en c++
+5/07/2020: Version 0.1.0 -- falta agregar dos funciones mas de la version origninal en c++
 Detecta bordes circulares en las esquinas de la mesa y calibra basados en esos puntos.
 Version con Programacion Orientada a Objetos. 
 
-7/07/2020: Version 2.0.0 -- Se ajustan algunos metodos, se agrega un init mejorado 
+7/07/2020: Version 0.2.0 -- Se ajustan algunos metodos, se agrega un init mejorado 
                             y una captura de fotograma mejor para incluirlo en la GUI.
                             Se agrega el metodo de la generacion de codigos.
 
@@ -451,5 +451,7 @@ class camara():
                         for i4 in range(v*50+25,v*50+75):
                             Cod[i3,i4] = n * 125
                 k = k + 1
+                cv.imshow('cod', Cod)
+                cv.waitKey(1)
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
