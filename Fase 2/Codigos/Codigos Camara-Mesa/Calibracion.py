@@ -153,10 +153,10 @@ def get_esquinas(frame, canny_value, pixelTreshold):
                 
         #PARA DEBUG:
             
-        cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
+        #cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
         #print(frame.shape)
-        cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
-        cv.waitKey(1)
+        #cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
+        #cv.waitKey(1)
         #cv.circle(img,center,radius,(0,255,0),2)
         #cv.circle(img,center,radius,(0,255,0),2)
         #(x, y), (width, height), angle = rect
