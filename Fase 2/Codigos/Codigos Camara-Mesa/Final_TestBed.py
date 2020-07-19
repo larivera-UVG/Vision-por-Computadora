@@ -31,7 +31,7 @@ Calib_param = 40 #Factor de calibracion para Canny, este factor se puede variar
 Treshold = 1
 
 #Tama;o del frame de la camara, de preferencia ajustarlo para que no capture cosas innecesarias
-WIDTH = 960
+WIDTH = 1280
 HEIGTH = 720
 
 #Inicializacion del objeto de la camara para el uso en la GUI
