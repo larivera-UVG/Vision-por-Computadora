@@ -402,7 +402,7 @@ class camara():
         Matrix = getHomogenea(Esqui)
         MyWiHe = getWiHe(Esqui)
         CaliSnapshot = cv.warpPerspective(Snapshot, Matrix, (MyWiHe[0],  MyWiHe[1]))
-        cv.imshow("Output Image", CaliSnapshot)
+        
         
         edge_img = "opencv_CalibSnapshot_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
@@ -410,6 +410,7 @@ class camara():
         print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
         img_counter += 1 #aumenta el contador. 
         #cv.imshow("prueba", edge)
+        cv.imshow("Output Image", CaliSnapshot)
         cv.waitKey(1)
         
     def Generar_codigo(self,val):
