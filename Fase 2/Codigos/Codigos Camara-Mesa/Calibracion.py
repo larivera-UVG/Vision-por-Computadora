@@ -404,7 +404,7 @@ class camara():
         CaliSnapshot = cv.warpPerspective(Snapshot, Matrix, (MyWiHe[0],  MyWiHe[1]))
         cv.imshow("Output Image", CaliSnapshot)
         
-        edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
+        edge_img = "opencv_CalibSnapshot_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
         cv.imwrite(edge_img, CaliSnapshot) #Guarda la foro
         print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
