@@ -3,11 +3,14 @@
 """
 Created on Sat Jul 18 11:45:45 2020
 
+18/07/2020: Version 0.0.0 -- Version inicial del archivo
+19/07/2020: Version 0.1.0 -- Se agregan funciones para el modulo de toma de datos de la pose de robots.
+
 @author: joseguerra
 """
 
 import cv2 as cv #importando libreria para opencv 
-from Obtener_pos import vector_robot, Robot
+from Robot import vector_robot, Robot
 
 SQRTDE2 = 1.41421356
 MyPI = 3.14159265
