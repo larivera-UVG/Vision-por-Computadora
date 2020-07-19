@@ -454,7 +454,7 @@ class camara():
                 k = k + 1
                 cv.imshow('cod', Cod)
                 cv.waitKey(1)
-                edge_img = "opencv_Cannyframe_{}.png".format(img_counter) #Formato del nombre de la imagen.
+                edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
                 cv.imwrite(edge_img, Cod) #Guarda la foro
                 print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
