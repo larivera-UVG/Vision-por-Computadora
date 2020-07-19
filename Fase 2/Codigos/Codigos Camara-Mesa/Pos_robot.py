@@ -7,7 +7,7 @@ Created on Sat Jul 18 11:45:45 2020
 """
 
 import cv2 as cv #importando libreria para opencv 
-from Obtener_pos import vector_robot
+from Obtener_pos import vector_robot, Robot
 
 SQRTDE2 = 1.41421356
 MyPI = 3.14159265
@@ -51,6 +51,7 @@ def getRobot_Code(snapshot, Canny_inf, Canny_sup, Medida_cod):
     return vector
 
 def getRobot_fromSnapshot(RecContorno):
+    robot = Robot()
     height_cont, width_cont = RecContorno[1]
     tempWiMitad = SQRTDE2 * width_cont / 2
     tempHeMitad = SQRTDE2 * height_cont / 2
@@ -136,6 +137,9 @@ def getRobot_fromSnapshot(RecContorno):
     tempX = int(tempFloatX)
     tempY = int(tempFloatY)
     tempTheta = int(tempFloatTheta)
-    return robot(tempID,"", tempX, tempY, tempTheta) #averiguar como se hace para pasar este argumento al objeto.
+    pos = [tempX, tempY, tempTheta]
+    return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
+
+
 
     
