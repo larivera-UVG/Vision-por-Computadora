@@ -11,22 +11,25 @@ Created on Sat Jul 18 11:45:45 2020
 
 import cv2 as cv #importando libreria para opencv 
 from Robot import vector_robot, Robot
+import numpy as np
 
 SQRTDE2 = 1.41421356
 MyPI = 3.14159265
 
-anchoMesa = 128.4
-largoMesa = 88.4
+anchoMesa = 14.5
+largoMesa = 28.0
 
-GlobalCodePixThreshold = 5
-GlobalColorDifThreshold = 20
-GlobalWidth = 0 
-GlobalHeigth = 0
+GlobalCodePixThreshold = 300
+GlobalColorDifThreshold = 50
+
+
+MyGlobalCannyInf = 94
+MyGlobalCannySup = 350
 #Mat GlobalLambda, GlobalCroppedActualSnap;
 
 def getRobot_Code(snapshot, Canny_inf, Canny_sup, Medida_cod):
     vector = vector_robot()
-    blur_size = [3,3]
+    blur_size = (3,3)
     height_im, width_im = snapshot.shape[:2]
     PixCodeSize = Medida_cod * width_im / anchoMesa
     gray_img = cv.cvtColor(snapshot, cv.COLOR_BGR2GRAY)
@@ -34,54 +37,81 @@ def getRobot_Code(snapshot, Canny_inf, Canny_sup, Medida_cod):
     canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup)
     image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
     canny_img = cv.blur(canny_img, blur_size)
-    
+    #print("PixCodeSize: ", PixCodeSize)
     a = 0
+    LastRecCod = []
     for i in contour:
         RecCod = cv.minAreaRect(i)
         Rx, Ry = RecCod[0] #SingleRecCod.center
         height_rec, width_rec = RecCod[1] #SingleRecCod.size
-
+        #print("GolbalCodePix: ", GlobalCodePixThreshold)
+        #print("Resta entre width y PixCode: ",abs(width_rec - PixCodeSize))
+        #print("Resta entre heigth: ",abs(height_rec - PixCodeSize))
         if (((abs(width_rec - PixCodeSize) < GlobalCodePixThreshold) and (abs(height_rec - PixCodeSize) < GlobalCodePixThreshold))):
+            print("ingresando al pirmer if")
+            print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
+            #LastRecCod = RecCod
+            #x, y = LastRecCod[0] #LastRecCod.center
+            if a == 1:
+                #LastRecCod = RecCod
+                x, y = LastRecCod[0] #LastRecCod.center
+                
             if a == 0:
                 a = 1
-                vector.agregar_robot(getRobot_fromSnapshot(snapshot))
+                print("ingresando al segundo if")
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, snapshot))
                 LastRecCod = RecCod
                 x, y = LastRecCod[0] # LastRecCod.center
             elif (((abs(Rx - x) > GlobalCodePixThreshold) or (abs(Ry - y) > GlobalCodePixThreshold))):
-                vector.agregar_robot(getRobot_fromSnapshot(snapshot))
+                print("ingresando al segundo if, condicion else")
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, snapshot))
                 LastRecCod = RecCod
-                x, y = LastRecCod[0] #LastRecCod.center
+                #x, y = LastRecCod[0] #LastRecCod.center
+            print("Resta entre centros en x: ", abs(Rx - x))
+            print("Resta entre centros en y: ", abs(Ry - y))
     return vector
 
-def getRobot_fromSnapshot(RecContorno):
+def getRobot_fromSnapshot(RecContorno, snap):
+    GlobalHeigth,GlobalWidth = snap.shape[:2]
+    print("Ingresando a getRobot_fromSnapshot")
     robot = Robot()
-    height_cont, width_cont = RecContorno[1]
+    #print("Primer valor del contorno: ", RecContorno[1] )
+    height_cont,width_cont = RecContorno[1] #height_cont
     tempWiMitad = SQRTDE2 * width_cont / 2
     tempHeMitad = SQRTDE2 * height_cont / 2
     Cx, Cy = RecContorno[0]
     angle = RecContorno[2]
 
     EscalaColores = []
-    rows = [(Cy - tempHeMitad), (Cy + tempHeMitad)]
-    cols = [(Cx - tempWiMitad), (Cx + tempWiMitad)]
+    rows = [int(Cy - tempHeMitad), int(Cy + tempHeMitad)]
+    cols = [int(Cx - tempWiMitad), int(Cx + tempWiMitad)]
+
+
+    #print(RecContorno)
     
-    SemiCropCod = RecContorno[rows[0]:rows[1], cols[0]:cols[1]]
+    SemiCropCod = snap[rows[0]:rows[1], cols[0]:cols[1]]
+    SemiCropCod_Heigth,SemiCropCod_Width = SemiCropCod.shape[:2]
+    temp_matRotated = cv.getRotationMatrix2D((Cx,Cy), angle, 1.0)
+    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width), flags=cv.INTER_CUBIC)
     
-    temp_matRotated = cv.getRotationMatrix2D([Cx,Cy], angle, 1.0)
-    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (len(rows), len(cols)), flags=cv.INTER_CUBIC)
-    
-    Final_Crop_rotated = cv.getRectSubPix(image_rotated, len(RecContorno), (len(rows)/2.0, len(cols)/2.0))
+    Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (len(rows)/2.0, len(cols)/2.0))
     
     
     Final_Crop_rotated = cv.cvtColor(Final_Crop_rotated, cv.COLOR_BGR2GRAY)
-    height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated[1]
+    cv.imshow("Init", SemiCropCod) #se ve bien
+    cv.imshow("Rotated", image_rotated) #aqui esta el primer error.
+    cv.imshow("Codigo", Final_Crop_rotated)
+    cv.waitKey(0)
+    height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
     
     #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negro
-    ColorSupIzq = Final_Crop_rotated(height_Final_Rotated * 1 / 4, width_Final_Rotated * 1 / 4)
-    ColorSupDer = Final_Crop_rotated(height_Final_Rotated * 1 / 4, width_Final_Rotated * 3 / 4)
-    ColorInfDer = Final_Crop_rotated(height_Final_Rotated * 3 / 4, width_Final_Rotated * 3 / 4)
-    ColorInfIzq = Final_Crop_rotated(height_Final_Rotated * 3 / 4, width_Final_Rotated * 1 / 4)
-    EscalaColores[0] = EscalaColores[1] = EscalaColores[2] = ColorSupIzq
+    ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 1 / 4)]
+    ColorSupDer = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 3 / 4)]
+    ColorInfDer = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 3 / 4)]
+    ColorInfIzq = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 1 / 4)]
+    for i in range(0,3):
+        EscalaColores.append(ColorSupIzq)
+
     tempFloatTheta = angle
     
 
@@ -109,24 +139,25 @@ def getRobot_fromSnapshot(RecContorno):
     else:
         EscalaColores[0] = ColorInfIzq
 
-    cv.imshow("Codigo", Final_Crop_rotated)
-    cv.waitKey(0)
     
-    Matriz_color = []
-    
-    for u in range (0,4):
+    Matriz_color = np.zeros(shape=(3,3))
+
+
+    for u in range (1,4):
         for v in range (1,4):
-            Val_Color_temp = Final_Crop_rotated((height_Final_Rotated * u / 4), (width_Final_Rotated * v / 4))
+            Val_Color_temp = Final_Crop_rotated[int(height_Final_Rotated * u / 4), int(width_Final_Rotated * v / 4)]
             Matriz_color[u - 1][v - 1] = Val_Color_temp
+            print(Val_Color_temp)
             if ((Val_Color_temp < EscalaColores[2] - GlobalColorDifThreshold) and (Val_Color_temp > EscalaColores[0] + GlobalColorDifThreshold)):
                 EscalaColores[1] = Val_Color_temp
-    
+    print(Matriz_color)
     #Extraemos el codigo binario
     CodigoBinString = ""
     for  u in range (0, 3):
         for v in range(0,3):
             if ((u == 0) and (v == 0)):
                 CodigoBinString = CodigoBinString;
+                print(EscalaColores[1] - GlobalColorDifThreshold)
             elif ((Matriz_color[u][v] > EscalaColores[1] - GlobalColorDifThreshold) and (Matriz_color[u][v] < EscalaColores[1] + GlobalColorDifThreshold)):
                 CodigoBinString = CodigoBinString + "1"
             else:
@@ -134,6 +165,7 @@ def getRobot_fromSnapshot(RecContorno):
 
 
     #Guardamos los valores
+    print("Codibo binario: ",CodigoBinString)
     tempID =int(CodigoBinString, 2)
     tempFloatX = (anchoMesa / GlobalWidth) * Cx;
     tempFloatY = (largoMesa / GlobalHeigth) * Cy;
@@ -141,8 +173,16 @@ def getRobot_fromSnapshot(RecContorno):
     tempY = int(tempFloatY)
     tempTheta = int(tempFloatTheta)
     pos = [tempX, tempY, tempTheta]
+    print("ID temporal",tempID)
+    print(pos)
+    print(" ")
+    print("Final_Crop_rotated: ", Final_Crop_rotated)
+    #cv.imshow("Codigo", Final_Crop_rotated)
+    #cv.waitKey(0)
     return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
 
 
+Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
+getRobot_Code(Snapshot, MyGlobalCannyInf, MyGlobalCannySup, 7.0)
 
     
