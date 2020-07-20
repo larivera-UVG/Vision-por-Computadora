@@ -88,7 +88,25 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     return vector
 
 def getRobot_fromSnapshot(RecContorno, snap):
-    GlobalHeigth,GlobalWidth = snap.shape[:2]
+    
+    # Obtiene el centro, el tama;o y el angulo del contorno.
+    center, size, theta = RecContorno
+
+    # Angle correction
+    if theta < -45:
+        theta += 90
+
+    # Convert to int 
+    center, size = tuple(map(int, center)), tuple(map(int, size))
+    print("Este es el nuevo centro", center)
+
+    
+    GlobalWidth = snap.shape[1]
+    GlobalHeigth = snap.shape[0]
+    
+    #---------------------------------------------
+    #GlobalHeigth,GlobalWidth = snap.shape[:2]
+
     print("Ingresando a getRobot_fromSnapshot")
     robot = Robot()
     #print("Primer valor del contorno: ", RecContorno[1] )
@@ -104,8 +122,8 @@ def getRobot_fromSnapshot(RecContorno, snap):
     
     rows = [int(Cy - tempHeMitad), int(Cy + tempHeMitad)]
     cols = [int(Cx - tempWiMitad), int(Cx + tempWiMitad)]
-    rows_1 = np.array([int(Cy - tempHeMitad), int(Cy + tempHeMitad)])
-    cols_1 = np.array([int(Cx - tempWiMitad), int(Cx + tempWiMitad)])
+    #rows_1 = np.array([int(Cy - tempHeMitad), int(Cy + tempHeMitad)])
+    #cols_1 = np.array([int(Cx - tempWiMitad), int(Cx + tempWiMitad)])
 
 
     #print(RecContorno)
@@ -115,16 +133,18 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #Center_rotate_x = len(rows)
     #Center_rotate_y = len(cols)
 
-    temp_matRotated = cv.getRotationMatrix2D((np.size(rows_1)/2,np.size(cols_1)/2), angle, 1)
+    #Obtener matriz de rotacion de la imagen
+    M = cv.getRotationMatrix2D( center, theta, 1)
     
-    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width), flags = cv.INTER_CUBIC)
+    dst = cv.warpAffine(snap, M, (GlobalWidth, GlobalHeigth))
+    #image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width), flags = cv.INTER_CUBIC)
     
-    Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (np.size(rows_1)/2.0, np.size(cols_1)/2.0))
+    #Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (np.size(rows_1)/2.0, np.size(cols_1)/2.0))
     
     
-    Final_Crop_rotated = cv.cvtColor(Final_Crop_rotated, cv.COLOR_BGR2GRAY)
+    Final_Crop_rotated = cv.getRectSubPix(dst, size, center)
     cv.imshow("Init", SemiCropCod) #se ve bien
-    cv.imshow("Rotated", image_rotated) #aqui esta el primer error.
+    cv.imshow("Rotated", dst) #aqui esta el primer error.
     cv.imshow("Codigo", Final_Crop_rotated)
     cv.waitKey(0)
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
