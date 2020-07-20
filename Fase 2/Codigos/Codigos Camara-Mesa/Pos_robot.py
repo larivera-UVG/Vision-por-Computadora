@@ -154,11 +154,18 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #cv.waitKey(0)
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
     
-    #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negro
+    #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
     ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 1 / 4)]
+    ColorSupIzq = (ColorSupIzq[0] + ColorSupIzq [1] + ColorSupIzq[2])/3
+    
     ColorSupDer = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 3 / 4)]
+    ColorSupDer = (ColorSupDer[0] + ColorSupDer [1] + ColorSupDer[2])/3
+    
     ColorInfDer = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 3 / 4)]
+    ColorInfDer = (ColorInfDer[0] + ColorInfDer [1] + ColorInfDer[2])/3
+    
     ColorInfIzq = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 1 / 4)]
+    ColorInfIzq = (ColorInfIzq[0] + ColorInfIzq [1] + ColorInfIzq[2])/3
     
     
     for i in range(0,3):
@@ -172,28 +179,28 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #print(ColorInfIzq)
     
     #print(Final_Crop_rotated)
-    if ((ColorSupDer.any() > ColorSupIzq.any()) and (ColorSupDer.any() > ColorInfDer.any()) and (ColorSupDer.any() > ColorInfIzq.any())):
+    if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
         print("90 en contra del reloj")
         Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_COUNTERCLOCKWISE)
         tempFloatTheta = tempFloatTheta + 90
         EscalaColores[2] = ColorSupDer
-    elif ((ColorInfDer.any() > ColorSupIzq.any()) and (ColorInfDer/any() > ColorSupDer.any()) and (ColorInfDer.any() > ColorInfIzq.any())):
+    elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer> ColorSupDer) and (ColorInfDer > ColorInfIzq)):
         print("rotado 180")
         Final_Crop_rotated = cv.rotate(Final_Crop_rotated,cv.ROTATE_180);
         tempFloatTheta = tempFloatTheta + 180;
         EscalaColores[2] = ColorInfDer
         
-    elif ((ColorInfIzq.any() > ColorSupIzq.any()) and (ColorInfIzq.any() > ColorInfDer.any()) and (ColorInfIzq.any() > ColorSupDer.any())):
+    elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
         print("90 a favor del reloj")
         Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_CLOCKWISE)
         tempFloatTheta = tempFloatTheta - 90
         EscalaColores[2] = ColorInfIzq
         
-    if ((ColorSupIzq.any() <= ColorSupDer.any()) and (ColorSupIzq .any() <= ColorInfDer.any()) and (ColorSupIzq.any() <= ColorInfIzq.any())):
+    if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
         EscalaColores[0] = ColorSupIzq
-    elif ((ColorSupDer.any() <= ColorSupIzq.any()) and (ColorSupDer.any() <= ColorInfDer.any()) and (ColorSupDer.any() <= ColorInfIzq.any())):
+    elif ((ColorSupDer <= ColorSupIzq) and (ColorSupDer <= ColorInfDer) and (ColorSupDer <= ColorInfIzq)):
         EscalaColores[0] = ColorSupDer
-    elif ((ColorInfDer.any() <= ColorSupDer.any()) and (ColorInfDer.any() <= ColorSupIzq.any()) and (ColorInfDer.any() <= ColorInfIzq.any())):
+    elif ((ColorInfDer <= ColorSupDer) and (ColorInfDer <= ColorSupIzq) and (ColorInfDer <= ColorInfIzq)):
         EscalaColores[0] = ColorInfDer
     else:
         EscalaColores[0] = ColorInfIzq
@@ -208,10 +215,11 @@ def getRobot_fromSnapshot(RecContorno, snap):
         for v in range (1,4):
             #print("Esto va antes del val_color",Final_Crop_rotated[int(height_Final_Rotated * u / 4), int(width_Final_Rotated * v / 4)])
             Val_Color_temp = Final_Crop_rotated[int(height_Final_Rotated * u / 4), int(width_Final_Rotated * v / 4)]
+            Val_Color_temp = (Val_Color_temp[0] + Val_Color_temp [1] + Val_Color_temp [2])/3
             print("Val_Color_temp: ",Val_Color_temp)
-            Matriz_color[u - 1][v - 1] = Val_Color_temp[0]
+            Matriz_color[u - 1][v - 1] = Val_Color_temp
             #print(Val_Color_temp)
-            if ((Val_Color_temp.any() < EscalaColores[2].any() - GlobalColorDifThreshold) and (Val_Color_temp.any() > EscalaColores[0].any() + GlobalColorDifThreshold)):
+            if ((Val_Color_temp < EscalaColores[2] - GlobalColorDifThreshold) and (Val_Color_temp > EscalaColores[0] + GlobalColorDifThreshold)):
                 EscalaColores[1] = Val_Color_temp
     print(Matriz_color)
     #Extraemos el codigo binario
@@ -221,7 +229,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
             if ((u == 0) and (v == 0)):
                 CodigoBinString = CodigoBinString;
                 print(EscalaColores[1] - GlobalColorDifThreshold)
-            elif ((Matriz_color[u][v] > EscalaColores[1].any() - GlobalColorDifThreshold) and (Matriz_color[u][v] < EscalaColores[1].any() + GlobalColorDifThreshold)):
+            elif ((Matriz_color[u][v] > EscalaColores[1] - GlobalColorDifThreshold) and (Matriz_color[u][v] < EscalaColores[1] + GlobalColorDifThreshold)):
                 CodigoBinString = CodigoBinString + "1"
             else:
                 CodigoBinString = CodigoBinString + "0"
@@ -237,9 +245,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
     tempTheta = int(tempFloatTheta)
     pos = [tempX, tempY, tempTheta]
     print("ID temporal",tempID)
-    print(pos)
     print(" ")
-
 
     return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
 
