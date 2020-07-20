@@ -19,8 +19,8 @@ MyPI = 3.14159265
 anchoMesa = 14.5
 largoMesa = 28.0
 
-GlobalCodePixThreshold = 300
-GlobalColorDifThreshold = 50
+GlobalCodePixThreshold = 270
+GlobalColorDifThreshold = 20
 
 
 MyGlobalCannyInf = 94
@@ -31,10 +31,16 @@ def getRobot_Code(snapshot, Canny_inf, Canny_sup, Medida_cod):
     vector = vector_robot()
     blur_size = (3,3)
     height_im, width_im = snapshot.shape[:2]
+    
     PixCodeSize = Medida_cod * width_im / anchoMesa
+    
     gray_img = cv.cvtColor(snapshot, cv.COLOR_BGR2GRAY)
     gray_blur_img = cv.blur(gray_img, blur_size)
     canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup)
+    
+    #cv.imshow("Canny", canny_img)
+    #cv.waitKey(0)
+    
     image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
     canny_img = cv.blur(canny_img, blur_size)
     #print("PixCodeSize: ", PixCodeSize)
@@ -77,24 +83,33 @@ def getRobot_fromSnapshot(RecContorno, snap):
     robot = Robot()
     #print("Primer valor del contorno: ", RecContorno[1] )
     height_cont,width_cont = RecContorno[1] #height_cont
+    
     tempWiMitad = SQRTDE2 * width_cont / 2
     tempHeMitad = SQRTDE2 * height_cont / 2
     Cx, Cy = RecContorno[0]
     angle = RecContorno[2]
+    print(angle)
 
     EscalaColores = []
+    
     rows = [int(Cy - tempHeMitad), int(Cy + tempHeMitad)]
     cols = [int(Cx - tempWiMitad), int(Cx + tempWiMitad)]
+    rows_1 = np.array([int(Cy - tempHeMitad), int(Cy + tempHeMitad)])
+    cols_1 = np.array([int(Cx - tempWiMitad), int(Cx + tempWiMitad)])
 
 
     #print(RecContorno)
     
     SemiCropCod = snap[rows[0]:rows[1], cols[0]:cols[1]]
     SemiCropCod_Heigth,SemiCropCod_Width = SemiCropCod.shape[:2]
-    temp_matRotated = cv.getRotationMatrix2D((Cx,Cy), angle, 1.0)
-    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width), flags=cv.INTER_CUBIC)
+    #Center_rotate_x = len(rows)
+    #Center_rotate_y = len(cols)
+
+    temp_matRotated = cv.getRotationMatrix2D((np.size(rows_1)/2,np.size(cols_1)/2), angle, 1)
     
-    Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (len(rows)/2.0, len(cols)/2.0))
+    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width))
+    
+    Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (np.size(rows_1)/2.0, np.size(cols_1)/2.0))
     
     
     Final_Crop_rotated = cv.cvtColor(Final_Crop_rotated, cv.COLOR_BGR2GRAY)
