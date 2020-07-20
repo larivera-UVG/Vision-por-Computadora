@@ -245,6 +245,6 @@ def getRobot_fromSnapshot(RecContorno, snap):
 
 
 Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
-getRobot_Code(Snapshot, MyGlobalCannyInf, MyGlobalCannySup, 7.0)
+getRobot_Code(Snapshot, MyGlobalCannyInf, MyGlobalCannySup, 2.99)
 
     
