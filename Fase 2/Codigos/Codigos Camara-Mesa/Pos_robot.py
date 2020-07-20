@@ -39,8 +39,8 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3)
 
     
-    #cv.imshow("Canny", canny_img)
-    #cv.waitKey(0)
+    cv.imshow("Canny", canny_img)
+    cv.waitKey(0)
     
     image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     #canny_img = cv.blur(canny_img, blur_size)
