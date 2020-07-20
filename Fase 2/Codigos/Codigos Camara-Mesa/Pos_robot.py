@@ -19,8 +19,8 @@ MyPI = 3.14159265
 anchoMesa = 14.5
 largoMesa = 28.0
 
-GlobalCodePixThreshold = 270
-GlobalColorDifThreshold = 20
+GlobalCodePixThreshold = 260
+GlobalColorDifThreshold = 1
 
 
 MyGlobalCannyInf = 94
@@ -61,7 +61,7 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
         #print("Resta entre heigth: ",abs(height_rec - PixCodeSize))
         a = 0
         
-        print("A punto de entrar al primer if")
+        #print("A punto de entrar al primer if")
         if (((abs(width_rec - PixCodeSize) < GlobalCodePixThreshold) and (abs(height_rec - PixCodeSize) < GlobalCodePixThreshold))):
             print("ingresando al pirmer if")
             print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
@@ -155,17 +155,17 @@ def getRobot_fromSnapshot(RecContorno, snap):
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
     
     #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
-    ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 1 / 4)]
-    ColorSupIzq = (ColorSupIzq[0] + ColorSupIzq [1] + ColorSupIzq[2])/3
+    ColorSupIzq_1 = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 1 / 4)]
+    ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
     
-    ColorSupDer = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 3 / 4)]
-    ColorSupDer = (ColorSupDer[0] + ColorSupDer [1] + ColorSupDer[2])/3
+    ColorSupDer1 = Final_Crop_rotated[int(height_Final_Rotated * 1 / 4), int(width_Final_Rotated * 3 / 4)]
+    ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
     
-    ColorInfDer = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 3 / 4)]
-    ColorInfDer = (ColorInfDer[0] + ColorInfDer [1] + ColorInfDer[2])/3
+    ColorInfDer1 = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 3 / 4)]
+    ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
     
-    ColorInfIzq = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 1 / 4)]
-    ColorInfIzq = (ColorInfIzq[0] + ColorInfIzq [1] + ColorInfIzq[2])/3
+    ColorInfIzq1 = Final_Crop_rotated[int(height_Final_Rotated * 3 / 4), int(width_Final_Rotated * 1 / 4)]
+    ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
     
     
     for i in range(0,3):
@@ -215,20 +215,20 @@ def getRobot_fromSnapshot(RecContorno, snap):
         for v in range (1,4):
             #print("Esto va antes del val_color",Final_Crop_rotated[int(height_Final_Rotated * u / 4), int(width_Final_Rotated * v / 4)])
             Val_Color_temp = Final_Crop_rotated[int(height_Final_Rotated * u / 4), int(width_Final_Rotated * v / 4)]
-            Val_Color_temp = (Val_Color_temp[0] + Val_Color_temp [1] + Val_Color_temp [2])/3
-            print("Val_Color_temp: ",Val_Color_temp)
+            Val_Color_temp = (Val_Color_temp[0] + Val_Color_temp[1] + Val_Color_temp [2])/3
+            #print("Val_Color_temp: ",Val_Color_temp)
             Matriz_color[u - 1][v - 1] = Val_Color_temp
             #print(Val_Color_temp)
             if ((Val_Color_temp < EscalaColores[2] - GlobalColorDifThreshold) and (Val_Color_temp > EscalaColores[0] + GlobalColorDifThreshold)):
                 EscalaColores[1] = Val_Color_temp
-    print(Matriz_color)
+    #print(Matriz_color)
     #Extraemos el codigo binario
     CodigoBinString = ""
     for  u in range (0, 3):
         for v in range(0,3):
             if ((u == 0) and (v == 0)):
                 CodigoBinString = CodigoBinString;
-                print(EscalaColores[1] - GlobalColorDifThreshold)
+                #print(EscalaColores[1] - GlobalColorDifThreshold)
             elif ((Matriz_color[u][v] > EscalaColores[1] - GlobalColorDifThreshold) and (Matriz_color[u][v] < EscalaColores[1] + GlobalColorDifThreshold)):
                 CodigoBinString = CodigoBinString + "1"
             else:
