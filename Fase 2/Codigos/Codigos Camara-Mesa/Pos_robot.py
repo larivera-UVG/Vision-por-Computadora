@@ -48,8 +48,10 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     #a = 0
     LastRecCod = 0
     
-    for i in range (0, len(contour) - 1):
-        RecCod = cv.minAreaRect(contour[i])
+    for c in range (0, len(contour) - 1):
+        print(len(contour) - 1)
+        print("Este es el contador",c)
+        RecCod = cv.minAreaRect(contour[c])
         #Rx, Ry = RecCod[0] #SingleRecCod.center
         #print("Contornos", RecCod[0])
         #print("Contornos", RecCod[0][0])
@@ -57,7 +59,9 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
         #print("GolbalCodePix: ", GlobalCodePixThreshold)
         #print("Resta entre width y PixCode: ",abs(width_rec - PixCodeSize))
         #print("Resta entre heigth: ",abs(height_rec - PixCodeSize))
+        a = 0
         
+        print("A punto de entrar al primer if")
         if (((abs(width_rec - PixCodeSize) < GlobalCodePixThreshold) and (abs(height_rec - PixCodeSize) < GlobalCodePixThreshold))):
             print("ingresando al pirmer if")
             print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
@@ -67,12 +71,13 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
                 #LastRecCod = RecCod
             #    x, y = LastRecCod[0] #LastRecCod.center
                 
-            if i == 0:
-                #a = 1
+            if c == 0 or a == 0:
+                a = 1
                 print("ingresando al segundo if")
                 vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
                 LastRecCod = RecCod
                 #x, y = LastRecCod[0] # LastRecCod.center
+                print(RecCod[0][0])
             elif (((abs(RecCod[0][0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(RecCod[1][0] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
                 print("ingresando al segundo if, condicion else")
                 vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
@@ -105,14 +110,14 @@ def getRobot_fromSnapshot(RecContorno, snap):
 
     #print(RecContorno)
     
-    SemiCropCod = snap[rows[0]:rows[1], cols[0]:cols[1]]
+    SemiCropCod = snap[rows[0]:rows[1], cols[0]:cols[1]] #hasta aqui todo bien al 19 de julio del 2020.
     SemiCropCod_Heigth,SemiCropCod_Width = SemiCropCod.shape[:2]
     #Center_rotate_x = len(rows)
     #Center_rotate_y = len(cols)
 
     temp_matRotated = cv.getRotationMatrix2D((np.size(rows_1)/2,np.size(cols_1)/2), angle, 1)
     
-    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width))
+    image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width), flags = cv.INTER_CUBIC)
     
     Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (np.size(rows_1)/2.0, np.size(cols_1)/2.0))
     
