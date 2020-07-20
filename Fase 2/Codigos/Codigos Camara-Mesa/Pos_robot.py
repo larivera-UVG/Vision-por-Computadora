@@ -27,54 +27,59 @@ MyGlobalCannyInf = 94
 MyGlobalCannySup = 350
 #Mat GlobalLambda, GlobalCroppedActualSnap;
 
-def getRobot_Code(snapshot, Canny_inf, Canny_sup, Medida_cod):
+def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     vector = vector_robot()
     blur_size = (3,3)
-    height_im, width_im = snapshot.shape[:2]
+    height_im, width_im = calib_snapshot.shape[:2]
     
     PixCodeSize = Medida_cod * width_im / anchoMesa
     
-    gray_img = cv.cvtColor(snapshot, cv.COLOR_BGR2GRAY)
+    gray_img = cv.cvtColor(calib_snapshot, cv.COLOR_BGR2GRAY)
     gray_blur_img = cv.blur(gray_img, blur_size)
-    canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup)
+    canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3)
+
     
     #cv.imshow("Canny", canny_img)
     #cv.waitKey(0)
     
-    image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_CCOMP, cv.CHAIN_APPROX_SIMPLE)
-    canny_img = cv.blur(canny_img, blur_size)
+    image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    #canny_img = cv.blur(canny_img, blur_size)
     #print("PixCodeSize: ", PixCodeSize)
-    a = 0
-    LastRecCod = []
-    for i in contour:
-        RecCod = cv.minAreaRect(i)
-        Rx, Ry = RecCod[0] #SingleRecCod.center
+    #a = 0
+    LastRecCod = 0
+    
+    for i in range (0, len(contour) - 1):
+        RecCod = cv.minAreaRect(contour[i])
+        #Rx, Ry = RecCod[0] #SingleRecCod.center
+        #print("Contornos", RecCod[0])
+        #print("Contornos", RecCod[0][0])
         height_rec, width_rec = RecCod[1] #SingleRecCod.size
         #print("GolbalCodePix: ", GlobalCodePixThreshold)
         #print("Resta entre width y PixCode: ",abs(width_rec - PixCodeSize))
         #print("Resta entre heigth: ",abs(height_rec - PixCodeSize))
+        
         if (((abs(width_rec - PixCodeSize) < GlobalCodePixThreshold) and (abs(height_rec - PixCodeSize) < GlobalCodePixThreshold))):
             print("ingresando al pirmer if")
             print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
             #LastRecCod = RecCod
             #x, y = LastRecCod[0] #LastRecCod.center
-            if a == 1:
+            #if a == 1:
                 #LastRecCod = RecCod
-                x, y = LastRecCod[0] #LastRecCod.center
+            #    x, y = LastRecCod[0] #LastRecCod.center
                 
-            if a == 0:
-                a = 1
+            if i == 0:
+                #a = 1
                 print("ingresando al segundo if")
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, snapshot))
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
                 LastRecCod = RecCod
-                x, y = LastRecCod[0] # LastRecCod.center
-            elif (((abs(Rx - x) > GlobalCodePixThreshold) or (abs(Ry - y) > GlobalCodePixThreshold))):
+                #x, y = LastRecCod[0] # LastRecCod.center
+            elif (((abs(RecCod[0][0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(RecCod[1][0] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
                 print("ingresando al segundo if, condicion else")
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, snapshot))
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
                 LastRecCod = RecCod
                 #x, y = LastRecCod[0] #LastRecCod.center
-            print("Resta entre centros en x: ", abs(Rx - x))
-            print("Resta entre centros en y: ", abs(Ry - y))
+            #print("Resta entre centros en x: ", abs(Rx - x))
+            #print("Resta entre centros en y: ", abs(Ry - y))
     return vector
 
 def getRobot_fromSnapshot(RecContorno, snap):
@@ -162,7 +167,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         for v in range (1,4):
             Val_Color_temp = Final_Crop_rotated[int(height_Final_Rotated * u / 4), int(width_Final_Rotated * v / 4)]
             Matriz_color[u - 1][v - 1] = Val_Color_temp
-            print(Val_Color_temp)
+            #print(Val_Color_temp)
             if ((Val_Color_temp < EscalaColores[2] - GlobalColorDifThreshold) and (Val_Color_temp > EscalaColores[0] + GlobalColorDifThreshold)):
                 EscalaColores[1] = Val_Color_temp
     print(Matriz_color)
@@ -192,8 +197,8 @@ def getRobot_fromSnapshot(RecContorno, snap):
     print(pos)
     print(" ")
     print("Final_Crop_rotated: ", Final_Crop_rotated)
-    #cv.imshow("Codigo", Final_Crop_rotated)
-    #cv.waitKey(0)
+    cv.imshow("Codigo", Final_Crop_rotated)
+    cv.waitKey(0)
     return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
 
 
