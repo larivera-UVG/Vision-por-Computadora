@@ -16,6 +16,8 @@ Version con Programacion Orientada a Objetos.
 7/07/2020: Version 0.2.0 -- Se ajustan algunos metodos, se agrega un init mejorado 
                             y una captura de fotograma mejor para incluirlo en la GUI.
                             Se agrega el metodo de la generacion de codigos.
+                            
+12/07/2020: Version 0.3.0 -- Se agrega la clase de los robots para la deteccion de sus poses y codigos.
 
 ***********************
 Anotaciones iniciales:
