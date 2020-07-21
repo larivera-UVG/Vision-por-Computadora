@@ -14,6 +14,8 @@ Proximamente: detectar la pose de los robots.
                            ademas de corregir su posicion en la GUI
 12/07/2020: Version 0.2.0 -- Se agrega el boton para la toma de pose de datos, ademas de las funciones 
                             para reconocer la posicion de los robots. Fallas aun en la deteccion del codigo.
+12/07/2020: Version 0.2.1 -- Pruebas preeliminares de rotacion del codigo correctas. Se realizaran mas pruebas
+                            para verificar que funcione. Proximo pasos: mejorar la deteccion del codigo.                          
 """
 
 
@@ -244,12 +246,13 @@ def getRobot_fromSnapshot(RecContorno, snap):
         print(" ") 
         cv.imshow("supderecho",Final_Crop_rotated[15:45, 70:105])
         
-        ColorInfDer = sum(sum(sum(Final_Crop_rotated[70:105, 70:105])))
+        ColorInfDer = sum(sum(sum(Final_Crop_rotated[80:110, 75:105])))
         #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
         print("inferior derecho")
         print(ColorInfDer)
         print(" ") 
-        cv.imshow("ColorInfDer1",Final_Crop_rotated[80:110, 70:105])
+        cv.imshow("ColorInfDer1",Final_Crop_rotated[80:110, 75:105])
+        
         print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
         ColorInfIzq = sum(sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 55):int(height_Final_Rotated*1/2 + 30), int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 40)])))
         #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
