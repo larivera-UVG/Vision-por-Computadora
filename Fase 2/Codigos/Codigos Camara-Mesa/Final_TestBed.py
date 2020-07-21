@@ -12,6 +12,8 @@ Proximamente: detectar la pose de los robots.
                             Se agrega el boton de limpiar pantallas generadas por OpenCV
 7/07/2020: Vesion 0.1.1 -- Se agrega un textbox para el numero del generador de codigo, 
                            ademas de corregir su posicion en la GUI
+12/07/2020: Version 0.2.0 -- Se agrega el boton para la toma de pose de datos, ademas de las funciones 
+                            para reconocer la posicion de los robots. Fallas aun en la deteccion del codigo.
 """
 
 
