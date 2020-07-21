@@ -30,7 +30,7 @@ n = 50 #para el boton1 de capturar
 n2 = 50 #para el boton3 del codigo
 
 Canny_Factor = 2.5 #factor de multiplicacion para el limite superior de Canny
-Calib_param = 40 #Factor de calibracion para Canny, este factor se puede variar
+Calib_param = 80 #Factor de calibracion para Canny, este factor se puede variar
                #para una mejor deteccion de los bordes circulares.
 Treshold = 1
 
@@ -54,12 +54,12 @@ MyPI = 3.14159265
 anchoMesa = 14.5
 largoMesa = 28.0
 
-GlobalCodePixThreshold = 210
-GlobalColorDifThreshold = 1
+GlobalCodePixThreshold = 80
+GlobalColorDifThreshold = 10
 
 
-MyGlobalCannyInf = 97
-MyGlobalCannySup = 380
+MyGlobalCannyInf = 185
+MyGlobalCannySup = 330
 Code_size = 3
 #Mat GlobalLambda, GlobalCroppedActualSnap;
 
@@ -79,10 +79,10 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3)
 
     
-    #cv.imshow("Canny", canny_img)
+    cv.imshow("Canny", canny_img)
     #cv.waitKey(0)
     
-    image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
     #cv.drawContours(calib_snapshot, contour,  -1, (255,0,0), 2) #dibuja los contornos
     #canny_img = cv.blur(canny_img, blur_size)
     #print("PixCodeSize: ", PixCodeSize)
@@ -90,12 +90,12 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     LastRecCod = 0
     
     a = 0
-    for c in range (0, len(contour) - 1):
+    print("Este es el maximo del contador",len(contour) - 1)
+    for c in contour:
         print(" ")
         print("-----------------")
-        print("Este es el maximo del contador",len(contour) - 1)
-        print("Este es el contador",c)
-        RecCod = cv.minAreaRect(contour[c])
+        print("Este es el contador",a)
+        RecCod = cv.minAreaRect(c)
         #cv.drawContours(calib_snapshot, contour[c],  -1, (10*c + 100,15*c,20*c + 20), 2) #dibuja los contornos
         #cv.waitKey(0)
         #Rx, Ry = RecCod[0] #SingleRecCod.center
@@ -104,51 +104,88 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
         center, size, theta = RecCod #SingleRecCod.size
         center, size = tuple(map(int, center)), tuple(map(int, size))
         #print(center)
-        print("GolbalCodePix: ", GlobalCodePixThreshold)
+        print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
+        print("size[0]: ", size[0])
+        print("size[1]: ", size[1])
         print("Resta entre width y PixCode: ",abs(size[0] - PixCodeSize))
         print("Resta entre heigth: ",abs(size[1] - PixCodeSize))
         print("-----------------")
         print(" ")
         
         #print("A punto de entrar al primer if")
+        if LastRecCod  != 0:
+            print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
+            print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
+            
+        if (size[0] > 35 and size[1] > 35):
+            #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
+            #cv.waitKey(0)
+            if a == 0:
+                a = 1
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img))
+                LastRecCod = RecCod
+                
+            elif (((abs(center[0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(center[1] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
+                print("ingresando al segundo if, condicion else")
+                print("-----------------")
+                print(" ")
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img))
+                LastRecCod = RecCod
+                
+        """
         if (((abs(size[1] - PixCodeSize) < GlobalCodePixThreshold) and (abs(size[0] - PixCodeSize) < GlobalCodePixThreshold))):
             print(" ")
             print("-----------------")
-            print("ingresando al pirmer if")
+            print("ingresando al primer if")
+
+                
+            if a == 0:
+                print("Entre la primera vez de a")
+            elif a == 1:
+                print("entre la segunda vez de a")
+    
             #print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
             #LastRecCod = RecCod
             #x, y = LastRecCod[0] #LastRecCod.center
             #if a == 1:
                 #LastRecCod = RecCod
             #    x, y = LastRecCod[0] #LastRecCod.center
-            if c > 0:
-                print(abs(center[0] - LastRecCod[0][0]))
-            if c == 0:
+
+            #if a == 0:
                 #a = 1
-                print("ingresando al segundo if")
-                print("-----------------")
-                print(" ")
+             #   print("ingresando al segundo if")
+             #   print("-----------------")
+             #   print(" ")
         
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
-                LastRecCod = RecCod
+             #   vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
+             #   LastRecCod = RecCod
                 #x, y = LastRecCod[0] # LastRecCod.center
                 #print(RecCod[0][0])
+            if LastRecCod  != 0:
+                print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
+                print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
+                
+            if LastRecCod == 0:
+                print("El LastRecCod esta vacio")
+                LastRecCod = RecCod
+                
             elif (((abs(center[0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(center[1] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
                 print("ingresando al segundo if, condicion else")
                 print("-----------------")
                 print(" ")
-        
                 vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
                 LastRecCod = RecCod
+        a+=1
                 #x, y = LastRecCod[0] #LastRecCod.center
             #print("Resta entre centros en x: ", abs(Rx - x))
             #print("Resta entre centros en y: ", abs(Ry - y))
             
-        elif a == 0:
-            a = 1
-            print("ingresando al if con a bandera")
-            vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
-            LastRecCod = RecCod
+        #elif a == 0:
+         #   a = 1
+          #  print("ingresando al if con a bandera")
+           # vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
+            #LastRecCod = RecCod
+        """
             
     return vector
 
@@ -215,57 +252,80 @@ def getRobot_fromSnapshot(RecContorno, snap):
     
     Final_Crop_rotated = cv.getRectSubPix(dst, size, center)
     
-    cv.imshow("Init", SemiCropCod) 
+    #cv.imshow("Init", SemiCropCod) 
     cv.imshow("Rotated", dst) 
     cv.imshow("Final_crop",Final_Crop_rotated)
     #cv.waitKey(0)
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
     #print("la forma del crop", Final_Crop_rotated.shape)
     #print("El crop", Final_Crop_rotated)
-    #print("height_Final_Rotated: ",height_Final_Rotated)
-    #print("width_Final_Rotated: ",width_Final_Rotated)
+    print("height_Final_Rotated: ",height_Final_Rotated)
+    print("width_Final_Rotated: ",width_Final_Rotated)
     
     #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
     print("Final_Crop_rotated.shape[1]", Final_Crop_rotated.shape[1])
     print("Final_Crop_rotated.shape[0]", Final_Crop_rotated.shape[0])
-    if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 44:
     
-        print("int(height_Final_Rotated*1/8)", int(height_Final_Rotated*1/8))
-        ColorSupIzq = sum(sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 15:50])))
-        #print(Final_Crop_rotated[15:45, 15:42])
-        #ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
-        print("Superior izquierdo")
+    a = 0
+    
+    if height_Final_Rotated < 40 and width_Final_Rotated < 40:
+        a = 1
+        ColorSupIzq = 0
+        ColorSupDer = 0
+        ColorInfDer = 0
+        ColorInfIzq = 0
+    
+    if a == 0:
+        temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
+        temp_ColorInfIzq = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
+        temp_ColorSupDer = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
+        temp_ColorInfDer = Final_Crop_rotated[62:90, 70:90]
+        
+        ColorSupIzq = temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)]
+        ColorSupDer = temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)]
+        ColorInfDer = temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)]
+        ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
+        #print("temp_ColorSupIzq.shape", temp_ColorSupIzq.shape)
+        #print("Midle array image gray sup izq: ", temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)])
+        #print("Midle array image gray inf izq: ", temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)])
+        #print("Midle array image gray sup der: ", temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)])
+        #print("Midle array image gray inf der: ", temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)])
+        
+        #if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 44:
+        #print("int(height_Final_Rotated*1/8)", int(height_Final_Rotated*1/8 + 2))
+        #print("Final_Crop_rotated: ", Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+        #cv.imshow("Prueba gris", Final_Crop_rotated[10:20])
+        #ColorSupIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]))
+            #print(Final_Crop_rotated[15:45, 15:42])
+            #ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
+        #print("Superior izquierdo")
         print(ColorSupIzq)
         print(" ") 
-        cv.imshow("ColorSupIzq_1",Final_Crop_rotated[int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 30), 15:50])
-        
-        ColorSupDer = sum(sum(sum(Final_Crop_rotated[15:45, 70:105])))
-        #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
+        cv.imshow("ColorSupIzq_1",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+            
+        #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
+            #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
         print("Superior derecho")
         print(ColorSupDer)
         print(" ") 
-        cv.imshow("supderecho",Final_Crop_rotated[15:45, 70:105])
-        
-        ColorInfDer = sum(sum(sum(Final_Crop_rotated[80:110, 75:105])))
-        #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
+        cv.imshow("supderecho",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
+            
+        #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
+            #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
         print("inferior derecho")
         print(ColorInfDer)
         print(" ") 
-        cv.imshow("ColorInfDer1",Final_Crop_rotated[80:110, 75:105])
-        
+        cv.imshow("ColorInfDer1",Final_Crop_rotated[62:90, 70:90])
+            
         print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
-        ColorInfIzq = sum(sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 55):int(height_Final_Rotated*1/2 + 30), int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 40)])))
-        #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
+        #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
+            #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
         print("inferior izquierdo")
         print(ColorInfIzq)
         print(" ") 
-        cv.imshow("ColorInfIzq1",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 45), int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 35)])
-    else:
-        ColorSupIzq = 0
-        ColorInfIzq = 0
-        ColorSupDer = ColorSupIzq
-        ColorInfDer = ColorInfIzq
-    #print(Final_Crop_rotated.shape[0])
+        cv.imshow("ColorInfIzq1",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])    
+    
+
     
     for i in range(0,3):
         EscalaColores.append(ColorSupIzq)
@@ -286,42 +346,39 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #print(ColorSupIzq)
     #print(ColorInfDer)
     #print(ColorInfIzq)
-    if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 40:
-        a = 0
-        if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
-            print("90 en contra del reloj")
-            print(" ")
-            Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_COUNTERCLOCKWISE)
-            tempFloatTheta = tempFloatTheta + 90
-            EscalaColores[2] = ColorSupDer
-        elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
-            print("rotado 180")
-            print(" ")
-            Final_Crop_rotated = cv.rotate(Final_Crop_rotated,cv.ROTATE_180);
-            tempFloatTheta = tempFloatTheta + 180;
-            EscalaColores[2] = ColorInfDer
+   # if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 40:
+    #a = 0
+    if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
+        print("90 en contra del reloj")
+        print(" ")
+        Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_COUNTERCLOCKWISE)
+        tempFloatTheta = tempFloatTheta + 90
+        EscalaColores[2] = ColorSupDer
+    elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
+        print("rotado 180")
+        print(" ")
+        Final_Crop_rotated = cv.rotate(Final_Crop_rotated,cv.ROTATE_180);
+        tempFloatTheta = tempFloatTheta + 180;
+        EscalaColores[2] = ColorInfDer
             
-        elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
-            print("90 a favor del reloj")
-            print(" ")
-            Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_CLOCKWISE)
-            tempFloatTheta = tempFloatTheta - 90
-            EscalaColores[2] = ColorInfIzq
+    elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
+        print("90 a favor del reloj")
+        print(" ")
+        Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_CLOCKWISE)
+        tempFloatTheta = tempFloatTheta - 90
+        EscalaColores[2] = ColorInfIzq
 
-            
-        if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
-            EscalaColores[0] = ColorSupIzq
-        elif ((ColorSupDer <= ColorSupIzq) and (ColorSupDer <= ColorInfDer) and (ColorSupDer <= ColorInfIzq)):
-            EscalaColores[0] = ColorSupDer
-        elif ((ColorInfDer <= ColorSupDer) and (ColorInfDer <= ColorSupIzq) and (ColorInfDer <= ColorInfIzq)):
-            EscalaColores[0] = ColorInfDer
-        else:
-            EscalaColores[0] = ColorInfIzq
+    cv.imshow("Codigo", Final_Crop_rotated)
+    cv.waitKey(0)        
+    if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
+        EscalaColores[0] = ColorSupIzq
+    elif ((ColorSupDer <= ColorSupIzq) and (ColorSupDer <= ColorInfDer) and (ColorSupDer <= ColorInfIzq)):
+        EscalaColores[0] = ColorSupDer
+    elif ((ColorInfDer <= ColorSupDer) and (ColorInfDer <= ColorSupIzq) and (ColorInfDer <= ColorInfIzq)):
+        EscalaColores[0] = ColorInfDer
     else:
-        EscalaColores[0] = 0
-        EscalaColores[1] = 0
-        EscalaColores[2] = 0
-        a = 1
+        EscalaColores[0] = ColorInfIzq
+    
     
     Matriz_color = np.zeros(shape=(3,3))
 
@@ -337,32 +394,25 @@ def getRobot_fromSnapshot(RecContorno, snap):
             pix1 = int(height_Final_Rotated * u / 4)
             pix2 = int(width_Final_Rotated * v / 4)
             
-            if pix2 > 3:
-                pix2 = 3
-                
-            if a == 1:
-                pass
-            else:
-                Val_Color_temp = Final_Crop_rotated[pix1, pix2]
-                Val_Color_temp = (Val_Color_temp[0] + Val_Color_temp[1] + Val_Color_temp [2])/3
-                #print("Val_Color_temp: ",Val_Color_temp)
-                Matriz_color[u - 1][v - 1] = Val_Color_temp
-                #print(Val_Color_temp)
-                if ((Val_Color_temp < EscalaColores[2] - GlobalColorDifThreshold) and (Val_Color_temp > EscalaColores[0] + GlobalColorDifThreshold)):
-                    EscalaColores[1] = Val_Color_temp
+
+            Val_Color_temp = Final_Crop_rotated[pix1, pix2]
+            #Val_Color_temp = (Val_Color_temp[0] + Val_Color_temp[1] + Val_Color_temp [2])/3
+            #print("Val_Color_temp: ",Val_Color_temp)
+            Matriz_color[u - 1][v - 1] = Val_Color_temp
+            #print(Val_Color_temp)
+            if ((Val_Color_temp < EscalaColores[2] - GlobalColorDifThreshold) and (Val_Color_temp > EscalaColores[0] + GlobalColorDifThreshold)):
+                EscalaColores[1] = Val_Color_temp
                     
     #print(Matriz_color)
     #Extraemos el codigo binario
     CodigoBinString = ""
-    
-    if a == 1:
-        pass
-    else:
-        for  u in range (0, 3):
-            for v in range(0,3):
-                print("Matriz_color[u][v]: ",Matriz_color[u][v])
-                #print("EscalaColores[1] - GlobalColorDifThreshold: ",EscalaColores[1] - GlobalColorDifThreshold)
-                #print("EscalaColores[1] + GlobalColorDifThreshold: ", EscalaColores[1] + GlobalColorDifThreshold)
+
+    for  u in range (0, 3):
+        for v in range(0,3):
+            print("Matriz_color[u][v]: ",Matriz_color[u][v])
+            #print("EscalaColores[1] - GlobalColorDifThreshold: ",EscalaColores[1] - GlobalColorDifThreshold)
+            #print("EscalaColores[1] + GlobalColorDifThreshold: ", EscalaColores[1] + GlobalColorDifThreshold)
+            if a == 0:
                 if ((u == 0) and (v == 0)):
                     CodigoBinString = CodigoBinString
                     #print("Matriz_color[u][v]: ",Matriz_color[u][v])
@@ -373,11 +423,9 @@ def getRobot_fromSnapshot(RecContorno, snap):
                 else:
                     CodigoBinString = CodigoBinString + "0"
 
-    if a == 1:
-        tempID = 0
-        pos = [0,0,0]
-    else:
-        #Guardamos los valores
+
+    #Guardamos los valores
+    if a == 0:
         print("Codibo binario: ",CodigoBinString)
         tempID =int(CodigoBinString, 2)
         tempFloatX = (anchoMesa / GlobalWidth) * Cx;
@@ -389,9 +437,15 @@ def getRobot_fromSnapshot(RecContorno, snap):
         print("ID temporal",tempID)
         print("-------------------")
         print(" ")
+    else:
+        tempID = 0
+        tempFloatX = (anchoMesa / GlobalWidth) * Cx;
+        tempFloatY = (largoMesa / GlobalHeigth) * Cy;
+        tempX = int(tempFloatX)
+        tempY = int(tempFloatY)
+        tempTheta = int(tempFloatTheta)
+        pos = [0, 0, 0]
         
-        cv.imshow("Codigo", Final_Crop_rotated)
-        cv.waitKey(0)
 
     return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
 
