@@ -16,6 +16,8 @@ Version con Programacion Orientada a Objetos.
 7/07/2020: Version 0.2.0 -- Se ajustan algunos metodos, se agrega un init mejorado 
                             y una captura de fotograma mejor para incluirlo en la GUI.
                             Se agrega el metodo de la generacion de codigos.
+                            
+12/07/2020: Version 0.3.0 -- Se agrega la clase de los robots para la deteccion de sus poses y codigos.
 
 ***********************
 Anotaciones iniciales:
@@ -153,10 +155,10 @@ def get_esquinas(frame, canny_value, pixelTreshold):
                 
         #PARA DEBUG:
             
-        cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
+        #cv.drawContours(frame, contour_list,  -1, (255,0,0), 2) #dibuja los contornos
         #print(frame.shape)
-        cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
-        cv.waitKey(1)
+        #cv.imshow('Objects Detected',frame) #muestra en la imagen original donde estas los circulos encontrados
+        #cv.waitKey(1)
         #cv.circle(img,center,radius,(0,255,0),2)
         #cv.circle(img,center,radius,(0,255,0),2)
         #(x, y), (width, height), angle = rect
@@ -397,14 +399,24 @@ class camara():
         None.
 
         """
+        img_counter = 0
         Esqui = get_esquinas(Snapshot, Calib_param, Treshold)
         Matrix = getHomogenea(Esqui)
         MyWiHe = getWiHe(Esqui)
         CaliSnapshot = cv.warpPerspective(Snapshot, Matrix, (MyWiHe[0],  MyWiHe[1]))
+        
+        
+        edge_img = "opencv_CalibSnapshot_{}.png".format(img_counter) #Formato del nombre de la imagen.
+                                                    #Guarda el numero de frame (foto) que se tomo.
+        cv.imwrite(edge_img, CaliSnapshot) #Guarda la foro
+        print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
+        img_counter += 1 #aumenta el contador. 
+        #cv.imshow("prueba", edge)
         cv.imshow("Output Image", CaliSnapshot)
         cv.waitKey(1)
         
     def Generar_codigo(self,val):
+        img_counter = 0
         """
         
 
@@ -453,5 +465,226 @@ class camara():
                 k = k + 1
                 cv.imshow('cod', Cod)
                 cv.waitKey(1)
+                edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
+                                                    #Guarda el numero de frame (foto) que se tomo.
+                cv.imwrite(edge_img, Cod) #Guarda la foro
+                print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
+                img_counter += 1 #aumenta el contador. 
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
+        
+class Robot():
+    """
+    """
+        
+    def set_robot(self, _id, _ip, _pos):
+        """
+        
+
+        Parameters
+        ----------
+        _id : TYPE
+            DESCRIPTION.
+        _ip : TYPE
+            DESCRIPTION.
+        _pos : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        self.id_robot = _id
+        self.ip = _ip
+        self.x = _pos[0]
+        self.y = _pos[1]
+        self.theta = _pos[2]
+        self.vel_left = 0
+        self.vel_right = self.vel_left
+        self.robot = [self.id_robot,self.ip,self.x,self.y,self.theta,self.vel_right,self.vel_left]
+        return self.robot
+        
+    def set_IP(self,ip):
+        """
+        
+
+        Parameters
+        ----------
+        ip : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        ip : TYPE
+            DESCRIPTION.
+
+        """
+        self.ip = ip
+        return ip
+    
+    def set_pos(self, pos):
+        """
+        
+
+        Parameters
+        ----------
+        pos : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.x = pos[0]
+        self.y = pos[1]
+        self.theta = pos[2]
+        
+    def get_pos(self):
+        """
+        
+
+        Returns
+        -------
+        Pos : TYPE
+            DESCRIPTION.
+
+        """
+        Pos = []
+        Pos.append(self.x)
+        Pos.append(self.y)
+        Pos.append(self.theta)
+        return Pos
+        
+    def get_IP (self):
+        """
+        
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        return self.ip
+    
+    def set_speed(self, vel):
+        """
+        
+
+        Parameters
+        ----------
+        vel : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.vel_right = vel[0]
+        self.vel_left = vel[1]
+        
+    def get_speed(self):
+        """
+        
+
+        Returns
+        -------
+        speed : TYPE
+            DESCRIPTION.
+
+        """
+        speed = []
+        speed.append(self.vel_right)
+        speed.append(self.vel_left)
+        return speed
+    
+    
+class vector_robot():
+    """
+    """
+    #robot_vector_u = Robot()
+    def __init__(self):
+        self.Robot_vector = []
+        
+    
+    def agregar_robot(self,vector_robot):
+        """
+        
+
+        Parameters
+        ----------
+        vector_robot : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        #self.class_robot = class_robot
+        #class_robot.id_robot = self
+        #global _Robot
+        self.Robot_vector.append(vector_robot)
+        return self.Robot_vector
+    
+    def search_id_robot(self, _id):
+        """
+        
+
+        Parameters
+        ----------
+        _id : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        final_ID : TYPE
+            DESCRIPTION.
+
+        """
+        final_ID = -1
+        for i in range (0, len(self.Robot_vector)):
+            temp_Robot = self.Robot_vector[i]
+            if (temp_Robot[0] == _id):
+                final_ID = i 
+                break
+        return final_ID
+    
+    def get_robot_id(self, _id):
+        """
+        
+
+        Parameters
+        ----------
+        _id : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        size_robot = len(self.Robot_vector)
+        #print(size_robot)
+        #print("Este es mi id", _id)
+        #print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
+        a = ''
+        for i in range (0,size_robot):
+            print("entre al for")
+            temp_ID = self.Robot_vector[i][0]
+            print("Este es el ID que buscas: ", self.Robot_vector[i][0])
+            if _id == temp_ID:
+                return self.Robot_vector[i]
+            else: 
+                a = ''
+        return a
+        #if _id == 0:
+        #    return print("No hay robot")
+        #else:
+        #    return self.Robot_vector[_id]
         

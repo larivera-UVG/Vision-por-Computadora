@@ -11,6 +11,7 @@ Codigo para la toma de poses de robots en la mesa de pruebas.
 15/07/2020: Version 0.0.0 -- Creacion del archivo inicial.
 15/07/2020: Version 0.1.0 -- Se crean los primeros metodos iniciales y las clases de robot y vector_robot
 16/07/2020: Version 0.2.0 -- Se agregan funciones adicionales para su funcionamiento. 
+19/07/2020: Version 0.2.1 -- Se eliminan funciones, se dejan solo los metodos y clases de Robot. Cambio nombre archivo.
 
 
 Basado en el codigo escrito por André Rodas
@@ -224,20 +225,5 @@ class vector_robot():
         else:
             return self.Robot_vector[_id]
         
-bot = Robot()
-vector_bot = vector_robot()
-robot1 = bot.set_robot(1, 2,[0,1,3])
 
-#print(bot.get_IP())
-
-new_vector_robot = vector_bot.agregar_robot(robot1)
-print(new_vector_robot[0][0])
-#new_vector_robot.id_robot
-
-#bot.set_IP(4)
-
-#print(bot.get_IP())
-#print(bot.get_speed())
-
-    
 
