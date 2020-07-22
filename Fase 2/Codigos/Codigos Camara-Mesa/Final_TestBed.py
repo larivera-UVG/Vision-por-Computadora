@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jul  7 12:26:33 2020
-
 @author: Jose Pablo Guerra
-
 Codigo que implementa Calibracion y generacion de codigos para la mesa de pruebas
 Proximamente: detectar la pose de los robots.
-
 7/07/2020: Version 0.1.0 -- Se incluye la GUI con el boton de calibrar y generacion de codigos
                             Se agrega el boton de limpiar pantallas generadas por OpenCV
 7/07/2020: Vesion 0.1.1 -- Se agrega un textbox para el numero del generador de codigo, 
@@ -15,7 +12,10 @@ Proximamente: detectar la pose de los robots.
 12/07/2020: Version 0.2.0 -- Se agrega el boton para la toma de pose de datos, ademas de las funciones 
                             para reconocer la posicion de los robots. Fallas aun en la deteccion del codigo.
 12/07/2020: Version 0.2.1 -- Pruebas preeliminares de rotacion del codigo correctas. Se realizaran mas pruebas
-                            para verificar que funcione. Proximo pasos: mejorar la deteccion del codigo.                          
+                            para verificar que funcione. Proximo pasos: mejorar la deteccion del codigo.      
+21/07/2020: Version 0.3.0 -- Se arregla la parte del pivote, gira exitosamente siempre para dejar al pivote en la esquina superior izquierda.
+                            Se arregla la identificacion de codigo.
+                            Para un mejor resultado, iluminar bien los codigos para que pueda detectar el pixel correctamente, sino, puede fallar.
 """
 
 
@@ -147,7 +147,6 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             print(" ")
             print("-----------------")
             print("ingresando al primer if")
-
                 
             if a == 0:
                 print("Entre la primera vez de a")
@@ -160,7 +159,6 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             #if a == 1:
                 #LastRecCod = RecCod
             #    x, y = LastRecCod[0] #LastRecCod.center
-
             #if a == 0:
                 #a = 1
              #   print("ingresando al segundo if")
@@ -614,10 +612,3 @@ window = Window()
 window.show() 
 sys.exit(myapp.exec_())
 myapp.quit()
-
-
-
-
-
-
-
