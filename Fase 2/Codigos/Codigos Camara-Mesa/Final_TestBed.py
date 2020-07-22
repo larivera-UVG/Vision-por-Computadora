@@ -72,7 +72,7 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     blur_size = (3,3)
     height_im, width_im = calib_snapshot.shape[:2]
     
-    PixCodeSize = Medida_cod * width_im / anchoMesa
+    #PixCodeSize = Medida_cod * width_im / anchoMesa
     
     gray_img = cv.cvtColor(calib_snapshot, cv.COLOR_BGR2GRAY)
     gray_blur_img = cv.blur(gray_img, blur_size)
@@ -90,13 +90,20 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     LastRecCod = 0
     
     a = 0
+    contorno_anterior = 1
     print("Este es el maximo del contador",len(contour) - 1)
     for c in contour:
+        if contorno_anterior > len(contour) - 1:
+            contorno_anterior = len(contour) - 1
+        print(c.shape[0] - contour[contorno_anterior].shape[0])
+        if abs(c.shape[0] - contour[contorno_anterior].shape[0]) > 30 and abs(c.shape[0] - contour[contorno_anterior].shape[0]) < 35:
+            c = contour[contorno_anterior]
+        contorno_anterior+=1
         print(" ")
         print("-----------------")
         #print("Este es el contador",a)
         RecCod = cv.minAreaRect(c)
-        #cv.drawContours(calib_snapshot, contour[c],  -1, (10*c + 100,15*c,20*c + 20), 2) #dibuja los contornos
+        #cv.drawContours(calib_snapshot, c,  -1, (10*i + 100,15*i,20*i + 20), 2) #dibuja los contornos
         #cv.waitKey(0)
         #Rx, Ry = RecCod[0] #SingleRecCod.center
         #print("Contornos", RecCod[0])
@@ -117,19 +124,22 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             #print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
             #print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
             
-        if (size[0] > 35 and size[1] > 35):
+        if (size[0] > 35 and size[1] > 35 and size[0] < 170 and size[1] < 170):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
             if a == 0:
                 a = 1
                 vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img))
+                #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
                 LastRecCod = RecCod
                 
             elif (((abs(center[0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(center[1] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
+            #else:
                 print("ingresando al segundo if, condicion else")
                 print("-----------------")
                 print(" ")
                 vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img))
+                #print("Yo soy el robot con 48 y tengo los siguientes atributos: ", vector.get_robot_id(48))
                 LastRecCod = RecCod
                 
         """
@@ -186,7 +196,9 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
            # vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
             #LastRecCod = RecCod
         """
-            
+    print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
+    print("Yo soy el robot con 30 y tengo los siguientes atributos: ", vector.get_robot_id(30))
+    print("Yo soy el robot con 50 y tengo los siguientes atributos: ", vector.get_robot_id(50))
     return vector
 
 def getRobot_fromSnapshot(RecContorno, snap):
@@ -276,6 +288,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         ColorInfIzq = 0
     
     if a == 0:
+        print(height_Final_Rotated)
         temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
         temp_ColorInfIzq = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
         temp_ColorSupDer = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
@@ -302,6 +315,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         #print(ColorSupIzq)
         #print(" ") 
         #cv.imshow("ColorSupIzq_1",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+        #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8) + 80, 35:110])
             
         #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
             #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
@@ -315,6 +329,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         #print("inferior derecho")
         #print(ColorInfDer)
         #print(" ") 
+        
         #cv.imshow("ColorInfDer1",Final_Crop_rotated[62:90, 70:90])
             
         #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
@@ -422,7 +437,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #print("inferior derecho")
     #print(ColorInfDer)
     #print(" ") 
-    
+    #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
     #cv.imshow("Color_a7",Final_Crop_rotated[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
             
     #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
@@ -432,6 +447,8 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #print(ColorInfIzq)
     #print(" ")
     
+    #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
+    #cv.imshow("Color_a7",Final_Crop_rotated[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
     #cv.imshow("Color_a5",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
     #cv.imshow("Color_a2",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35])
     #cv.imshow("Color_a3",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+25])
@@ -482,12 +499,15 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #Extraemos el codigo binario
     CodigoBinString = ""
     print(code)
-    
+    #print(len(code))
+    i = 0
     for i in range (0, len(code)):
-        if code[i] <60:
-            CodigoBinString = CodigoBinString + "0"
-        elif code[i] >60 and code[i]<80:
+        print(i)
+        print("codigo en la posicion i: ", code[i] )
+        if code[i] >70 and code[i]<125:
             CodigoBinString = CodigoBinString + "1"
+        else:
+            CodigoBinString = CodigoBinString + "0"
             
 #    print("CodigoBinString: ",CodigoBinString)
 #    temporal_ID = int(CodigoBinString, 2)
