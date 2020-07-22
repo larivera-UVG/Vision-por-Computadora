@@ -654,7 +654,7 @@ class vector_robot():
                 break
         return final_ID
     
-    def get_robot(self, _id):
+    def get_robot_id(self, _id):
         """
         
 
@@ -669,8 +669,22 @@ class vector_robot():
             DESCRIPTION.
 
         """
-        if _id == 0:
-            return print("No hay robot")
-        else:
-            return self.Robot_vector[_id]
+        size_robot = len(self.Robot_vector)
+        #print(size_robot)
+        print("Este es mi id", _id)
+        print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
+        
+        for i in range (0,size_robot):
+            print("entre al for")
+            temp_ID = self.Robot_vector[i][0]
+            print("Este es el ID que buscas: ", self.Robot_vector[i][0])
+            if _id == temp_ID:
+                return self.Robot_vector[i]
+            else: 
+                a = ''
+        return a
+        #if _id == 0:
+        #    return print("No hay robot")
+        #else:
+        #    return self.Robot_vector[_id]
         
