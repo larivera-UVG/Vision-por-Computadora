@@ -671,8 +671,8 @@ class vector_robot():
         """
         size_robot = len(self.Robot_vector)
         #print(size_robot)
-        print("Este es mi id", _id)
-        print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
+        #print("Este es mi id", _id)
+        #print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
         
         for i in range (0,size_robot):
             print("entre al for")
