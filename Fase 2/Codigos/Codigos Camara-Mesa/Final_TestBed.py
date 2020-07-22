@@ -124,7 +124,8 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             #print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
             #print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
             
-        if (size[0] > 35 and size[1] > 35 and size[0] < 170 and size[1] < 170):
+        rescale_factor_size = Code_size/3
+        if (size[0] > (35 * rescale_factor_size) and size[1] > (35*rescale_factor_size)): #):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
             if a == 0:
@@ -262,11 +263,30 @@ def getRobot_fromSnapshot(RecContorno, snap):
     
     Final_Crop_rotated = cv.getRectSubPix(dst, size, center)
     
+    
     #cv.imshow("Init", SemiCropCod) 
     cv.imshow("Rotated", dst) 
     cv.imshow("Final_crop",Final_Crop_rotated)
     #cv.waitKey(0)
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
+    print(height_Final_Rotated, width_Final_Rotated)
+    
+    if height_Final_Rotated > 115 and height_Final_Rotated < 125:
+        if width_Final_Rotated > 115 and width_Final_Rotated < 130:
+            resized = Final_Crop_rotated
+    else:
+        scale_percent = (3/Code_size)  # percent of original size
+        width = int(width_Final_Rotated * scale_percent)
+        height = int(height_Final_Rotated* scale_percent)
+        dim = (width, height)
+        #print(dim)
+        # resize image
+        resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
+        
+        cv.imshow("Final_crop_resized",resized)
+        
+        height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
+    
     #print("la forma del crop", Final_Crop_rotated.shape)
     #print("El crop", Final_Crop_rotated)
     #print("height_Final_Rotated: ",height_Final_Rotated)
@@ -287,10 +307,10 @@ def getRobot_fromSnapshot(RecContorno, snap):
     
     if a == 0:
         print(height_Final_Rotated)
-        temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
-        temp_ColorInfIzq = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
-        temp_ColorSupDer = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
-        temp_ColorInfDer = Final_Crop_rotated[62:90, 70:90]
+        temp_ColorSupIzq = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
+        temp_ColorInfIzq = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
+        temp_ColorSupDer = resized[int(height_Final_Rotated*1/8):40, 65:100]
+        temp_ColorInfDer = resized[62:90, 70:90]
         
         ColorSupIzq = temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)]
         ColorSupDer = temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)]
@@ -312,7 +332,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         #print("Superior izquierdo")
         #print(ColorSupIzq)
         #print(" ") 
-        #cv.imshow("ColorSupIzq_1",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+        cv.imshow("ColorSupIzq_1",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
         #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8) + 80, 35:110])
             
         #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
@@ -320,7 +340,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         #print("Superior derecho")
         #print(ColorSupDer)
         #print(" ") 
-        #cv.imshow("supderecho",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
+        cv.imshow("supderecho",resized[int(height_Final_Rotated*1/8):40, 65:100])
             
         #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
             #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
@@ -328,7 +348,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         #print(ColorInfDer)
         #print(" ") 
         
-        #cv.imshow("ColorInfDer1",Final_Crop_rotated[62:90, 70:90])
+        cv.imshow("ColorInfDer1",resized[62:90, 70:90])
             
         #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
         #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
@@ -336,7 +356,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
         #print("inferior izquierdo")
         #print(ColorInfIzq)
         #print(" ") 
-        #cv.imshow("ColorInfIzq1",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
+        cv.imshow("ColorInfIzq1",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
         #cv.imshow("ColorMiddleIzq",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35])
         #cv.imshow("ColorMiddle",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+25])
         #cv.imshow("Color_a0",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10+30:35+30])
@@ -369,20 +389,20 @@ def getRobot_fromSnapshot(RecContorno, snap):
     if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
         print("90 en contra del reloj")
         print(" ")
-        Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_COUNTERCLOCKWISE)
+        resized = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_COUNTERCLOCKWISE)
         tempFloatTheta = tempFloatTheta + 90
         EscalaColores[2] = ColorSupDer
     elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
         print("rotado 180")
         print(" ")
-        Final_Crop_rotated = cv.rotate(Final_Crop_rotated,cv.ROTATE_180);
+        resized = cv.rotate(Final_Crop_rotated,cv.ROTATE_180);
         tempFloatTheta = tempFloatTheta + 180;
         EscalaColores[2] = ColorInfDer
             
     elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
         print("90 a favor del reloj")
         print(" ")
-        Final_Crop_rotated = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_CLOCKWISE)
+        resized = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_CLOCKWISE)
         tempFloatTheta = tempFloatTheta - 90
         EscalaColores[2] = ColorInfIzq
 
@@ -397,9 +417,9 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
     
     #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
-    temp_a1 = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
-    temp_a5 = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
-    temp_a7 = Final_Crop_rotated[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26]
+    temp_a1 = resized[int(height_Final_Rotated*1/8):40, 65:100]
+    temp_a5 = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
+    temp_a7 = resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26]
         
 
     a1 = temp_a1[int(temp_a1.shape[0]/2),int(temp_a1.shape[1]/2)]
@@ -455,32 +475,32 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #cv.imshow("Color_a6",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
     
         #Generando los valores para detectar el codigo.
-    temp_a3 = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+30]
+    temp_a3 = resized[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+30]
     a3 = temp_a3[int(temp_a3.shape[0]/2),int(temp_a3.shape[1]/2)]
         
     #print("a3: ", a3)
         
-    temp_a2 = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35]
+    temp_a2 = resized[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35]
     a2 = temp_a2[int(temp_a2.shape[0]/2),int(temp_a2.shape[1]/2)]
     #print("a2: ", a2)
     
     #print("height_Final_Rotated*1/8: ",height_Final_Rotated*1/8)
-    temp_a0 = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+35:int(height_Final_Rotated*1/8)+65]
+    temp_a0 = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+35:int(height_Final_Rotated*1/8)+65]
     a0 = temp_a0[int(temp_a0.shape[0]/2),int(temp_a0.shape[1]/2)]
     #print("a0: ", a0)
         
         
-    temp_a4 = Final_Crop_rotated[int(height_Final_Rotated*1/8)+30:40+30, 65:100]
+    temp_a4 = resized[int(height_Final_Rotated*1/8)+30:40+30, 65:100]
     a4 = temp_a4[int(temp_a4.shape[0]/2),int(temp_a4.shape[1]/2)]
     #print("a4: ", a4)
         
-    temp_a6 = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 60), int(height_Final_Rotated*1/8)+20:int(height_Final_Rotated*1/8+30 + 23)+40]
+    temp_a6 = resized[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 60), int(height_Final_Rotated*1/8)+20:int(height_Final_Rotated*1/8+30 + 23)+40]
     a6 = temp_a6[int(temp_a6.shape[0]/2),int(temp_a6.shape[1]/2)]
     #print("a6: ", a6)
 
         
     code = [a7,a6,a5,a4,a3,a2,a1,a0]
-    cv.imshow("Codigo", Final_Crop_rotated)
+    cv.imshow("Codigo", resized)
     cv.waitKey(0)        
     if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
         EscalaColores[0] = ColorSupIzq
