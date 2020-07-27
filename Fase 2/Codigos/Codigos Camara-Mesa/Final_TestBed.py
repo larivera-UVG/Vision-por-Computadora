@@ -16,6 +16,8 @@ Proximamente: detectar la pose de los robots.
 21/07/2020: Version 0.3.0 -- Se arregla la parte del pivote, gira exitosamente siempre para dejar al pivote en la esquina superior izquierda.
                             Se arregla la identificacion de codigo.
                             Para un mejor resultado, iluminar bien los codigos para que pueda detectar el pixel correctamente, sino, puede fallar.
+26/07/2020: Version 0.4.0 -- Se arregla la identifcacion de codigo, ahora detecta codigos entre 3x3 y hasta 7x7 (pruebas realizadas)
+                             Se agrega en la GUI el boton de toma de pose para unificar los 3 programas en uno solo.
 """
 
 
@@ -271,8 +273,8 @@ def getRobot_fromSnapshot(RecContorno, snap):
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
     print(height_Final_Rotated, width_Final_Rotated)
     
-    if height_Final_Rotated > 115 and height_Final_Rotated < 125:
-        if width_Final_Rotated > 115 and width_Final_Rotated < 130:
+    if height_Final_Rotated > 110 and height_Final_Rotated < 125:
+        if width_Final_Rotated > 110 and width_Final_Rotated < 130:
             resized = Final_Crop_rotated
     else:
         scale_percent = (3/Code_size)  # percent of original size
