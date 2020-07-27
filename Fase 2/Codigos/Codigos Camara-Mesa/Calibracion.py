@@ -19,6 +19,8 @@ Version con Programacion Orientada a Objetos.
                             
 12/07/2020: Version 0.3.0 -- Se agrega la clase de los robots para la deteccion de sus poses y codigos.
 
+26/07/2020: Version 0.3.1 -- Se elimina unas lineas innecesarias. 
+                             Se modifica el metodo get_robot_id de la clase vector_robot
 ***********************
 Anotaciones iniciales:
 ***********************
@@ -140,18 +142,18 @@ def get_esquinas(frame, canny_value, pixelTreshold):
     boardMax = ([0,0], [0,height_im], [width_im, 0], [width_im, height_im]) #define el borde maximo de la mesa, esquinas maximas
 
     #print(len(contour) - 1) #para debug   
-    for i in range (0, len(contour)-1):
+    #for i in range (0, len(contour)-1):
         #print(i) #para debug
         #rect = cv.minAreaRect(contour[i]) #obtiene el area minima del contorno, no usado
-        contour_list = [] #array que guarda los contornos circulares encontrados
-        for i in contour:
-            approx = cv.approxPolyDP(i,0.01*cv.arcLength(i,True),True) #utiliza el metodo de aproximacion
+    contour_list = [] #array que guarda los contornos circulares encontrados
+    for con in contour:
+        approx = cv.approxPolyDP(con,0.01*cv.arcLength(con,True),True) #utiliza el metodo de aproximacion
                             #approxPolyDP para encontrar los contornos circulares.
-            area = cv.contourArea(i) #calcula el area de este contorno.
+        area = cv.contourArea(con) #calcula el area de este contorno.
             
-            if ((len(approx) > 8) & (area > 3) ): #Treshold aproximado, puede variar si se desea para detectar circulos 
+        if ((len(approx) > 8) & (area > 3) ): #Treshold aproximado, puede variar si se desea para detectar circulos 
                                                 #diferentes tama;os
-                contour_list.append(i) #si esta dentro del rango, lo agrega a la lista
+            contour_list.append(con) #si esta dentro del rango, lo agrega a la lista
                 
         #PARA DEBUG:
             
@@ -166,28 +168,28 @@ def get_esquinas(frame, canny_value, pixelTreshold):
         #print("este es el height", height)           
         #print("esta es la diferencia ", (width - height))
         
-        Cx = 0 #coordenada en x
-        Cy = 0 #coordenada en y
+    Cx = 0 #coordenada en x
+    Cy = 0 #coordenada en y
         
-        esquinas_final = [[1,1], [1,2], [2,1], [2,2]] #un valor inicial para la comparativa
-        a = True
-        for c in contour_list: #recorre la lista de contornos para buscar el centro
+    esquinas_final = [[1,1], [1,2], [2,1], [2,2]] #un valor inicial para la comparativa
+    a = True
+    for c in contour_list: #recorre la lista de contornos para buscar el centro
             # calcula el centro
-            M = cv.moments(c)
+        M = cv.moments(c)
             
             #ver documentacion para obtener mas informacion de como se calcula la coordenada (x,y)
-            Cx = int(M["m10"] / M["m00"])
-            Cy = int(M["m01"] / M["m00"])
+        Cx = int(M["m10"] / M["m00"])
+        Cy = int(M["m01"] / M["m00"])
             
             #esquinas_final[0] = [Cx,Cy] #agrega la primera esquina en la posicion inicial.
             
-            if (a):
-                esquinas_final[0] = [Cx,Cy]
-                a = False
+        if (a):
+            esquinas_final[0] = [Cx,Cy]
+            a = False
                 
-            for i in range (0,4):
-                if (distancia2puntos(boardMax[i], (Cx,Cy))<distancia2puntos(boardMax[i], esquinas_final[i])):
-                    esquinas_final[i] = [Cx,Cy]
+        for i in range (0,4):
+            if (distancia2puntos(boardMax[i], (Cx,Cy))<distancia2puntos(boardMax[i], esquinas_final[i])):
+                esquinas_final[i] = [Cx,Cy]
 
                 
                 """
