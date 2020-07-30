@@ -465,13 +465,13 @@ class camara():
                         for i4 in range(v*50+25,v*50+75):
                             Cod[i3,i4] = n * 125
                 k = k + 1
-                cv.imshow('cod', Cod)
-                cv.waitKey(1)
-                edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
+        cv.imshow('cod', Cod)
+        cv.waitKey(1)
+        edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
-                cv.imwrite(edge_img, Cod) #Guarda la foro
-                print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
-                img_counter += 1 #aumenta el contador. 
+        cv.imwrite(edge_img, Cod) #Guarda la foro
+        print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
+        img_counter += 1 #aumenta el contador. 
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
 class Robot():

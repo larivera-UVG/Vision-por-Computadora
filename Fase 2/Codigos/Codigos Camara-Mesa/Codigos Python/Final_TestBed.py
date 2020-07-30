@@ -18,6 +18,14 @@ Proximamente: detectar la pose de los robots.
                             Para un mejor resultado, iluminar bien los codigos para que pueda detectar el pixel correctamente, sino, puede fallar.
 26/07/2020: Version 0.4.0 -- Se arregla la identifcacion de codigo, ahora detecta codigos entre 3x3 y hasta 7x7 (pruebas realizadas)
                              Se agrega en la GUI el boton de toma de pose para unificar los 3 programas en uno solo.
+30/07/2020: Version 0.4.1 -- Se agrega un cuadro de texto para el tama;o de los marcadores o codigos, esto con el fin de
+                            facilitar al usuario ingresar el tama;o del codigo desde la GUI y no tener que compilar el 
+                            programa nuevamente cada vez que se desea cambiar de tama;o.
+                            Detecta tama;os desde 3x3 hasta 10x10 (siempre cuidando la ilumacion)
+                            Se agrega un if para evitar que otros objetos sean detectados, este if se maneja con las
+                            variables gloables MAX_IMAGE_SIZE  y TRESHOLD_IMAGE_SIZE. La primera controla el tama;o 
+                            de la imagen (en promedio es una imagen de 115x115) y el segundo controla el treshold
+                            de tama;o porque puede variar minimamente.
 """
 
 
@@ -62,7 +70,10 @@ GlobalColorDifThreshold = 10
 
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
-Code_size = 7.0
+Code_size = 1.0
+
+MAX_IMAGE_SIZE = 115
+TRESHOLD_IMAGE_SIZE = 5
 #Mat GlobalLambda, GlobalCroppedActualSnap;
 
 """
@@ -126,13 +137,15 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             #print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
             #print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
             
-        rescale_factor_size = Code_size/3
-        if (size[0] > (35 * rescale_factor_size) and size[1] > (35*rescale_factor_size)): #):
+        rescale_factor_size = Medida_cod/3
+        print(size[0])
+        print(size[1])
+        if (size[0] > (40 * rescale_factor_size) and size[1] > (40*rescale_factor_size)): #):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
             if a == 0:
                 a = 1
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img))
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img, Medida_cod))
                 #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
                 LastRecCod = RecCod
                 
@@ -141,7 +154,7 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
                 print("ingresando al segundo if, condicion else")
                 print("-----------------")
                 print(" ")
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img))
+                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img, Medida_cod))
                 #print("Yo soy el robot con 48 y tengo los siguientes atributos: ", vector.get_robot_id(48))
                 LastRecCod = RecCod
                 
@@ -202,7 +215,7 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     print("Yo soy el robot con 50 y tengo los siguientes atributos: ", vector.get_robot_id(50))
     return vector
 
-def getRobot_fromSnapshot(RecContorno, snap):
+def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     
     # Obtiene el centro, el tama;o y el angulo del contorno.
     center, size, theta = RecContorno
@@ -271,23 +284,39 @@ def getRobot_fromSnapshot(RecContorno, snap):
     cv.imshow("Final_crop",Final_Crop_rotated)
     #cv.waitKey(0)
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
+    print("Dimensiones actuales: ")
     print(height_Final_Rotated, width_Final_Rotated)
     
     if height_Final_Rotated > 110 and height_Final_Rotated < 125:
         if width_Final_Rotated > 110 and width_Final_Rotated < 130:
             resized = Final_Crop_rotated
     else:
-        scale_percent = (3/Code_size)  # percent of original size
+        scale_percent = (3.0/codeSize)  # percent of original size
+        print("% de escala", scale_percent)
+        print("Medida temporal: ", width_Final_Rotated * scale_percent)
         width = int(width_Final_Rotated * scale_percent)
         height = int(height_Final_Rotated* scale_percent)
         dim = (width, height)
-        #print(dim)
+        print("Dimensiones resized: ")
+        print(dim)
         # resize image
         resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
         
         cv.imshow("Final_crop_resized",resized)
         
-        height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
+    height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
+    
+    
+    print("probando el if de las imagenes")
+    
+    print("height_Final_Rotated: ", height_Final_Rotated)
+    print("width_Final_Rotated: ", width_Final_Rotated)
+    
+    if (height_Final_Rotated > (MAX_IMAGE_SIZE - TRESHOLD_IMAGE_SIZE - 1) and height_Final_Rotated < (MAX_IMAGE_SIZE + TRESHOLD_IMAGE_SIZE + 1)):
+        if (width_Final_Rotated > (MAX_IMAGE_SIZE - TRESHOLD_IMAGE_SIZE - 1) and width_Final_Rotated < (MAX_IMAGE_SIZE + TRESHOLD_IMAGE_SIZE + 1)):
+            pass
+    else:
+        return [0,'',[0, 0, 0]]
     
     #print("la forma del crop", Final_Crop_rotated.shape)
     #print("El crop", Final_Crop_rotated)
@@ -300,12 +329,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
     
     a = 0
     
-    if height_Final_Rotated < 40 and width_Final_Rotated < 40:
-        a = 1
-        ColorSupIzq = 0
-        ColorSupDer = 0
-        ColorInfDer = 0
-        ColorInfIzq = 0
+
     
     if a == 0:
         print(height_Final_Rotated)
@@ -391,20 +415,20 @@ def getRobot_fromSnapshot(RecContorno, snap):
     if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
         print("90 en contra del reloj")
         print(" ")
-        resized = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_COUNTERCLOCKWISE)
+        resized = cv.rotate(resized, cv.ROTATE_90_COUNTERCLOCKWISE)
         tempFloatTheta = tempFloatTheta + 90
         EscalaColores[2] = ColorSupDer
     elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
         print("rotado 180")
         print(" ")
-        resized = cv.rotate(Final_Crop_rotated,cv.ROTATE_180);
+        resized = cv.rotate(resized,cv.ROTATE_180);
         tempFloatTheta = tempFloatTheta + 180;
         EscalaColores[2] = ColorInfDer
             
     elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
         print("90 a favor del reloj")
         print(" ")
-        resized = cv.rotate(Final_Crop_rotated, cv.ROTATE_90_CLOCKWISE)
+        resized = cv.rotate(resized, cv.ROTATE_90_CLOCKWISE)
         tempFloatTheta = tempFloatTheta - 90
         EscalaColores[2] = ColorInfIzq
 
@@ -423,6 +447,8 @@ def getRobot_fromSnapshot(RecContorno, snap):
     temp_a5 = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
     temp_a7 = resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26]
         
+   
+    print(int(temp_a1.shape[1]/2))
 
     a1 = temp_a1[int(temp_a1.shape[0]/2),int(temp_a1.shape[1]/2)]
     a7 = temp_a7[int(temp_a7.shape[0]/2),int(temp_a7.shape[1]/2)]
@@ -497,6 +523,11 @@ def getRobot_fromSnapshot(RecContorno, snap):
     #print("a4: ", a4)
         
     temp_a6 = resized[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 60), int(height_Final_Rotated*1/8)+20:int(height_Final_Rotated*1/8+30 + 23)+40]
+    #cv.imshow("temp_a6", temp_a6)
+    #cv.waitKey(0) 
+    print(temp_a6)
+    print(int(temp_a6.shape[0]/2))
+    print(int(temp_a6.shape[1]/2))
     a6 = temp_a6[int(temp_a6.shape[0]/2),int(temp_a6.shape[1]/2)]
     #print("a6: ", a6)
 
@@ -524,7 +555,7 @@ def getRobot_fromSnapshot(RecContorno, snap):
     for i in range (0, len(code)):
         print(i)
         print("codigo en la posicion i: ", code[i] )
-        if code[i] >70 and code[i]<125:
+        if code[i] >75 and code[i]<175:
             CodigoBinString = CodigoBinString + "1"
         else:
             CodigoBinString = CodigoBinString + "0"
@@ -572,6 +603,7 @@ class Window(QWidget):
         self.capturar_button()
         self.limpiar_button()
         self.TxtBox()
+        self.TxtBox2()
         self.codigo_button()
         self.Toma_pose()
 
@@ -597,13 +629,24 @@ class Window(QWidget):
         btn4.clicked.connect(self.pose)
         
     def pose(self):
+        text = self.lineEdit2.text()
+        if text == '':
+            text = '3'
+        numCod = int(text)
         Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
-        getRobot_Code(Snapshot, MyGlobalCannyInf, MyGlobalCannySup, Code_size)
+        getRobot_Code(Snapshot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
         self.lineEdit.setFixedWidth(120)
         self.lineEdit.move(n2+92,93)
+        #vbox = QVBoxLayout(self)
+        #vbox.addWidget(self.lineEdit)
+    
+    def TxtBox2(self):
+        self.lineEdit2 = QLineEdit(self,placeholderText="Tamaño del código")
+        self.lineEdit2.setFixedWidth(125)
+        self.lineEdit2.move(n2+120,143)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
         
