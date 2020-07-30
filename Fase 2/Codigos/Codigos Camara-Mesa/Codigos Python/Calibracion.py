@@ -21,6 +21,10 @@ Version con Programacion Orientada a Objetos.
 
 26/07/2020: Version 0.3.1 -- Se elimina unas lineas innecesarias. 
                              Se modifica el metodo get_robot_id de la clase vector_robot
+                             
+30/07/2020: Version 0.3.2 -- Ajustes menores al codigo para guardar la imagen del marcador generado.
+
+
 ***********************
 Anotaciones iniciales:
 ***********************
