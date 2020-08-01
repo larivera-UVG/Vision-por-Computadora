@@ -26,6 +26,11 @@ Proximamente: detectar la pose de los robots.
                             variables gloables MAX_IMAGE_SIZE  y TRESHOLD_IMAGE_SIZE. La primera controla el tama;o 
                             de la imagen (en promedio es una imagen de 115x115) y el segundo controla el treshold
                             de tama;o porque puede variar minimamente.
+31/07/2020: Version 0.4.2 -- Arreglos menores a la deteccion de tama;o de imagen, se agrega las siguientes variables:
+                            TRESHOLD_DETECT_MIN y TRESHOLD_DETECT_MAX. Por la forma en como se identifican los IDs se 
+                            necesita detectar los cuadros grises, según sea la iluminación, este parametro puede variar
+                            entre los 70 (o hasta 65) hasta un maximo de 130 (mas o menos). Con estas variables se 
+                            controlan esos tresholds para detectar rangos de gris adecuados. 
 """
 
 
@@ -72,8 +77,12 @@ MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 Code_size = 1.0
 
-MAX_IMAGE_SIZE = 115
-TRESHOLD_IMAGE_SIZE = 5
+MAX_IMAGE_SIZE = 100
+
+
+TRESHOLD_DETECT_MIN = 65
+TRESHOLD_DETECT_MAX = 130
+
 #Mat GlobalLambda, GlobalCroppedActualSnap;
 
 """
@@ -93,25 +102,27 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
 
     
     cv.imshow("Canny", canny_img)
-    #cv.waitKey(0)
+    cv.waitKey(0)
     
     image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    #cv.drawContours(calib_snapshot, contour,  -1, (255,0,0), 2) #dibuja los contornos
+    cv.drawContours(calib_snapshot, contour,  -1, (255,0,0), 2) #dibuja los contornos
+    cv.imshow("Contornos", calib_snapshot)
+    cv.waitKey(0)
     #canny_img = cv.blur(canny_img, blur_size)
     #print("PixCodeSize: ", PixCodeSize)
     #a = 0
-    LastRecCod = 0
+    #LastRecCod = 0
     
     a = 0
-    contorno_anterior = 1
-    print("Este es el maximo del contador",len(contour) - 1)
+    #contorno_anterior = 1
+    #print("Este es el maximo del contador",len(contour) - 1)
     for c in contour:
-        if contorno_anterior > len(contour) - 1:
-            contorno_anterior = len(contour) - 1
-        print(c.shape[0] - contour[contorno_anterior].shape[0])
-        if abs(c.shape[0] - contour[contorno_anterior].shape[0]) > 30 and abs(c.shape[0] - contour[contorno_anterior].shape[0]) < 35:
-            c = contour[contorno_anterior]
-        contorno_anterior+=1
+        #if contorno_anterior > len(contour) - 1:
+        #    contorno_anterior = len(contour) - 1
+        #print(c.shape[0] - contour[contorno_anterior].shape[0])
+        #if abs(c.shape[0] - contour[contorno_anterior].shape[0]) > 30 and abs(c.shape[0] - contour[contorno_anterior].shape[0]) < 35:
+        #    c = contour[contorno_anterior]
+        #contorno_anterior+=1
         print(" ")
         print("-----------------")
         #print("Este es el contador",a)
@@ -138,26 +149,12 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             #print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
             
         rescale_factor_size = Medida_cod/3
-        print(size[0])
-        print(size[1])
+        print("Size[0] y size[1]: ", size[0], size[1])
+        #print(size[1])
         if (size[0] > (40 * rescale_factor_size) and size[1] > (40*rescale_factor_size)): #):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
-            if a == 0:
-                a = 1
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img, Medida_cod))
-                #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
-                LastRecCod = RecCod
-                
-            elif (((abs(center[0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(center[1] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
-            #else:
-                print("ingresando al segundo if, condicion else")
-                print("-----------------")
-                print(" ")
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_img, Medida_cod))
-                #print("Yo soy el robot con 48 y tengo los siguientes atributos: ", vector.get_robot_id(48))
-                LastRecCod = RecCod
-                
+            vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
         """
         if (((abs(size[1] - PixCodeSize) < GlobalCodePixThreshold) and (abs(size[0] - PixCodeSize) < GlobalCodePixThreshold))):
             print(" ")
@@ -287,36 +284,40 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     print("Dimensiones actuales: ")
     print(height_Final_Rotated, width_Final_Rotated)
     
-    if height_Final_Rotated > 110 and height_Final_Rotated < 125:
-        if width_Final_Rotated > 110 and width_Final_Rotated < 130:
-            resized = Final_Crop_rotated
-    else:
-        scale_percent = (3.0/codeSize)  # percent of original size
-        print("% de escala", scale_percent)
-        print("Medida temporal: ", width_Final_Rotated * scale_percent)
-        width = int(width_Final_Rotated * scale_percent)
-        height = int(height_Final_Rotated* scale_percent)
-        dim = (width, height)
-        print("Dimensiones resized: ")
-        print(dim)
-        # resize image
-        resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
-        
-        cv.imshow("Final_crop_resized",resized)
+#    if (height_Final_Rotated > 110 and height_Final_Rotated < 125):
+#        if (width_Final_Rotated > 110 and width_Final_Rotated < 130):
+#            resized = Final_Crop_rotated
+#    else:
+    #print("Este es el if resized")
+    scale_percent = (3.0/codeSize)  # percent of original size
+    print("-----------------")
+    print("% de escala", scale_percent)
+    print("Medida temporal: ", width_Final_Rotated * scale_percent)
+    print("-----------------")
+    width = int(width_Final_Rotated * scale_percent)
+    height = int(height_Final_Rotated* scale_percent)
+    dim = (width, height)
+    print("Dimensiones resized: ")
+    print("-----------------")
+    print(dim)
+    # resize image
+    resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
+    
+    cv.imshow("Final_crop_resized",resized)
         
     height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
     
     
-    print("probando el if de las imagenes")
+    #print("probando el if de las imagenes")
     
     print("height_Final_Rotated: ", height_Final_Rotated)
     print("width_Final_Rotated: ", width_Final_Rotated)
-    
-    if (height_Final_Rotated > (MAX_IMAGE_SIZE - TRESHOLD_IMAGE_SIZE - 1) and height_Final_Rotated < (MAX_IMAGE_SIZE + TRESHOLD_IMAGE_SIZE + 1)):
-        if (width_Final_Rotated > (MAX_IMAGE_SIZE - TRESHOLD_IMAGE_SIZE - 1) and width_Final_Rotated < (MAX_IMAGE_SIZE + TRESHOLD_IMAGE_SIZE + 1)):
-            pass
+    print("-----------------")
+    if (height_Final_Rotated < (MAX_IMAGE_SIZE) or width_Final_Rotated < (MAX_IMAGE_SIZE)):
+        print("cumpli el if")
+        ctrl = 0
     else:
-        return [0,'',[0, 0, 0]]
+        ctrl = 1
     
     #print("la forma del crop", Final_Crop_rotated.shape)
     #print("El crop", Final_Crop_rotated)
@@ -326,269 +327,271 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
     #print("Final_Crop_rotated.shape[1]", Final_Crop_rotated.shape[1])
     #print("Final_Crop_rotated.shape[0]", Final_Crop_rotated.shape[0])
-    
-    a = 0
-    
-
-    
-    if a == 0:
-        print(height_Final_Rotated)
-        temp_ColorSupIzq = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
-        temp_ColorInfIzq = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
-        temp_ColorSupDer = resized[int(height_Final_Rotated*1/8):40, 65:100]
-        temp_ColorInfDer = resized[62:90, 70:90]
+    if ctrl == 1:
+        a = 0
         
-        ColorSupIzq = temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)]
-        ColorSupDer = temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)]
-        ColorInfDer = temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)]
-        ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
-        #print("temp_ColorSupIzq.shape", temp_ColorSupIzq.shape)
-        #print("Midle array image gray sup izq: ", temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)])
-        #print("Midle array image gray inf izq: ", temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)])
-        #print("Midle array image gray sup der: ", temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)])
-        #print("Midle array image gray inf der: ", temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)])
+    
         
-        #if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 44:
-        #print("int(height_Final_Rotated*1/8)", int(height_Final_Rotated*1/8 + 2))
-        #print("Final_Crop_rotated: ", Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
-        #cv.imshow("Prueba gris", Final_Crop_rotated[10:20])
-        #ColorSupIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]))
-            #print(Final_Crop_rotated[15:45, 15:42])
-            #ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
-        #print("Superior izquierdo")
+        if a == 0:
+            #print(height_Final_Rotated)
+            temp_ColorSupIzq = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
+            temp_ColorInfIzq = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
+            temp_ColorSupDer = resized[int(height_Final_Rotated*1/8):40, 65:100]
+            temp_ColorInfDer = resized[62:90, 70:90]
+            
+            ColorSupIzq = temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)]
+            ColorSupDer = temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)]
+            ColorInfDer = temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)]
+            ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
+            #print("temp_ColorSupIzq.shape", temp_ColorSupIzq.shape)
+            #print("Midle array image gray sup izq: ", temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)])
+            #print("Midle array image gray inf izq: ", temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)])
+            #print("Midle array image gray sup der: ", temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)])
+            #print("Midle array image gray inf der: ", temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)])
+            
+            #if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 44:
+            #print("int(height_Final_Rotated*1/8)", int(height_Final_Rotated*1/8 + 2))
+            #print("Final_Crop_rotated: ", Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+            #cv.imshow("Prueba gris", Final_Crop_rotated[10:20])
+            #ColorSupIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]))
+                #print(Final_Crop_rotated[15:45, 15:42])
+                #ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
+            #print("Superior izquierdo")
+            #print(ColorSupIzq)
+            #print(" ") 
+            cv.imshow("ColorSupIzq_1",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+            #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8) + 80, 35:110])
+                
+            #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
+                #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
+            #print("Superior derecho")
+            #print(ColorSupDer)
+            #print(" ") 
+            cv.imshow("supderecho",resized[int(height_Final_Rotated*1/8):40, 65:100])
+                
+            #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
+                #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
+            #print("inferior derecho")
+            #print(ColorInfDer)
+            #print(" ") 
+            
+            cv.imshow("ColorInfDer1",resized[62:90, 70:90])
+                
+            #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
+            #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
+                #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
+            #print("inferior izquierdo")
+            #print(ColorInfIzq)
+            #print(" ") 
+            cv.imshow("ColorInfIzq1",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
+            #cv.imshow("ColorMiddleIzq",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35])
+            #cv.imshow("ColorMiddle",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+25])
+            #cv.imshow("Color_a0",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10+30:35+30])
+            #cv.imshow("Color_a4",Final_Crop_rotated[int(height_Final_Rotated*1/8)+30:40+30, 65:100])
+            #cv.imshow("Color_a6",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
+        
+    
+            
+        for i in range(0,3):
+            EscalaColores.append(ColorSupIzq)
+            
+    
+            #cv.imshow("El crop por partes", Final_Crop_rotated[15:45,70:105])
+            
+            #cuadro superior izquierdo: 15:45, 15:42
+                                            #30 x 25
+                                            
+           #cuadro inferior izquierda: 70:105, 15:42                                        
+           
+           #cuadro superior derecho: 15:45, 70:105
+           #cuadro inferior derecho: 70:105, 70:105
+        tempFloatTheta = theta
+        
+        #print(ColorSupDer)
+        #print(ColorSupIzq)
+        #print(ColorInfDer)
+        #print(ColorInfIzq)
+       # if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 40:
+        #a = 0
+        if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
+            print("90 en contra del reloj")
+            print(" ")
+            resized = cv.rotate(resized, cv.ROTATE_90_COUNTERCLOCKWISE)
+            tempFloatTheta = tempFloatTheta + 90
+            EscalaColores[2] = ColorSupDer
+        elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
+            print("rotado 180")
+            print(" ")
+            resized = cv.rotate(resized,cv.ROTATE_180);
+            tempFloatTheta = tempFloatTheta + 180;
+            EscalaColores[2] = ColorInfDer
+                
+        elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
+            print("90 a favor del reloj")
+            print(" ")
+            resized = cv.rotate(resized, cv.ROTATE_90_CLOCKWISE)
+            tempFloatTheta = tempFloatTheta - 90
+            EscalaColores[2] = ColorInfIzq
+    
+        #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
+        #temp_a5 = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
+        #temp_a1 = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
+        #temp_a7 = Final_Crop_rotated[62:90, 70:90]
+            
+        #ColorSupIzq = temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)]
+        #ColorSupDer = temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)]
+        #ColorInfDer = temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)]
+        #ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
+        
+        #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
+        temp_a1 = resized[int(height_Final_Rotated*1/8):40, 65:100]
+        temp_a5 = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
+        temp_a7 = resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26]
+            
+       
+        #print(int(temp_a1.shape[1]/2))
+    
+        a1 = temp_a1[int(temp_a1.shape[0]/2),int(temp_a1.shape[1]/2)]
+        a7 = temp_a7[int(temp_a7.shape[0]/2),int(temp_a7.shape[1]/2)]
+        a5 = temp_a5[int(temp_a5.shape[0]/2),int(temp_a5.shape[1]/2)]
+            #print("temp_ColorSupIzq.shape", temp_ColorSupIzq.shape)
+            #print("Midle array image gray sup izq: ", temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)])
+            #print("Midle array image gray inf izq: ", temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)])
+            #print("Midle array image gray sup der: ", temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)])
+            #print("Midle array image gray inf der: ", temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)])
+            
+            #if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 44:
+            #print("int(height_Final_Rotated*1/8)", int(height_Final_Rotated*1/8 + 2))
+            #print("Final_Crop_rotated: ", Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+            #cv.imshow("Prueba gris", Final_Crop_rotated[10:20])
+            #ColorSupIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]))
+                #print(Final_Crop_rotated[15:45, 15:42])
+                #ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
+            #print("Superior izquierdo")
         #print(ColorSupIzq)
         #print(" ") 
-        cv.imshow("ColorSupIzq_1",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
-        #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8) + 80, 35:110])
-            
-        #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
-            #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
+        #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+                
+            #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
+                #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
         #print("Superior derecho")
         #print(ColorSupDer)
         #print(" ") 
-        cv.imshow("supderecho",resized[int(height_Final_Rotated*1/8):40, 65:100])
-            
-        #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
-            #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
+        #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
+                
+            #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
+                #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
         #print("inferior derecho")
         #print(ColorInfDer)
         #print(" ") 
-        
-        cv.imshow("ColorInfDer1",resized[62:90, 70:90])
-            
+        #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
+        #cv.imshow("Color_a7",Final_Crop_rotated[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
+                
         #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
-        #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
-            #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
+            #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
+                #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
         #print("inferior izquierdo")
         #print(ColorInfIzq)
-        #print(" ") 
-        cv.imshow("ColorInfIzq1",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
-        #cv.imshow("ColorMiddleIzq",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35])
-        #cv.imshow("ColorMiddle",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+25])
-        #cv.imshow("Color_a0",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10+30:35+30])
-        #cv.imshow("Color_a4",Final_Crop_rotated[int(height_Final_Rotated*1/8)+30:40+30, 65:100])
-        #cv.imshow("Color_a6",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
-    
-
+        #print(" ")
         
-    for i in range(0,3):
-        EscalaColores.append(ColorSupIzq)
+        cv.imshow("Color_a0",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52])
+        cv.imshow("Color_a0_2",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(width_Final_Rotated*1/8)+35:int(width_Final_Rotated*1/8)+65])
+        #cv.imshow("Color_a1",resized[int(height_Final_Rotated*1/8):40, 65:100])
+        #cv.imshow("Color_a2",resized[int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 30)+22, 12:38])
+        #cv.imshow("Color_a3",resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30])
+        #cv.imshow("Color_a4",resized[int(height_Final_Rotated*1/8)+30:40+30, 65:100])
+        #cv.imshow("Color_a5",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
+        #cv.imshow("Color_a6",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
+        #cv.imshow("Color_a7",resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
         
-
-        #cv.imshow("El crop por partes", Final_Crop_rotated[15:45,70:105])
-        
-        #cuadro superior izquierdo: 15:45, 15:42
-                                        #30 x 25
-                                        
-       #cuadro inferior izquierda: 70:105, 15:42                                        
-       
-       #cuadro superior derecho: 15:45, 70:105
-       #cuadro inferior derecho: 70:105, 70:105
-    tempFloatTheta = theta
-    
-    #print(ColorSupDer)
-    #print(ColorSupIzq)
-    #print(ColorInfDer)
-    #print(ColorInfIzq)
-   # if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 40:
-    #a = 0
-    if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
-        print("90 en contra del reloj")
-        print(" ")
-        resized = cv.rotate(resized, cv.ROTATE_90_COUNTERCLOCKWISE)
-        tempFloatTheta = tempFloatTheta + 90
-        EscalaColores[2] = ColorSupDer
-    elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
-        print("rotado 180")
-        print(" ")
-        resized = cv.rotate(resized,cv.ROTATE_180);
-        tempFloatTheta = tempFloatTheta + 180;
-        EscalaColores[2] = ColorInfDer
+            #Generando los valores para detectar el codigo.
+        temp_a3 = resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30]
+        a3 = temp_a3[int(temp_a3.shape[0]/2),int(temp_a3.shape[1]/2)]
             
-    elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
-        print("90 a favor del reloj")
-        print(" ")
-        resized = cv.rotate(resized, cv.ROTATE_90_CLOCKWISE)
-        tempFloatTheta = tempFloatTheta - 90
-        EscalaColores[2] = ColorInfIzq
-
-    #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
-    #temp_a5 = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
-    #temp_a1 = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
-    #temp_a7 = Final_Crop_rotated[62:90, 70:90]
-        
-    #ColorSupIzq = temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)]
-    #ColorSupDer = temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)]
-    #ColorInfDer = temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)]
-    #ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
-    
-    #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
-    temp_a1 = resized[int(height_Final_Rotated*1/8):40, 65:100]
-    temp_a5 = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
-    temp_a7 = resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26]
-        
-   
-    print(int(temp_a1.shape[1]/2))
-
-    a1 = temp_a1[int(temp_a1.shape[0]/2),int(temp_a1.shape[1]/2)]
-    a7 = temp_a7[int(temp_a7.shape[0]/2),int(temp_a7.shape[1]/2)]
-    a5 = temp_a5[int(temp_a5.shape[0]/2),int(temp_a5.shape[1]/2)]
-        #print("temp_ColorSupIzq.shape", temp_ColorSupIzq.shape)
-        #print("Midle array image gray sup izq: ", temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)])
-        #print("Midle array image gray inf izq: ", temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)])
-        #print("Midle array image gray sup der: ", temp_ColorSupDer[int(temp_ColorSupDer.shape[0]/2),int(temp_ColorSupDer.shape[1]/2)])
-        #print("Midle array image gray inf der: ", temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)])
-        
-        #if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 44:
-        #print("int(height_Final_Rotated*1/8)", int(height_Final_Rotated*1/8 + 2))
-        #print("Final_Crop_rotated: ", Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
-        #cv.imshow("Prueba gris", Final_Crop_rotated[10:20])
-        #ColorSupIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]))
-            #print(Final_Crop_rotated[15:45, 15:42])
-            #ColorSupIzq = (ColorSupIzq_1[0] + ColorSupIzq_1[1] + ColorSupIzq_1[2])/3
-        #print("Superior izquierdo")
-    #print(ColorSupIzq)
-    #print(" ") 
-    #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+        #print("a3: ", a3)
             
-        #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
-            #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
-    #print("Superior derecho")
-    #print(ColorSupDer)
-    #print(" ") 
-    #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
+        temp_a2 = resized[int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 30)+22, 12:38]
+        a2 = temp_a2[int(temp_a2.shape[0]/2),int(temp_a2.shape[1]/2)]
+        #print("a2: ", a2)
+        
+        #print("height_Final_Rotated*1/8: ",height_Final_Rotated*1/8)
+        temp_a0 = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52]
+        a0 = temp_a0[int(temp_a0.shape[0]/2),int(temp_a0.shape[1]/2)]
+        #print("a0: ", a0)
             
-        #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
-            #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
-    #print("inferior derecho")
-    #print(ColorInfDer)
-    #print(" ") 
-    #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
-    #cv.imshow("Color_a7",Final_Crop_rotated[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
             
-    #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
-        #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
-            #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
-    #print("inferior izquierdo")
-    #print(ColorInfIzq)
-    #print(" ")
+        temp_a4 = resized[int(height_Final_Rotated*1/8)+30:40+30, 65:100]
+        a4 = temp_a4[int(temp_a4.shape[0]/2),int(temp_a4.shape[1]/2)]
+        #print("a4: ", a4)
+            
+        temp_a6 = resized[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 60), int(height_Final_Rotated*1/8)+20:int(height_Final_Rotated*1/8+30 + 23)+40]
+        #cv.imshow("temp_a6", temp_a6)
+        #cv.waitKey(0) 
+        #print(temp_a6)
+        #print(int(temp_a6.shape[0]/2))
+        #print(int(temp_a6.shape[1]/2))
+        a6 = temp_a6[int(temp_a6.shape[0]/2),int(temp_a6.shape[1]/2)]
+        #print("a6: ", a6)
     
-    #cv.imshow("Color_a1",Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100])
-    #cv.imshow("Color_a7",Final_Crop_rotated[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
-    #cv.imshow("Color_a5",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
-    #cv.imshow("Color_a2",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35])
-    #cv.imshow("Color_a3",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+25])
-    #cv.imshow("Color_a0",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+35:int(height_Final_Rotated*1/8)+65])
-    #cv.imshow("Color_a4",Final_Crop_rotated[int(height_Final_Rotated*1/8)+30:40+30, 65:100])
-    #cv.imshow("Color_a6",Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
-    
-        #Generando los valores para detectar el codigo.
-    temp_a3 = resized[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+30]
-    a3 = temp_a3[int(temp_a3.shape[0]/2),int(temp_a3.shape[1]/2)]
-        
-    #print("a3: ", a3)
-        
-    temp_a2 = resized[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35]
-    a2 = temp_a2[int(temp_a2.shape[0]/2),int(temp_a2.shape[1]/2)]
-    #print("a2: ", a2)
-    
-    #print("height_Final_Rotated*1/8: ",height_Final_Rotated*1/8)
-    temp_a0 = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+35:int(height_Final_Rotated*1/8)+65]
-    a0 = temp_a0[int(temp_a0.shape[0]/2),int(temp_a0.shape[1]/2)]
-    #print("a0: ", a0)
-        
-        
-    temp_a4 = resized[int(height_Final_Rotated*1/8)+30:40+30, 65:100]
-    a4 = temp_a4[int(temp_a4.shape[0]/2),int(temp_a4.shape[1]/2)]
-    #print("a4: ", a4)
-        
-    temp_a6 = resized[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 60), int(height_Final_Rotated*1/8)+20:int(height_Final_Rotated*1/8+30 + 23)+40]
-    #cv.imshow("temp_a6", temp_a6)
-    #cv.waitKey(0) 
-    print(temp_a6)
-    print(int(temp_a6.shape[0]/2))
-    print(int(temp_a6.shape[1]/2))
-    a6 = temp_a6[int(temp_a6.shape[0]/2),int(temp_a6.shape[1]/2)]
-    #print("a6: ", a6)
-
-        
-    code = [a7,a6,a5,a4,a3,a2,a1,a0]
-    cv.imshow("Codigo", resized)
-    cv.waitKey(0)        
-    if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
-        EscalaColores[0] = ColorSupIzq
-    elif ((ColorSupDer <= ColorSupIzq) and (ColorSupDer <= ColorInfDer) and (ColorSupDer <= ColorInfIzq)):
-        EscalaColores[0] = ColorSupDer
-    elif ((ColorInfDer <= ColorSupDer) and (ColorInfDer <= ColorSupIzq) and (ColorInfDer <= ColorInfIzq)):
-        EscalaColores[0] = ColorInfDer
-    else:
-        EscalaColores[0] = ColorInfIzq
-    
-
-                    
-    #print(Matriz_color)
-    #Extraemos el codigo binario
-    CodigoBinString = ""
-    print(code)
-    #print(len(code))
-    i = 0
-    for i in range (0, len(code)):
-        print(i)
-        print("codigo en la posicion i: ", code[i] )
-        if code[i] >75 and code[i]<175:
-            CodigoBinString = CodigoBinString + "1"
+            
+        code = [a7,a6,a5,a4,a3,a2,a1,a0]
+        cv.imshow("Codigo", resized)
+        cv.waitKey(0)        
+        if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
+            EscalaColores[0] = ColorSupIzq
+        elif ((ColorSupDer <= ColorSupIzq) and (ColorSupDer <= ColorInfDer) and (ColorSupDer <= ColorInfIzq)):
+            EscalaColores[0] = ColorSupDer
+        elif ((ColorInfDer <= ColorSupDer) and (ColorInfDer <= ColorSupIzq) and (ColorInfDer <= ColorInfIzq)):
+            EscalaColores[0] = ColorInfDer
         else:
-            CodigoBinString = CodigoBinString + "0"
-            
-#    print("CodigoBinString: ",CodigoBinString)
-#    temporal_ID = int(CodigoBinString, 2)
-#    print("temporal_ID: ", temporal_ID)
-
-
-    #Guardamos los valores
-    if a == 0:
-        print("Codibo binario: ",CodigoBinString)
-        tempID =int(CodigoBinString, 2)
-        tempFloatX = (anchoMesa / GlobalWidth) * Cx;
-        tempFloatY = (largoMesa / GlobalHeigth) * Cy;
-        tempX = int(tempFloatX)
-        tempY = int(tempFloatY)
-        tempTheta = int(tempFloatTheta)
-        pos = [tempX, tempY, tempTheta]
-        print("ID temporal",tempID)
-        print("-------------------")
-        print(" ")
-    else:
-        tempID = 0
-        tempFloatX = (anchoMesa / GlobalWidth) * Cx;
-        tempFloatY = (largoMesa / GlobalHeigth) * Cy;
-        tempX = int(tempFloatX)
-        tempY = int(tempFloatY)
-        tempTheta = int(tempFloatTheta)
-        pos = [0, 0, 0]
+            EscalaColores[0] = ColorInfIzq
+        
+    
+                        
+        #print(Matriz_color)
+        #Extraemos el codigo binario
+        CodigoBinString = ""
+        print(code)
+        #print(len(code))
+        i = 0
+        for i in range (0, len(code)):
+            #print(i)
+            #print("codigo en la posicion i: ", code[i] )
+            if code[i] > TRESHOLD_DETECT_MIN and code[i]< TRESHOLD_DETECT_MAX:
+                CodigoBinString = CodigoBinString + "1"
+            else:
+                CodigoBinString = CodigoBinString + "0"
+                
+    #    print("CodigoBinString: ",CodigoBinString)
+    #    temporal_ID = int(CodigoBinString, 2)
+    #    print("temporal_ID: ", temporal_ID)
+    
+    
+        #Guardamos los valores
+        if a == 0:
+            print("Codibo binario: ",CodigoBinString)
+            tempID =int(CodigoBinString, 2)
+            tempFloatX = (anchoMesa / GlobalWidth) * Cx;
+            tempFloatY = (largoMesa / GlobalHeigth) * Cy;
+            tempX = int(tempFloatX)
+            tempY = int(tempFloatY)
+            tempTheta = int(tempFloatTheta)
+            pos = [tempX, tempY, tempTheta]
+            print("ID temporal",tempID)
+            print("-------------------")
+            print(" ")
+        else:
+            tempID = 0
+            tempFloatX = (anchoMesa / GlobalWidth) * Cx;
+            tempFloatY = (largoMesa / GlobalHeigth) * Cy;
+            tempX = int(tempFloatX)
+            tempY = int(tempFloatY)
+            tempTheta = int(tempFloatTheta)
+            pos = [0, 0, 0]
         
 
-    return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
+        return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
+    return robot.set_robot(0,"", [0,0,0]) #averiguar como se hace para pasar este argumento al objeto.
 
 """
 Definiendo a la interfaz grafica. 
