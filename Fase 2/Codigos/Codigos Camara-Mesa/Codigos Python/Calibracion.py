@@ -21,6 +21,11 @@ Version con Programacion Orientada a Objetos.
 
 26/07/2020: Version 0.3.1 -- Se elimina unas lineas innecesarias. 
                              Se modifica el metodo get_robot_id de la clase vector_robot
+                             
+30/07/2020: Version 0.3.2 -- Ajustes menores al codigo para guardar la imagen del marcador generado.
+31/07/2020: Version 0.3.3 -- Ajustes menores al codigo, se eliminan unos prints de debug
+
+
 ***********************
 Anotaciones iniciales:
 ***********************
@@ -465,13 +470,13 @@ class camara():
                         for i4 in range(v*50+25,v*50+75):
                             Cod[i3,i4] = n * 125
                 k = k + 1
-                cv.imshow('cod', Cod)
-                cv.waitKey(1)
-                edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
+        cv.imshow('cod', Cod)
+        cv.waitKey(1)
+        edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
-                cv.imwrite(edge_img, Cod) #Guarda la foro
-                print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
-                img_counter += 1 #aumenta el contador. 
+        cv.imwrite(edge_img, Cod) #Guarda la foro
+        print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
+        img_counter += 1 #aumenta el contador. 
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
 class Robot():
@@ -677,9 +682,9 @@ class vector_robot():
         #print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
         a = ''
         for i in range (0,size_robot):
-            print("entre al for")
+            #print("entre al for")
             temp_ID = self.Robot_vector[i][0]
-            print("Este es el ID que buscas: ", self.Robot_vector[i][0])
+            #print("Este es el ID que buscas: ", self.Robot_vector[i][0])
             if _id == temp_ID:
                 return self.Robot_vector[i]
             else: 
