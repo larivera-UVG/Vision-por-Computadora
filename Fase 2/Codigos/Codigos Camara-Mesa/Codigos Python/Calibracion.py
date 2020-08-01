@@ -23,6 +23,7 @@ Version con Programacion Orientada a Objetos.
                              Se modifica el metodo get_robot_id de la clase vector_robot
                              
 30/07/2020: Version 0.3.2 -- Ajustes menores al codigo para guardar la imagen del marcador generado.
+31/07/2020: Version 0.3.3 -- Ajustes menores al codigo, se eliminan unos prints de debug
 
 
 ***********************
@@ -681,9 +682,9 @@ class vector_robot():
         #print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
         a = ''
         for i in range (0,size_robot):
-            print("entre al for")
+            #print("entre al for")
             temp_ID = self.Robot_vector[i][0]
-            print("Este es el ID que buscas: ", self.Robot_vector[i][0])
+            #print("Este es el ID que buscas: ", self.Robot_vector[i][0])
             if _id == temp_ID:
                 return self.Robot_vector[i]
             else: 
