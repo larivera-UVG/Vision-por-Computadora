@@ -23,7 +23,13 @@ Version con Programacion Orientada a Objetos.
                              Se modifica el metodo get_robot_id de la clase vector_robot
                              
 30/07/2020: Version 0.3.2 -- Ajustes menores al codigo para guardar la imagen del marcador generado.
+
 31/07/2020: Version 0.3.3 -- Ajustes menores al codigo, se eliminan unos prints de debug
+
+02/08/2020: Version 0.4.0 -- Se agreaga un nuevo __init__ a la clase de Robot, esto con el fin de tener una funcion
+                             de capturar foto. La clase camara calibra, pero ahora, la clase robot tiene su propio 
+                             metodo de captura de imagen que se recalibra con los parametros encontrados (mientras
+                             las condiciones de luz sean las mismas) 
 
 
 ***********************
@@ -50,7 +56,8 @@ Canny_Factor = 2.5 #factor de multiplicacion para el limite superior de Canny
 Calib_param = 40 #Factor de calibracion para Canny, este factor se puede variar
                #para una mejor deteccion de los bordes circulares.
 Treshold = 1
-
+Matrix = []
+MyWiHe = []
 
 """ 
 **********
@@ -286,7 +293,7 @@ class camara():
         None.
 
         """
-        self.cap = cv.VideoCapture(self.cam_num)
+        #self.cap = cv.VideoCapture(self.cam_num)
         self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
         self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
         
@@ -406,12 +413,15 @@ class camara():
         None.
 
         """
+        global MyWiHe
+        global Matrix
         img_counter = 0
         Esqui = get_esquinas(Snapshot, Calib_param, Treshold)
         Matrix = getHomogenea(Esqui)
         MyWiHe = getWiHe(Esqui)
         CaliSnapshot = cv.warpPerspective(Snapshot, Matrix, (MyWiHe[0],  MyWiHe[1]))
         
+        #Robot.Get_NewFrame(self,self.Matrix, self.MyWiHe)
         
         edge_img = "opencv_CalibSnapshot_{}.png".format(img_counter) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
@@ -480,8 +490,36 @@ class camara():
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
 class Robot():
+
     """
     """
+        
+    def __init__(self, cam_num):
+        self.cap = cv.VideoCapture(cam_num)
+        
+    def initialize(self,WIDTH,HEIGHT):
+        """
+        
+
+        Parameters
+        ----------
+        WIDTH : Ancho del frame.
+        HEIGHT : Largo del frame.
+
+        Returns
+        -------
+        None.
+
+        """
+        #self.cap = cv.VideoCapture(self.cam_num)
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        
+    def Get_NewFrame(self,Mat, WiHe):
+        self.NewMat = Mat
+        self.MyWiHe_new = WiHe
+        print("NewMat", self.NewMat)
+        print("MyWiHe_new", self.MyWiHe_new)
         
     def set_robot(self, _id, _ip, _pos):
         """
@@ -607,6 +645,33 @@ class Robot():
         speed.append(self.vel_right)
         speed.append(self.vel_left)
         return speed
+    
+    def Capture_frame(self):
+        """
+        
+
+        Returns
+        -------
+        Retorna el frame capturado al momento de presionar la tecla ESC.
+
+        """
+        global MyWiHe
+        global Matrix
+        while True:
+            ret, self.last_frame_robot = self.cap.read()
+            cv.imshow("Captura de pose", self.last_frame_robot) #muestra el video. 
+            k = cv.waitKey(1) #k = 1 es para espacio
+            if k%256 == 27:
+                    # ESC presionado para cerrar
+                cv.destroyWindow("Captura de pose")
+                cv.waitKey(1)
+                print("Escape presionado, cerrando...")
+                break
+        #print("NewMat", self.NewMat)
+        #print("MyWiHe_new", self.MyWiHe_new)
+        #MyWiHe = self.MyWiHe_new
+        self.last_frame_robot = cv.warpPerspective(self.last_frame_robot, Matrix, (MyWiHe[0],  MyWiHe[1]))
+        return self.last_frame_robot
     
     
 class vector_robot():
