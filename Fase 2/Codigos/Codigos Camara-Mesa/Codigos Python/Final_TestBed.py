@@ -300,8 +300,8 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
     print("Dimensiones actuales: ")
     print(height_Final_Rotated, width_Final_Rotated)
-    
-    if (height_Final_Rotated < (MAX_IMAGE_SIZE) or width_Final_Rotated < (MAX_IMAGE_SIZE)):
+    scale_percent = (codeSize/3.0)  # percent of original size
+    if (height_Final_Rotated < (MAX_IMAGE_SIZE * scale_percent) or width_Final_Rotated < (MAX_IMAGE_SIZE * scale_percent)):
         print("cumpli el if")
         ctrl = 0
     else:
@@ -314,7 +314,6 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     #            resized = Final_Crop_rotated
     #    else:
         #print("Este es el if resized")
-        scale_percent = (3.0/codeSize)  # percent of original size
         height_percent = (116/height_Final_Rotated)
         width_percent = (116/height_Final_Rotated)
         print("-----------------")
@@ -634,7 +633,7 @@ class Window(QWidget):
         self.Toma_pose()
 
     def capturar_button(self):
-        btn1 = QPushButton("Capturar", self)
+        btn1 = QPushButton("Calibrar", self)
         btn1.move(n,50)
         self.Init_Cam
         btn1.clicked.connect(self.capturar)
@@ -645,7 +644,7 @@ class Window(QWidget):
         btn2.clicked.connect(self.limpiar_pantalla)
         
     def codigo_button(self):
-        btn3 = QPushButton("Codigo", self)
+        btn3 = QPushButton("Generar Codigo", self)
         btn3.move(n2,90)
         btn3.clicked.connect(self.codigo)
         
@@ -668,7 +667,7 @@ class Window(QWidget):
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
         self.lineEdit.setFixedWidth(120)
-        self.lineEdit.move(n2+92,93)
+        self.lineEdit.move(n2+140,93)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
     
