@@ -6,31 +6,45 @@ Created on Tue Jul  7 12:26:33 2020
 Codigo que implementa Calibracion y generacion de codigos para la mesa de pruebas
 Proximamente: detectar la pose de los robots.
 7/07/2020: Version 0.1.0 -- Se incluye la GUI con el boton de calibrar y generacion de codigos
-                            Se agrega el boton de limpiar pantallas generadas por OpenCV
+                            Se agrega el boton de limpiar pantallas generadas por OpenCV.
+                            
 7/07/2020: Vesion 0.1.1 -- Se agrega un textbox para el numero del generador de codigo, 
-                           ademas de corregir su posicion en la GUI
+                           ademas de corregir su posicion en la GUI.
+                           
 12/07/2020: Version 0.2.0 -- Se agrega el boton para la toma de pose de datos, ademas de las funciones 
                             para reconocer la posicion de los robots. Fallas aun en la deteccion del codigo.
+                            
 12/07/2020: Version 0.2.1 -- Pruebas preeliminares de rotacion del codigo correctas. Se realizaran mas pruebas
-                            para verificar que funcione. Proximo pasos: mejorar la deteccion del codigo.      
+                            para verificar que funcione. Proximo pasos: mejorar la deteccion del codigo.   
+                            
 21/07/2020: Version 0.3.0 -- Se arregla la parte del pivote, gira exitosamente siempre para dejar al pivote en la esquina superior izquierda.
                             Se arregla la identificacion de codigo.
+                            
                             Para un mejor resultado, iluminar bien los codigos para que pueda detectar el pixel correctamente, sino, puede fallar.
 26/07/2020: Version 0.4.0 -- Se arregla la identifcacion de codigo, ahora detecta codigos entre 3x3 y hasta 7x7 (pruebas realizadas)
                              Se agrega en la GUI el boton de toma de pose para unificar los 3 programas en uno solo.
+                             
 30/07/2020: Version 0.4.1 -- Se agrega un cuadro de texto para el tama;o de los marcadores o codigos, esto con el fin de
                             facilitar al usuario ingresar el tama;o del codigo desde la GUI y no tener que compilar el 
                             programa nuevamente cada vez que se desea cambiar de tama;o.
                             Detecta tama;os desde 3x3 hasta 10x10 (siempre cuidando la ilumacion)
                             Se agrega un if para evitar que otros objetos sean detectados, este if se maneja con las
-                            variables gloables MAX_IMAGE_SIZE  y TRESHOLD_IMAGE_SIZE. La primera controla el tama;o 
+                            variables gloables MIN_IMAGE_SIZE  y TRESHOLD_IMAGE_SIZE. La primera controla el tama;o 
                             de la imagen (en promedio es una imagen de 115x115) y el segundo controla el treshold
                             de tama;o porque puede variar minimamente.
+                            
 31/07/2020: Version 0.4.2 -- Arreglos menores a la deteccion de tama;o de imagen, se agrega las siguientes variables:
                             TRESHOLD_DETECT_MIN y TRESHOLD_DETECT_MAX. Por la forma en como se identifican los IDs se 
                             necesita detectar los cuadros grises, según sea la iluminación, este parametro puede variar
                             entre los 70 (o hasta 65) hasta un maximo de 130 (mas o menos). Con estas variables se 
                             controlan esos tresholds para detectar rangos de gris adecuados. 
+                            
+02/08/2020: Version 0.5.0 -- Se elimina la funcion reescalar por tama;o de codigo o marcador, ahora, reescala 
+                            por tama;o de de imagen (lo lleva una imagen de 116x116)
+                            Se agregan mas funciones a la GUI, en este caso una funcion de seteo de camara de la clase
+                            robot (que hace lo mismo que la clase camara), y abre una nueva ventana para tomar una nueva
+                            foto pero se calibra utilizando los parametros ya encontrados. 
+                            Esta version esta lista para los multi-hilos.
 """
 
 
@@ -54,7 +68,10 @@ WIDTH = 960
 HEIGTH = 720
 
 #Inicializacion del objeto de la camara para el uso en la GUI
-camara = camara(0)
+NUM_CAM = 0
+
+camara = camara(NUM_CAM)
+robot = Robot(0)
 
 #-------------------------------------------------------
 #Para la generacion de los codigos y la tome de poses
@@ -77,7 +94,7 @@ MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 Code_size = 1.0
 
-MAX_IMAGE_SIZE = 100
+MAX_IMAGE_SIZE = 75
 
 
 TRESHOLD_DETECT_MIN = 65
@@ -234,7 +251,7 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     print(" ")
     print("-----------------")
     print("Ingresando a getRobot_fromSnapshot")
-    robot = Robot()
+    #robot = Robot()
     #print("Primer valor del contorno: ", RecContorno[1] )
     
     #Para obtener el snap recortado.
@@ -284,50 +301,56 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     print("Dimensiones actuales: ")
     print(height_Final_Rotated, width_Final_Rotated)
     
-#    if (height_Final_Rotated > 110 and height_Final_Rotated < 125):
-#        if (width_Final_Rotated > 110 and width_Final_Rotated < 130):
-#            resized = Final_Crop_rotated
-#    else:
-    #print("Este es el if resized")
-    scale_percent = (3.0/codeSize)  # percent of original size
-    print("-----------------")
-    print("% de escala", scale_percent)
-    print("Medida temporal: ", width_Final_Rotated * scale_percent)
-    print("-----------------")
-    width = int(width_Final_Rotated * scale_percent)
-    height = int(height_Final_Rotated* scale_percent)
-    dim = (width, height)
-    print("Dimensiones resized: ")
-    print("-----------------")
-    print(dim)
-    # resize image
-    resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
-    
-    cv.imshow("Final_crop_resized",resized)
-        
-    height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
-    
-    
-    #print("probando el if de las imagenes")
-    
-    print("height_Final_Rotated: ", height_Final_Rotated)
-    print("width_Final_Rotated: ", width_Final_Rotated)
-    print("-----------------")
     if (height_Final_Rotated < (MAX_IMAGE_SIZE) or width_Final_Rotated < (MAX_IMAGE_SIZE)):
         print("cumpli el if")
         ctrl = 0
     else:
         ctrl = 1
-    
-    #print("la forma del crop", Final_Crop_rotated.shape)
-    #print("El crop", Final_Crop_rotated)
-    #print("height_Final_Rotated: ",height_Final_Rotated)
-    #print("width_Final_Rotated: ",width_Final_Rotated)
-    
-    #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
-    #print("Final_Crop_rotated.shape[1]", Final_Crop_rotated.shape[1])
-    #print("Final_Crop_rotated.shape[0]", Final_Crop_rotated.shape[0])
+        
     if ctrl == 1:
+    
+    #    if (height_Final_Rotated > 110 and height_Final_Rotated < 125):
+    #        if (width_Final_Rotated > 110 and width_Final_Rotated < 130):
+    #            resized = Final_Crop_rotated
+    #    else:
+        #print("Este es el if resized")
+        scale_percent = (3.0/codeSize)  # percent of original size
+        height_percent = (116/height_Final_Rotated)
+        width_percent = (116/height_Final_Rotated)
+        print("-----------------")
+        print("% de escala", scale_percent)
+        print("Medida temporal: ", width_Final_Rotated * scale_percent)
+        print("-----------------")
+        width = int(width_Final_Rotated * width_percent)
+        height = int(height_Final_Rotated* height_percent)
+        dim = (width, height)
+        print("Dimensiones resized: ")
+        print("-----------------")
+        print(dim)
+        # resize image
+        resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
+        
+        cv.imshow("Final_crop_resized",resized)
+            
+        height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
+        
+        
+        #print("probando el if de las imagenes")
+        
+        print("height_Final_Rotated: ", height_Final_Rotated)
+        print("width_Final_Rotated: ", width_Final_Rotated)
+        print("-----------------")
+    
+        
+        #print("la forma del crop", Final_Crop_rotated.shape)
+        #print("El crop", Final_Crop_rotated)
+        #print("height_Final_Rotated: ",height_Final_Rotated)
+        #print("width_Final_Rotated: ",width_Final_Rotated)
+        
+        #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
+        #print("Final_Crop_rotated.shape[1]", Final_Crop_rotated.shape[1])
+        #print("Final_Crop_rotated.shape[0]", Final_Crop_rotated.shape[0])
+
         a = 0
         
     
@@ -446,7 +469,7 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
         temp_a1 = resized[int(height_Final_Rotated*1/8):40, 65:100]
         temp_a5 = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
-        temp_a7 = resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26]
+        temp_a7 = resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(width_Final_Rotated*1/2)+20 :int(width_Final_Rotated*1/2) + 45]
             
        
         #print(int(temp_a1.shape[1]/2))
@@ -494,15 +517,15 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         #print(ColorInfIzq)
         #print(" ")
         
-        cv.imshow("Color_a0",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52])
-        cv.imshow("Color_a0_2",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(width_Final_Rotated*1/8)+35:int(width_Final_Rotated*1/8)+65])
-        #cv.imshow("Color_a1",resized[int(height_Final_Rotated*1/8):40, 65:100])
-        #cv.imshow("Color_a2",resized[int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 30)+22, 12:38])
-        #cv.imshow("Color_a3",resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30])
-        #cv.imshow("Color_a4",resized[int(height_Final_Rotated*1/8)+30:40+30, 65:100])
-        #cv.imshow("Color_a5",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
-        #cv.imshow("Color_a6",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
-        #cv.imshow("Color_a7",resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(height_Final_Rotated*1/2) :int(height_Final_Rotated*1/2) + 26])
+        #cv.imshow("Color_a0",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52])
+        cv.imshow("Color_a0_2",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(width_Final_Rotated*1/8)+25:int(width_Final_Rotated*1/8)+55])
+        cv.imshow("Color_a1",resized[int(height_Final_Rotated*1/8):40, 65:100])
+        cv.imshow("Color_a2",resized[int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 30)+22, 12:38])
+        cv.imshow("Color_a3",resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30])
+        cv.imshow("Color_a4",resized[int(height_Final_Rotated*1/8)+30:40+30, 65:95])
+        cv.imshow("Color_a5",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
+        cv.imshow("Color_a6",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
+        cv.imshow("Color_a7",resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(width_Final_Rotated*1/2)+20 :int(width_Final_Rotated*1/2) + 45])
         
             #Generando los valores para detectar el codigo.
         temp_a3 = resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30]
@@ -520,7 +543,7 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         #print("a0: ", a0)
             
             
-        temp_a4 = resized[int(height_Final_Rotated*1/8)+30:40+30, 65:100]
+        temp_a4 = resized[int(height_Final_Rotated*1/8)+30:40+30, 65:95]
         a4 = temp_a4[int(temp_a4.shape[0]/2),int(temp_a4.shape[1]/2)]
         #print("a4: ", a4)
             
@@ -629,6 +652,7 @@ class Window(QWidget):
     def Toma_pose(self):
         btn4 = QPushButton("Tomar Pose", self)
         btn4.move(n2,140)
+        self.Init_pose()
         btn4.clicked.connect(self.pose)
         
     def pose(self):
@@ -636,8 +660,10 @@ class Window(QWidget):
         if text == '':
             text = '3'
         numCod = int(text)
-        Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
-        getRobot_Code(Snapshot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        snapshot_robot = robot.Capture_frame()
+        cv.imshow("CapturaPoseRobot", snapshot_robot)
+        #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
+        getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
@@ -665,6 +691,9 @@ class Window(QWidget):
         
     def Init_Cam(self):
         camara.initialize(WIDTH, HEIGTH)
+    
+    def Init_pose(self):
+        robot.initialize(WIDTH, HEIGTH)
         
     def capturar(self):
         foto = camara.get_frame()
