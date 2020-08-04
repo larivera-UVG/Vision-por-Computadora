@@ -53,7 +53,7 @@ asi como la identifacion de sus codigos o marcadores.
 """
 
 
-from Calibracion import camara, Robot, getRobot_Code
+from Calibracion import camara, Robot, getRobot_Code #libreria swarm para la deteccion de la pose de agentes
 import cv2 as cv #importando libreria para opencv 
 
 from PySide2.QtCore import Qt
