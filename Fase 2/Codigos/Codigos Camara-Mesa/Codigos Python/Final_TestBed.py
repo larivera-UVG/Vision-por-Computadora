@@ -319,17 +319,29 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     
         
         """
+        Este codigo esta pensado para funcionar reconociendo imagenes entre 114 x 114 hasta 120 x 120,
+        se define como medida 116x166.
+        El objetivo de esto es llevar los codigos a estas medidas en caso de ser necesario (si son de 3x3 puede que no)
+        Por lo tanto, se calcula un porcentaje diferente tanto para el width como para el heigth de la imagen.
         """
-        height_percent = (116/height_Final_Rotated)
+        
+        #calculo del porcentaje de escala para las medidas
+        height_percent = (116/height_Final_Rotated) 
         width_percent = (116/height_Final_Rotated)
         
+        #para debug, separador e imprime el factor de escala de la imagen.
         print("-----------------")
         print("% de escala", scale_percent)
+        
+        #para debug, muestra una de las medidas temporales de la imagen.
         print("Medida temporal: ", width_Final_Rotated * scale_percent)
         print("-----------------")
         
+        #calcula las nuevas medidas
         width = int(width_Final_Rotated * width_percent)
         height = int(height_Final_Rotated* height_percent)
+        
+        #para debug, imprime como tupla las nuevas medidas.
         dim = (width, height)
         
         print("Dimensiones resized: ")
@@ -339,13 +351,14 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         # resize image
         resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
         
+        #para debug muestra la imagen recortada
         cv.imshow("Final_crop_resized",resized)
             
+        #obtiene las nuevas medidas para los calculos 
         height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
         
         
-        #print("probando el if de las imagenes")
-        
+        #ppara debug, muestra las medidas, separador.
         print("height_Final_Rotated: ", height_Final_Rotated)
         print("width_Final_Rotated: ", width_Final_Rotated)
         print("-----------------")
@@ -357,6 +370,34 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     
         
         if a == 0:
+            
+            """
+            La mayoria de imshow() son para debug y mostrar las porciones recortadas.
+            Lo que se hace aqui es buscar e identificar los cuadros dentro de cada identificador o codigo.
+            Las medidas estan pensadas para imagenes con las medidas mencionadas, por eso se hace el resize.
+            
+            Estas lineas no se deben modificar a salvo este fallando la identifacion de los cuadros o se dese otro 
+            tipo de identificacion. 
+            
+            Basicamente, por las caracteristicas del codigo/identificador utilizado, se tiene la siguiente figura:
+                
+            |-----------------------
+            |   P  |    1  |   2   |
+            |   -  |   -   |   -   |
+            |   3  |   4   |   5   |
+            |   -  |   -   |   -   |
+            |   6  |   7   |   8   | 
+            |------------------------
+            
+            Donde P representa al pivote y cuadro blanco y los numeros del 1 al 8 son los bits a0 hasta a7 para un 
+            codigo de hasta 255.
+            
+            Este codigo identifica el pivote, y lo alinea siempre en la esquina superior izquierda (por eso se le
+            aplica un filtro de blanco y negro para que los valores de igual forma queden entre 0 y 255).
+            Luego, dependiendo donde este el pivote se rota hasta alinearlo. La rotacion inicial solo lo coloca con angulo 0.
+            Finalmente, se ubican los diferentes cuadros y asi es como se identifica el codigo: 1 para gris, 0 para negro
+            dependiendo los tresholds establecidos. 
+            """
             #print(height_Final_Rotated)
             temp_ColorSupIzq = resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
             temp_ColorInfIzq = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
@@ -429,14 +470,11 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
            
            #cuadro superior derecho: 15:45, 70:105
            #cuadro inferior derecho: 70:105, 70:105
-        tempFloatTheta = theta
+           
+        tempFloatTheta = theta #el angulo al que esta rotado el codigo. 
         
-        #print(ColorSupDer)
-        #print(ColorSupIzq)
-        #print(ColorInfDer)
-        #print(ColorInfIzq)
-       # if Final_Crop_rotated.shape[0] > 14 and Final_Crop_rotated.shape[1] > 40:
-        #a = 0
+
+        #comparacion mencionada, detecta cual de las esquinas tiene el mayor color para hacer la rotacion.
         if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
             print("90 en contra del reloj")
             print(" ")
@@ -467,6 +505,9 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         #ColorInfDer = temp_ColorInfDer[int(temp_ColorInfDer.shape[0]/2),int(temp_ColorInfDer.shape[1]/2)]
         #ColorInfIzq = temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)]
         
+        
+        #a partir de aqui, se localizan los otros 8 cuadros dentro de la imagen y se calcula su valor. 
+        
         #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
         temp_a1 = resized[int(height_Final_Rotated*1/8):40, 65:100]
         temp_a5 = resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
@@ -474,10 +515,16 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
             
        
         #print(int(temp_a1.shape[1]/2))
+        
+        #calcula justo el centro del cuadro para evitar tomar otros colores que no son. Solo toma un valor
+        #entre 0 y 255 (255 para blanco) aunque con buena iluminacion, el gris esta entre 100 y 130, con iluminacion media
+        #puede estar entre 60 y 80.
     
         a1 = temp_a1[int(temp_a1.shape[0]/2),int(temp_a1.shape[1]/2)]
         a7 = temp_a7[int(temp_a7.shape[0]/2),int(temp_a7.shape[1]/2)]
         a5 = temp_a5[int(temp_a5.shape[0]/2),int(temp_a5.shape[1]/2)]
+        
+        
             #print("temp_ColorSupIzq.shape", temp_ColorSupIzq.shape)
             #print("Midle array image gray sup izq: ", temp_ColorSupIzq[int(temp_ColorSupIzq.shape[0]/2),int(temp_ColorSupIzq.shape[1]/2)])
             #print("Midle array image gray inf izq: ", temp_ColorInfIzq[int(temp_ColorInfIzq.shape[0]/2),int(temp_ColorInfIzq.shape[1]/2)])
@@ -518,6 +565,9 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         #print(ColorInfIzq)
         #print(" ")
         
+        
+        #para debug, muestra los cuadros detectados
+        #--------------------------------
         #cv.imshow("Color_a0",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52])
         cv.imshow("Color_a0_2",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(width_Final_Rotated*1/8)+25:int(width_Final_Rotated*1/8)+55])
         cv.imshow("Color_a1",resized[int(height_Final_Rotated*1/8):40, 65:100])
@@ -527,6 +577,8 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         cv.imshow("Color_a5",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
         cv.imshow("Color_a6",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
         cv.imshow("Color_a7",resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(width_Final_Rotated*1/2)+20 :int(width_Final_Rotated*1/2) + 45])
+        #--------------------------------
+        
         
             #Generando los valores para detectar el codigo.
         temp_a3 = resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30]
@@ -558,9 +610,16 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         #print("a6: ", a6)
     
             
+        #guarda los valores en este vector para luego proceder a su identificacion
         code = [a7,a6,a5,a4,a3,a2,a1,a0]
+        
+        #para debug, muestra como quedo el codigo al final
         cv.imshow("Codigo", resized)
-        cv.waitKey(0)        
+        cv.waitKey(0)      
+        
+        
+        #NO SE USA, PERO DE MOMENTO, NO SE BORRARA HASTA VERIFICAR QUE NO INTERFIERA CON EL FUNCIONAMIENTO 
+        #DE ESTE CODIGO
         if ((ColorSupIzq <= ColorSupDer) and (ColorSupIzq <= ColorInfDer) and (ColorSupIzq <= ColorInfIzq)):
             EscalaColores[0] = ColorSupIzq
         elif ((ColorSupDer <= ColorSupIzq) and (ColorSupDer <= ColorInfDer) and (ColorSupDer <= ColorInfIzq)):
@@ -574,37 +633,54 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
                         
         #print(Matriz_color)
         #Extraemos el codigo binario
+        
+        #Variable que guardara el valor del codigo
         CodigoBinString = ""
+        
+        #para debug, imprime el valor del vector de bits.
         print(code)
         #print(len(code))
-        i = 0
+        
+        i = 0 #para evitar alguna sobreescritura de esta variable.
         for i in range (0, len(code)):
             #print(i)
             #print("codigo en la posicion i: ", code[i] )
+            
+            #con los tresholds establecidos, busca que valores sean grises y los cataloga como 1,
+            #sino, los catalaga como 0.
             if code[i] > TRESHOLD_DETECT_MIN and code[i]< TRESHOLD_DETECT_MAX:
+                
                 CodigoBinString = CodigoBinString + "1"
             else:
                 CodigoBinString = CodigoBinString + "0"
-                
-    #    print("CodigoBinString: ",CodigoBinString)
-    #    temporal_ID = int(CodigoBinString, 2)
-    #    print("temporal_ID: ", temporal_ID)
+
     
     
         #Guardamos los valores
         if a == 0:
+            
+            #para debug, imprime el codigo binario en formato string
             print("Codibo binario: ",CodigoBinString)
+            
+            #esta funcion pasa el string de bits a formato de numero int.
             tempID =int(CodigoBinString, 2)
+            
+            #calcula las posiciones y demas parametros del robot.
             tempFloatX = (anchoMesa / GlobalWidth) * Cx;
             tempFloatY = (largoMesa / GlobalHeigth) * Cy;
             tempX = int(tempFloatX)
             tempY = int(tempFloatY)
             tempTheta = int(tempFloatTheta)
             pos = [tempX, tempY, tempTheta]
+            
+            #para debug y seperacion
             print("ID temporal",tempID)
             print("-------------------")
             print(" ")
+            
         else:
+            #en caso de falla, aunque por las modificaciones ya no se usa,
+            #de igual forma se deja para evitar errores
             tempID = 0
             tempFloatX = (anchoMesa / GlobalWidth) * Cx;
             tempFloatY = (largoMesa / GlobalHeigth) * Cy;
@@ -614,8 +690,9 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
             pos = [0, 0, 0]
         
 
-        return robot.set_robot(tempID,"", pos) #averiguar como se hace para pasar este argumento al objeto.
-    return robot.set_robot(0,"", [0,0,0]) #averiguar como se hace para pasar este argumento al objeto.
+        
+        return robot.set_robot(tempID,"", pos) #si ctrl es 1, se retorna el valor correcto
+    return robot.set_robot(0,"", [0,0,0]) #si ctrl es 0, retorna un araray vacio.
 
 """
 Definiendo a la interfaz grafica. 
