@@ -3,8 +3,9 @@
 """
 Created on Tue Jul  7 12:26:33 2020
 @author: Jose Pablo Guerra
-Codigo que implementa Calibracion y generacion de codigos para la mesa de pruebas
-Proximamente: detectar la pose de los robots.
+Codigo que implementa Calibracion y generacion de codigos para la mesa de pruebas y la deteccion de pose de robots
+asi como la identifacion de sus codigos o marcadores.
+
 7/07/2020: Version 0.1.0 -- Se incluye la GUI con el boton de calibrar y generacion de codigos
                             Se agrega el boton de limpiar pantallas generadas por OpenCV.
                             
@@ -52,7 +53,7 @@ Proximamente: detectar la pose de los robots.
 """
 
 
-from Calibracion import camara, Robot, getRobot_Code
+from Swarm_robotic import camara, Robot, getRobot_Code #libreria swarm para la deteccion de la pose de agentes
 import cv2 as cv #importando libreria para opencv 
 
 from PySide2.QtCore import Qt
