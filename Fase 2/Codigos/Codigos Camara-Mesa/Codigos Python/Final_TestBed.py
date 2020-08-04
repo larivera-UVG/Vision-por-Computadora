@@ -91,13 +91,13 @@ anchoMesa = 14.5
 largoMesa = 28.0
 
 #de momento no se usan
-GlobalCodePixThreshold = 80
-GlobalColorDifThreshold = 10
+#GlobalCodePixThreshold = 80
+#GlobalColorDifThreshold = 10
 
 #si se usan
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
-Code_size = 1.0 #no se usa
+#Code_size = 1.0 #no se usa
 
 #si se usan
 MAX_IMAGE_SIZE = 75
