@@ -49,6 +49,7 @@ Proximamente: detectar la pose de los robots.
 
 
 from Calibracion import camara, vector_robot, Robot
+import cv2 as cv #importando libreria para opencv 
 
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QVBoxLayout, QTextEdit,QLineEdit,QInputDialog
@@ -70,33 +71,36 @@ HEIGTH = 720
 #Inicializacion del objeto de la camara para el uso en la GUI
 NUM_CAM = 0
 
-camara = camara(NUM_CAM)
-robot = Robot(0)
+camara = camara(NUM_CAM) #Inicializa el objeto camara para sus funciones respectivas
+robot = Robot(NUM_CAM) #Inicializa el objeto robot para la toma de poses y captura de imagen.
 
 #-------------------------------------------------------
 #Para la generacion de los codigos y la tome de poses
 
-import cv2 as cv #importando libreria para opencv 
-#from Robot import vector_robot, Robot
-import numpy as np
 
+#from Robot import vector_robot, Robot
+
+#de momento no se usan
 SQRTDE2 = 1.41421356
 MyPI = 3.14159265
 
+#revisar si es que se usan
 anchoMesa = 14.5
 largoMesa = 28.0
 
+#de momento no se usan
 GlobalCodePixThreshold = 80
 GlobalColorDifThreshold = 10
 
-
+#si se usan
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
-Code_size = 1.0
+Code_size = 1.0 #no se usa
 
+#si se usan
 MAX_IMAGE_SIZE = 75
 
-
+#revisar si se usan
 TRESHOLD_DETECT_MIN = 65
 TRESHOLD_DETECT_MAX = 130
 
@@ -107,39 +111,56 @@ Definiendo las funciones para la toma de poses.
 """
 
 def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
-    vector = vector_robot()
-    blur_size = (3,3)
-    height_im, width_im = calib_snapshot.shape[:2]
+    """
+    
+
+    Parameters
+    ----------
+    calib_snapshot : TYPE
+        DESCRIPTION.
+    Canny_inf : TYPE
+        DESCRIPTION.
+    Canny_sup : TYPE
+        DESCRIPTION.
+    Medida_cod : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    vector : TYPE
+        DESCRIPTION.
+
+    """
+    vector = vector_robot() #inicializa el objeto vector_robot para agregar los diferentes parametros de cada robot como vector
+    blur_size = (3,3) #para la difuminacion, leer documentacion
+    height_im, width_im = calib_snapshot.shape[:2] #obtiene los tama;os de la imagen capturada
     
     #PixCodeSize = Medida_cod * width_im / anchoMesa
     
-    gray_img = cv.cvtColor(calib_snapshot, cv.COLOR_BGR2GRAY)
-    gray_blur_img = cv.blur(gray_img, blur_size)
-    canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3)
+    gray_img = cv.cvtColor(calib_snapshot, cv.COLOR_BGR2GRAY) #se le aplica filtro de grises
+    gray_blur_img = cv.blur(gray_img, blur_size) #difuminacion para elimiar detalles innecesarios
+    canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3) #a esto se le aplica Canny para la deteccion de bordes
 
     
+    #para debug
+    #muestra la imagen de canny para ver que contornos va a detectar.
     cv.imshow("Canny", canny_img)
     cv.waitKey(0)
     
+    #obtiene los contornos de la imagen de Canny
     image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    cv.drawContours(calib_snapshot, contour,  -1, (255,0,0), 2) #dibuja los contornos
-    cv.imshow("Contornos", calib_snapshot)
-    cv.waitKey(0)
-    #canny_img = cv.blur(canny_img, blur_size)
-    #print("PixCodeSize: ", PixCodeSize)
-    #a = 0
-    #LastRecCod = 0
     
-    a = 0
-    #contorno_anterior = 1
-    #print("Este es el maximo del contador",len(contour) - 1)
+    #para debug
+    #dibuja los contornos detectados, descomentar estas lineas:
+        
+    #cv.drawContours(calib_snapshot, contour,  -1, (255,0,0), 2) #dibuja los contornos
+    #cv.imshow("Contornos", calib_snapshot)
+    #cv.waitKey(0)
+
     for c in contour:
-        #if contorno_anterior > len(contour) - 1:
-        #    contorno_anterior = len(contour) - 1
-        #print(c.shape[0] - contour[contorno_anterior].shape[0])
-        #if abs(c.shape[0] - contour[contorno_anterior].shape[0]) > 30 and abs(c.shape[0] - contour[contorno_anterior].shape[0]) < 35:
-        #    c = contour[contorno_anterior]
-        #contorno_anterior+=1
+
+        #para debug, imprimi separadores de lo que se va realizando.
+        
         print(" ")
         print("-----------------")
         #print("Este es el contador",a)
@@ -149,92 +170,67 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
         #Rx, Ry = RecCod[0] #SingleRecCod.center
         #print("Contornos", RecCod[0])
         #print("Contornos", RecCod[0][0])
-        center, size, theta = RecCod #SingleRecCod.size
-        center, size = tuple(map(int, center)), tuple(map(int, size))
+        
+        center, size, theta = RecCod #SingleRecCod.size, del codigo de C++, obtiene el angulo, centro y tama;o del contorno
+        center, size = tuple(map(int, center)), tuple(map(int, size)) #lo vuelve un int.
+        
+        #para debug, imprimi el valor del centro.
         #print(center)
-        #print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
-        #print("size[0]: ", size[0])
-        #print("size[1]: ", size[1])
-        #print("Resta entre width y PixCode: ",abs(size[0] - PixCodeSize))
-        #print("Resta entre heigth: ",abs(size[1] - PixCodeSize))
+
+        
+        #separador
         print("-----------------")
         print(" ")
         
-        #print("A punto de entrar al primer if")
-        #if LastRecCod  != 0:
-            #print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
-            #print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
-            
-        rescale_factor_size = Medida_cod/3
+
+        """
+        A continuacion se detalla el procedimiento:
+            Se obtiene un factor de escala entre la medida real del marcador o identificador y el tama;o estandar
+            con el cual se hizo este codigo, es decir, 3. Este rescale_factor sirve para evitar que contornos muy peque;os
+            pasen, aunque igual, mas adelante, hay otro filtro que elimina eso. 
+        """
+        rescale_factor_size = Medida_cod/3 #factor de escala
+        
+        #para debug, imprime el tama;o del contorno, se puede descomentar
         print("Size[0] y size[1]: ", size[0], size[1])
-        #print(size[1])
+
+        #Compara si ambos tama;os estan por arriba del minimo para no tener imagenes o contornos muy peque;os
+        #y nada relevantes para este programa.
         if (size[0] > (40 * rescale_factor_size) and size[1] > (40*rescale_factor_size)): #):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
             vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
-        """
-        if (((abs(size[1] - PixCodeSize) < GlobalCodePixThreshold) and (abs(size[0] - PixCodeSize) < GlobalCodePixThreshold))):
-            print(" ")
-            print("-----------------")
-            print("ingresando al primer if")
-                
-            if a == 0:
-                print("Entre la primera vez de a")
-            elif a == 1:
-                print("entre la segunda vez de a")
-    
-            #print("GlobalCodePixThreshold: ", GlobalCodePixThreshold)
-            #LastRecCod = RecCod
-            #x, y = LastRecCod[0] #LastRecCod.center
-            #if a == 1:
-                #LastRecCod = RecCod
-            #    x, y = LastRecCod[0] #LastRecCod.center
-            #if a == 0:
-                #a = 1
-             #   print("ingresando al segundo if")
-             #   print("-----------------")
-             #   print(" ")
-        
-             #   vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
-             #   LastRecCod = RecCod
-                #x, y = LastRecCod[0] # LastRecCod.center
-                #print(RecCod[0][0])
-            if LastRecCod  != 0:
-                print("abs(center[0] - LastRecCod[0][0])", abs(center[0] - LastRecCod[0][0]))
-                print("abs(center[1] - LastRecCod[1][0])", abs(center[1] - LastRecCod[1][0]))
-                
-            if LastRecCod == 0:
-                print("El LastRecCod esta vacio")
-                LastRecCod = RecCod
-                
-            elif (((abs(center[0] - LastRecCod[0][0]) > GlobalCodePixThreshold) or (abs(center[1] - LastRecCod[1][0]) > GlobalCodePixThreshold))):
-                print("ingresando al segundo if, condicion else")
-                print("-----------------")
-                print(" ")
-                vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
-                LastRecCod = RecCod
-        a+=1
-                #x, y = LastRecCod[0] #LastRecCod.center
-            #print("Resta entre centros en x: ", abs(Rx - x))
-            #print("Resta entre centros en y: ", abs(Ry - y))
-            
-        #elif a == 0:
-         #   a = 1
-          #  print("ingresando al if con a bandera")
-           # vector.agregar_robot(getRobot_fromSnapshot(RecCod, calib_snapshot))
-            #LastRecCod = RecCod
-        """
-    print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
-    print("Yo soy el robot con 30 y tengo los siguientes atributos: ", vector.get_robot_id(30))
-    print("Yo soy el robot con 50 y tengo los siguientes atributos: ", vector.get_robot_id(50))
+
+    #para debug, imprime el ID del robot que se identifico y lo  busca en la base de vector_robot()
+    #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
+    #print("Yo soy el robot con 30 y tengo los siguientes atributos: ", vector.get_robot_id(30))
+    #print("Yo soy el robot con 50 y tengo los siguientes atributos: ", vector.get_robot_id(50))
     return vector
 
 def getRobot_fromSnapshot(RecContorno, snap, codeSize):
+    """
+    
+
+    Parameters
+    ----------
+    RecContorno : TYPE
+        DESCRIPTION.
+    snap : TYPE
+        DESCRIPTION.
+    codeSize : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    TYPE
+        DESCRIPTION.
+
+    """
     
     # Obtiene el centro, el tama;o y el angulo del contorno.
     center, size, theta = RecContorno
 
-    # Angle correction
+    # Angle correction, no usado, no crea ninguna diferencia en este codigo
     #if theta < -45:
      #   theta += 90
 
@@ -242,26 +238,29 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     center, size = tuple(map(int, center)), tuple(map(int, size))
     #print("Este es el nuevo centro", center)
 
-    
+    #obtiene las medidas del contorno o recorte
     GlobalWidth = snap.shape[1]
     GlobalHeigth = snap.shape[0]
     
     #---------------------------------------------
-    #GlobalHeigth,GlobalWidth = snap.shape[:2]
+    #separador
     print(" ")
     print("-----------------")
     print("Ingresando a getRobot_fromSnapshot")
-    #robot = Robot()
-    #print("Primer valor del contorno: ", RecContorno[1] )
+
     
     #Para obtener el snap recortado.
     height_cont,width_cont = RecContorno[1] #height_cont
+    
+    #verificar si es usado --------
+    """
+    """
     tempWiMitad = SQRTDE2 * size[1] / 2
     tempHeMitad = SQRTDE2 * size[0] / 2
     
     
-    Cx = center[0]
-    Cy = center[1]
+    Cx = center[0] #pasa los centros a variables para su identificacion, centro en X
+    Cy = center[1] #Centro en Y
 
 
     EscalaColores = []
@@ -274,58 +273,69 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
 
     #print(RecContorno)
     
-    SemiCropCod = snap[rows[0]:rows[1], cols[0]:cols[1]] #hasta aqui todo bien al 19 de julio del 2020.
-    #GlobalWidth = SemiCropCod.shape[1]
-    #GlobalHeigth = SemiCropCod.shape[0]
-    #SemiCropCod_Heigth,SemiCropCod_Width = SemiCropCod.shape[:2]
-    #Center_rotate_x = len(rows)
-    #Center_rotate_y = len(cols)
+    SemiCropCod = snap[rows[0]:rows[1], cols[0]:cols[1]] #hasta aqui todo bien al 19 de julio del 2020, variable no usada
 
     #Obtener matriz de rotacion de la imagen
     M = cv.getRotationMatrix2D(center, theta, 1)
     
-    dst = cv.warpAffine(snap, M, (GlobalWidth, GlobalHeigth))
+    #se obtiene la perspectiva de la imagen basada en la matriz y las dimensiones de la imagen, esto es para recortar
+    dst = cv.warpAffine(snap, M, (GlobalWidth, GlobalHeigth)) 
     #image_rotated = cv.warpAffine(SemiCropCod, temp_matRotated, (SemiCropCod_Heigth, SemiCropCod_Width), flags = cv.INTER_CUBIC)
     
     #Final_Crop_rotated = cv.getRectSubPix(image_rotated, (int(height_cont),int(width_cont)), (np.size(rows_1)/2.0, np.size(cols_1)/2.0))
     
     
-    Final_Crop_rotated = cv.getRectSubPix(dst, size, center)
+    Final_Crop_rotated = cv.getRectSubPix(dst, size, center) #obtiene el recorte final.
     
     
     #cv.imshow("Init", SemiCropCod) 
+    
+    #para debug, muestra la imagen recortada y rotada
     cv.imshow("Rotated", dst) 
     cv.imshow("Final_crop",Final_Crop_rotated)
     #cv.waitKey(0)
+    
+    #obtiene las nuevas dimensiones del recorte, esto servira para otro filtro y para el resize de las imagenes
     height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
+    
+    #para debug, imprime las dimensiones actuales de la imagen
     print("Dimensiones actuales: ")
     print(height_Final_Rotated, width_Final_Rotated)
-    scale_percent = (codeSize/3.0)  # percent of original size
+    
+    
+    scale_percent = (codeSize/3.0)  # percent of original size, factor de reescala que se utiliza basado en el codigo
+    #la variable MIN_IMAGE_SIZE es para que las imagenes mas peque;as que hayan pasado el primer filtro, no se tomen en cuenta
+    #aqui lo que se se busca eliminar son imagenes o cuadros (normalmente los blancos en cada identificador)
+    #sean eliminados para evitar confusiones de identificacion
+    
     if (height_Final_Rotated < (MAX_IMAGE_SIZE * scale_percent) or width_Final_Rotated < (MAX_IMAGE_SIZE * scale_percent)):
+        #para debug
         print("cumpli el if")
-        ctrl = 0
+        ctrl = 0 #si la imagen es mas peque;a, entonces se lo salta
     else:
-        ctrl = 1
+        ctrl = 1 #sino, entra a hacer todo el procesamiento de la imagen para la identificacion del ID.
         
     if ctrl == 1:
     
-    #    if (height_Final_Rotated > 110 and height_Final_Rotated < 125):
-    #        if (width_Final_Rotated > 110 and width_Final_Rotated < 130):
-    #            resized = Final_Crop_rotated
-    #    else:
-        #print("Este es el if resized")
+        
+        """
+        """
         height_percent = (116/height_Final_Rotated)
         width_percent = (116/height_Final_Rotated)
+        
         print("-----------------")
         print("% de escala", scale_percent)
         print("Medida temporal: ", width_Final_Rotated * scale_percent)
         print("-----------------")
+        
         width = int(width_Final_Rotated * width_percent)
         height = int(height_Final_Rotated* height_percent)
         dim = (width, height)
+        
         print("Dimensiones resized: ")
         print("-----------------")
         print(dim)
+        
         # resize image
         resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
         
@@ -341,16 +351,8 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         print("-----------------")
     
         
-        #print("la forma del crop", Final_Crop_rotated.shape)
-        #print("El crop", Final_Crop_rotated)
-        #print("height_Final_Rotated: ",height_Final_Rotated)
-        #print("width_Final_Rotated: ",width_Final_Rotated)
-        
-        #int EscalaColores[3]; //[2] blaco, [1] gris, [0] negr
-        #print("Final_Crop_rotated.shape[1]", Final_Crop_rotated.shape[1])
-        #print("Final_Crop_rotated.shape[0]", Final_Crop_rotated.shape[0])
 
-        a = 0
+        a = 0 #variable bandera, ya no se usa pero evita modificaciones sustanciales al codigo en cuanto a funcion e ifs
         
     
         
