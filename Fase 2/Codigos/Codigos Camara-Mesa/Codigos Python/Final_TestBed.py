@@ -49,7 +49,9 @@ asi como la identifacion de sus codigos o marcadores.
                             
 03/08/2020: Version 0.5.0 -- Se agregan comentarios para enteder el codigo y su funcionamiento, esto no sube el conteo del versionado.
 
-03/08/2020: Version 0.6.0 -- Se eliminan funciones de toma de pose y se agregan a la libreria Calibracion.py
+03/08/2020: Version 0.6.0 -- Se eliminan funciones de toma de pose y se agregan a la libreria Swarm_robotic.py
+
+03/08/2020: Version 0.6.1 -- Se agrega el metodo get_code de la clase Robot
 """
 
 
