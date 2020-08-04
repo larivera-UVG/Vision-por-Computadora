@@ -45,6 +45,8 @@ Proximamente: detectar la pose de los robots.
                             robot (que hace lo mismo que la clase camara), y abre una nueva ventana para tomar una nueva
                             foto pero se calibra utilizando los parametros ya encontrados. 
                             Esta version esta lista para los multi-hilos.
+                            
+03/08/2020: Version 0.5.0 -- Se agregan comentarios para enteder el codigo y su funcionamiento, esto no sube el conteo del versionado.
 """
 
 
