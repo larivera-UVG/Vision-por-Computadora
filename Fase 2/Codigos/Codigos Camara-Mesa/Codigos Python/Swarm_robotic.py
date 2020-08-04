@@ -648,6 +648,8 @@ class Robot():
         speed.append(self.vel_right)
         speed.append(self.vel_left)
         return speed
+    def get_code(self,snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod):
+        getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
     
     def Capture_frame(self):
         """
