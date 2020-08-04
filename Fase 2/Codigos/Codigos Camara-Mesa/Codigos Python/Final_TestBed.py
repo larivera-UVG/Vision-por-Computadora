@@ -102,7 +102,8 @@ Code_size = 1.0 #no se usa
 #si se usan
 MAX_IMAGE_SIZE = 75
 
-#revisar si se usan
+#Para detectar los cuadros grises, normalmente con buena iluminacion pueden llegar a tener un valor de 130 (o mas)
+#pero para condiciones de poca luz, el valor MIN puede variar. 
 TRESHOLD_DETECT_MIN = 65
 TRESHOLD_DETECT_MAX = 130
 
