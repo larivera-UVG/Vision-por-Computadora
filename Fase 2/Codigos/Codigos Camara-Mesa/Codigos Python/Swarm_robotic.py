@@ -34,6 +34,8 @@ Version con Programacion Orientada a Objetos.
 03/08/2020: Version 0.5.0 -- Se agregan dos funciones para la toma de pose que estaban en el programa de la GUI
                              esto unifica todas las funciones en este archivo, lo cual permite solamente agregar
                              un par de funciones y no se requiere interdepencia de varios archivos. 
+                             
+03/08/2020: Version 0.6.0 -- Se agrega el metodo get_code de a la clase Robot para unificar las funciones. 
 
 ***********************
 Anotaciones iniciales:
