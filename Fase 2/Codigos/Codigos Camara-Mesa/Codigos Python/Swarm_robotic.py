@@ -37,9 +37,10 @@ Version con Programacion Orientada a Objetos.
                              
 03/08/2020: Version 0.6.0 -- Se agrega el metodo get_code de a la clase Robot para unificar las funciones. 
 
-04/08/2020: Version 0.7.0 -- Se hacen modificaciones a la clase de Robot y vector_robot. El objetivo principal de este
-                             cambio es poder pasar objetos y crear un vector de objetos de tipo Robot para poder
-                             acceder a sus atributos respectivos luego de eso. 
+04/08/2020: Version 0.7.0 -- Se hacen modificaciones a la clase de Robot y vector_robot. 
+                             El objetivo principal de este cambio es poder pasar objetos y crear un 
+                             vector de objetos de tipo Robot para poder acceder a sus atributos respectivos 
+                             luego de eso. 
 
 ***********************
 Anotaciones iniciales:
@@ -502,16 +503,20 @@ class Robot():
 
     """
     """
-    id_robot = 0
-    ip = 0
-    pos = [0,0,0]
+    #se agregan los atributos para poder manejarlos en los metodos
+    id_robot = 0 #identificador
+    ip = '' #ip, es un string
+    pos = [0,0,0] #posicion, pos[0] es la posicion en x, pos[1] es la posicion en y, pos[2] es el angulo
+    #velocidades
     vel_left = 0
     vel_right = 0
     
     def __init__ (self,_id, _ip, _pos):
+        #el init cambia para inicializar los atributos
         self.id_robot = _id
         self.ip = _ip
         self.pos = _pos
+        #las velocidades igual se colocan para poder pasarlas en el vector.
         self.vel_left = 0
         self.vel_right = 0
     """    
@@ -666,8 +671,8 @@ class Robot():
 class vector_robot():
     """
     """
-    Robot_vector = []
-    #robot_vector_u = Robot()
+    
+    Robot_vector = [] #se agrega el atributo de vector
     def __init__(self):
         self.Robot_vector = []
         
@@ -742,15 +747,15 @@ class vector_robot():
         #class_robot.id_robot = self
         #global _Robot
 
+        #print("vector en la posicion 0")
+        #print(self.Robot_vector[0])
+        #print("prueba de acceso a los atributos.")
+        #print(self.Robot_vector[0].id_robot)
+        #print("vamos a cambiar un atributo, la velocidad quiza")
+        #print(self.Robot_vector[0].set_speed([1,1]))
+        #print("vamos a ver la velocidad")
+        #print(self.Robot_vector[0].get_speed())
         self.Robot_vector.append(Robot)
-        print("vector en la posicion 0")
-        print(self.Robot_vector[0])
-        print("prueba de acceso a los atributos.")
-        print(self.Robot_vector[0].id_robot)
-        print("vamos a cambiar un atributo, la velocidad quiza")
-        print(self.Robot_vector[0].set_speed([1,1]))
-        print("vamos a ver la velocidad")
-        print(self.Robot_vector[0].get_speed())
         return self.Robot_vector
     
     def search_id_robot(self, _id):
@@ -938,8 +943,8 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
             #cv.waitKey(0)
            new_vector_robot =  vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
             
-    print("Este es el vector que se agrego")
-    print(new_vector_robot[0].id_robot)
+    #print("Este es el vector que se agrego")
+    #print(new_vector_robot[0].id_robot)
     #print(vector.Robot.id_robot)
     #para debug, imprime el ID del robot que se identifico y lo  busca en la base de vector_robot()
     #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
@@ -1430,7 +1435,8 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
             pos = [0, 0, 0]
         
 
-        
+
+        #En ambos return, se manda a llamar a la clase Robot para pasar sus argumentos a la clase vector_robot
         return Robot(tempID,"", pos) #si ctrl es 1, se retorna el valor correcto
     return Robot(0,"", [0,0,0]) #si ctrl es 0, retorna un araray vacio.
 
