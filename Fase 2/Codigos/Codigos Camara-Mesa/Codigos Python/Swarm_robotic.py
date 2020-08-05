@@ -37,6 +37,10 @@ Version con Programacion Orientada a Objetos.
                              
 03/08/2020: Version 0.6.0 -- Se agrega el metodo get_code de a la clase Robot para unificar las funciones. 
 
+04/08/2020: Version 0.7.0 -- Se hacen modificaciones a la clase de Robot y vector_robot. El objetivo principal de este
+                             cambio es poder pasar objetos y crear un vector de objetos de tipo Robot para poder
+                             acceder a sus atributos respectivos luego de eso. 
+
 ***********************
 Anotaciones iniciales:
 ***********************
