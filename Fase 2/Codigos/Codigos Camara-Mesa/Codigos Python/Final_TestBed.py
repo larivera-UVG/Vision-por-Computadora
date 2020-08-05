@@ -55,7 +55,7 @@ asi como la identifacion de sus codigos o marcadores.
 """
 
 
-from Swarm_robotic import camara, Robot #libreria swarm para la deteccion de la pose de agentes
+from Swarm_robotic import camara, Robot, vector_robot #libreria swarm para la deteccion de la pose de agentes
 import cv2 as cv #importando libreria para opencv 
 
 from PySide2.QtCore import Qt
@@ -79,8 +79,8 @@ HEIGTH = 720
 NUM_CAM = 0
 
 camara = camara(NUM_CAM) #Inicializa el objeto camara para sus funciones respectivas
-robot = Robot(NUM_CAM) #Inicializa el objeto robot para la toma de poses y captura de imagen.
-
+#robot = Robot(NUM_CAM) #Inicializa el objeto robot para la toma de poses y captura de imagen.
+vector_robot = vector_robot()
 #----------------------------------
 #Para la toma de poses de los robots
 
@@ -132,10 +132,11 @@ class Window(QWidget):
         if text == '':
             text = '3'
         numCod = int(text)
-        snapshot_robot = robot.Capture_frame()
+        snapshot_robot = vector_robot.Capture_frame()
         cv.imshow("CapturaPoseRobot", snapshot_robot)
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
-        robot.get_code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        vector = vector_robot.get_code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        print("Este es el vector retornado: ",vector[0].pos)
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
@@ -165,7 +166,8 @@ class Window(QWidget):
         camara.initialize(WIDTH, HEIGTH)
     
     def Init_pose(self):
-        robot.initialize(WIDTH, HEIGTH)
+        vector_robot.init_cam_robot(NUM_CAM)
+        vector_robot.initialize(WIDTH, HEIGTH)
         
     def capturar(self):
         foto = camara.get_frame()
@@ -179,5 +181,7 @@ if myapp is None:
 #myapp = QApplication(sys.argv)
 window = Window()
 window.show() 
+
 sys.exit(myapp.exec_())
+
 myapp.quit()
