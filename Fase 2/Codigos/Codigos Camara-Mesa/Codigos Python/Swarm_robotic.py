@@ -40,7 +40,11 @@ Version con Programacion Orientada a Objetos.
 04/08/2020: Version 0.7.0 -- Se hacen modificaciones a la clase de Robot y vector_robot. 
                              El objetivo principal de este cambio es poder pasar objetos y crear un 
                              vector de objetos de tipo Robot para poder acceder a sus atributos respectivos 
-                             luego de eso. 
+                             luego de eso. Ademas, se eliminan los metodos de captura y se pasan a la clase vector_robot.
+                             A pesar que es igual que el metodo de captura de la clase camara, esto evita una interdependencia
+                             entre clases. Se recomienda de igual forma utilizar el metodo de captura de frame de la
+                             clase vector_robot, ya que este calibra automaticamente la foto con los parametros obtenidos
+                             de la calibracion inicial. 
 
 ***********************
 Anotaciones iniciales:
