@@ -498,36 +498,39 @@ class Robot():
 
     """
     """
+    id_robot = 0
+    ip = 0
+    pos = [0,0,0]
+    vel_left = 0
+    vel_right = 0
+    
+    def __init__ (self,_id, _ip, _pos):
+        self.id_robot = _id
+        self.ip = _ip
+        self.pos = _pos
+        self.vel_left = 0
+        self.vel_right = 0
+    """    
+    def __init__(self, _id, _ip, _pos):
+        self.id_robot = _id
+        self.ip = _ip
+        self.x = _pos[0]
+        self.y = _pos[1]
+        self.theta = _pos[2]
+        self.vel_left = 0
+        self.vel_right = self.vel_left
+    """
         
-    def __init__(self, cam_num):
-        self.cap = cv.VideoCapture(cam_num)
-        
-    def initialize(self,WIDTH,HEIGHT):
-        """
-        
-
-        Parameters
-        ----------
-        WIDTH : Ancho del frame.
-        HEIGHT : Largo del frame.
-
-        Returns
-        -------
-        None.
-
-        """
-        #self.cap = cv.VideoCapture(self.cam_num)
-        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
-        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
         
     def Get_NewFrame(self,Mat, WiHe):
         self.NewMat = Mat
         self.MyWiHe_new = WiHe
         print("NewMat", self.NewMat)
         print("MyWiHe_new", self.MyWiHe_new)
-        
+     
+    """
     def set_robot(self, _id, _ip, _pos):
-        """
+        
         
 
         Parameters
@@ -544,18 +547,19 @@ class Robot():
         TYPE
             DESCRIPTION.
 
-        """
-        self.id_robot = _id
-        self.ip = _ip
+        
+        Robot.id_robot = _id
+        Robot.ip = _ip
         self.x = _pos[0]
         self.y = _pos[1]
         self.theta = _pos[2]
         self.vel_left = 0
-        self.vel_right = self.vel_left
+        Robot.vel_right = Robit.vel_left
         self.robot = [self.id_robot,self.ip,self.x,self.y,self.theta,self.vel_right,self.vel_left]
         return self.robot
-        
-    def set_IP(self,ip):
+    """    
+    
+    def set_IP(self,_ip):
         """
         
 
@@ -570,10 +574,10 @@ class Robot():
             DESCRIPTION.
 
         """
-        self.ip = ip
-        return ip
+        self.ip = _ip
+        return Robot.ip
     
-    def set_pos(self, pos):
+    def set_pos(self, _pos):
         """
         
 
@@ -587,9 +591,9 @@ class Robot():
         None.
 
         """
-        self.x = pos[0]
-        self.y = pos[1]
-        self.theta = pos[2]
+        self.pos[0] = _pos[0]
+        self.pos[1] = _pos[1]
+        self.pos[2] = _pos[2]
         
     def get_pos(self):
         """
@@ -601,11 +605,13 @@ class Robot():
             DESCRIPTION.
 
         """
+        """
         Pos = []
         Pos.append(self.x)
         Pos.append(self.y)
         Pos.append(self.theta)
-        return Pos
+        """
+        return self.pos
         
     def get_IP (self):
         """
@@ -650,9 +656,23 @@ class Robot():
         speed.append(self.vel_right)
         speed.append(self.vel_left)
         return speed
-    def get_code(self,snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod):
-        getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
     
+#_robot = Robot()
+    
+class vector_robot():
+    """
+    """
+    Robot_vector = []
+    #robot_vector_u = Robot()
+    def __init__(self):
+        self.Robot_vector = []
+        
+    def init_cam_robot(self, cam_num):
+        self.cap = cv.VideoCapture(cam_num)
+        
+    def get_code(self,snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod):
+        return getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        
     def Capture_frame(self):
         """
         
@@ -679,17 +699,27 @@ class Robot():
         #MyWiHe = self.MyWiHe_new
         self.last_frame_robot = cv.warpPerspective(self.last_frame_robot, Matrix, (MyWiHe[0],  MyWiHe[1]))
         return self.last_frame_robot
-    
-    
-class vector_robot():
-    """
-    """
-    #robot_vector_u = Robot()
-    def __init__(self):
-        self.Robot_vector = []
+        
+    def initialize(self,WIDTH,HEIGHT):
+        """
+        
+
+        Parameters
+        ----------
+        WIDTH : Ancho del frame.
+        HEIGHT : Largo del frame.
+
+        Returns
+        -------
+        None.
+
+        """
+        #self.cap = cv.VideoCapture(self.cam_num)
+        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
+        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
         
     
-    def agregar_robot(self,vector_robot):
+    def agregar_robot(self,Robot):
         """
         
 
@@ -707,7 +737,16 @@ class vector_robot():
         #self.class_robot = class_robot
         #class_robot.id_robot = self
         #global _Robot
-        self.Robot_vector.append(vector_robot)
+
+        self.Robot_vector.append(Robot)
+        print("vector en la posicion 0")
+        print(self.Robot_vector[0])
+        print("prueba de acceso a los atributos.")
+        print(self.Robot_vector[0].id_robot)
+        print("vamos a cambiar un atributo, la velocidad quiza")
+        print(self.Robot_vector[0].set_speed([1,1]))
+        print("vamos a ver la velocidad")
+        print(self.Robot_vector[0].get_speed())
         return self.Robot_vector
     
     def search_id_robot(self, _id):
@@ -769,7 +808,7 @@ class vector_robot():
         
 #-------------------------------------------------------
 #Para la generacion de los codigos y la tome de poses
-robot = Robot(0) #Inicializa el objeto robot para la toma de poses y captura de imagen.
+#robot = Robot(0) #Inicializa el objeto robot para la toma de poses y captura de imagen.
 
 
 #from Robot import vector_robot, Robot
@@ -893,13 +932,16 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
         if (size[0] > (40 * rescale_factor_size) and size[1] > (40*rescale_factor_size)): #):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
-            vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
-
+           new_vector_robot =  vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
+            
+    print("Este es el vector que se agrego")
+    print(new_vector_robot[0].id_robot)
+    #print(vector.Robot.id_robot)
     #para debug, imprime el ID del robot que se identifico y lo  busca en la base de vector_robot()
     #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
     #print("Yo soy el robot con 30 y tengo los siguientes atributos: ", vector.get_robot_id(30))
     #print("Yo soy el robot con 50 y tengo los siguientes atributos: ", vector.get_robot_id(50))
-    return vector
+    return new_vector_robot
 
 def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     """
@@ -1385,5 +1427,6 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
         
 
         
-        return robot.set_robot(tempID,"", pos) #si ctrl es 1, se retorna el valor correcto
-    return robot.set_robot(0,"", [0,0,0]) #si ctrl es 0, retorna un araray vacio.
+        return Robot(tempID,"", pos) #si ctrl es 1, se retorna el valor correcto
+    return Robot(0,"", [0,0,0]) #si ctrl es 0, retorna un araray vacio.
+
