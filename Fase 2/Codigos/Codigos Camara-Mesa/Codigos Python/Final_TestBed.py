@@ -49,11 +49,17 @@ asi como la identifacion de sus codigos o marcadores.
                             
 03/08/2020: Version 0.5.0 -- Se agregan comentarios para enteder el codigo y su funcionamiento, esto no sube el conteo del versionado.
 
-03/08/2020: Version 0.6.0 -- Se eliminan funciones de toma de pose y se agregan a la libreria Calibracion.py
+03/08/2020: Version 0.6.0 -- Se eliminan funciones de toma de pose y se agregan a la libreria Swarm_robotic.py
+
+03/08/2020: Version 0.6.1 -- Se agrega el metodo get_code de la clase Robot
+
+09/08/2020: Version 0.7.0 -- Cambio en los metodos de calibracion y en la deteccion de pose por las modificaciones 
+                             realizadas a la clase ***camara** y la clase ***vector_robot*** de la libreria
+                             Swarm_robotic.py
 """
 
 
-from Swarm_robotic import camara, Robot #libreria swarm para la deteccion de la pose de agentes
+from Swarm_robotic import camara, Robot, vector_robot #libreria swarm para la deteccion de la pose de agentes
 import cv2 as cv #importando libreria para opencv 
 
 from PySide2.QtCore import Qt
@@ -77,8 +83,8 @@ HEIGTH = 720
 NUM_CAM = 0
 
 camara = camara(NUM_CAM) #Inicializa el objeto camara para sus funciones respectivas
-robot = Robot(NUM_CAM) #Inicializa el objeto robot para la toma de poses y captura de imagen.
-
+#robot = Robot(NUM_CAM) #Inicializa el objeto robot para la toma de poses y captura de imagen.
+vector_robot = vector_robot()
 #----------------------------------
 #Para la toma de poses de los robots
 
@@ -106,7 +112,7 @@ class Window(QWidget):
     def capturar_button(self):
         btn1 = QPushButton("Calibrar", self)
         btn1.move(n,50)
-        self.Init_Cam
+        #self.Init_Cam
         btn1.clicked.connect(self.capturar)
     
     def limpiar_button(self):
@@ -130,10 +136,12 @@ class Window(QWidget):
         if text == '':
             text = '3'
         numCod = int(text)
-        snapshot_robot = robot.Capture_frame()
+        foto = camara.get_frame()
+        snapshot_robot = vector_robot.calibrar_imagen(foto)
         cv.imshow("CapturaPoseRobot", snapshot_robot)
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
-        robot.get_code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        vector = vector_robot.get_code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        print("Este es el vector retornado: ",vector[0].pos)
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
@@ -158,12 +166,10 @@ class Window(QWidget):
             text = '0'
         num = int(text)
         camara.Generar_codigo(num)
-        
-    def Init_Cam(self):
-        camara.initialize(WIDTH, HEIGTH)
     
     def Init_pose(self):
-        robot.initialize(WIDTH, HEIGTH)
+        vector_robot.init_cam_robot(NUM_CAM)
+        vector_robot.initialize(WIDTH, HEIGTH)
         
     def capturar(self):
         foto = camara.get_frame()
@@ -177,5 +183,7 @@ if myapp is None:
 #myapp = QApplication(sys.argv)
 window = Window()
 window.show() 
+
 sys.exit(myapp.exec_())
+
 myapp.quit()

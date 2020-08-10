@@ -34,6 +34,25 @@ Version con Programacion Orientada a Objetos.
 03/08/2020: Version 0.5.0 -- Se agregan dos funciones para la toma de pose que estaban en el programa de la GUI
                              esto unifica todas las funciones en este archivo, lo cual permite solamente agregar
                              un par de funciones y no se requiere interdepencia de varios archivos. 
+                             
+03/08/2020: Version 0.6.0 -- Se agrega el metodo get_code de a la clase Robot para unificar las funciones. 
+
+04/08/2020: Version 0.7.0 -- Se hacen modificaciones a la clase de Robot y vector_robot. 
+                             El objetivo principal de este cambio es poder pasar objetos y crear un 
+                             vector de objetos de tipo Robot para poder acceder a sus atributos respectivos 
+                             luego de eso. Ademas, se eliminan los metodos de captura y se pasan a la clase vector_robot.
+                             A pesar que es igual que el metodo de captura de la clase camara, esto evita una interdependencia
+                             entre clases. Se recomienda de igual forma utilizar el metodo de captura de frame de la
+                             clase vector_robot, ya que este calibra automaticamente la foto con los parametros obtenidos
+                             de la calibracion inicial. 
+                             
+09/08/2020: Version 0.8.0 -- Se cambia el __init__ de la clase ***camara*** por uno que automaticamente genere el tama;o
+                             del frame. Por lo tanto, se elimina el initialize() que ya no se usa.
+                             Tambien se modifica la clase ***vector_robot*** eliminando la funcion de capturar e 
+                             iniciar un objetivo de tipo camara para la captura, ahora se utilizara la captura de 
+                             la calse ***camara***. Se agrega un nuevo metodo (o se modifica) de calibrar_imagen()
+                             que recibe la foto, la calibra (recorta y usa la matriz de calibracion) y devuelve la
+                             imagen calibrada para su posterior uso. 
 
 ***********************
 Anotaciones iniciales:
@@ -266,7 +285,7 @@ class camara():
         Calibrar(): Calibracion de la camara.
     """
     
-    def __init__(self,cam_num):
+    def __init__(self,cam_num = 0, WIDTH = 960, HEIGHT = 720):
         """
         
 
@@ -280,25 +299,9 @@ class camara():
 
         """
         self.cap = cv.VideoCapture(cam_num)
-        self.cam_num = cam_num
-        
-    def initialize(self,WIDTH,HEIGHT):
-        """
-        
-
-        Parameters
-        ----------
-        WIDTH : Ancho del frame.
-        HEIGHT : Largo del frame.
-
-        Returns
-        -------
-        None.
-
-        """
-        #self.cap = cv.VideoCapture(self.cam_num)
         self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
         self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
+        self.cam_num = cam_num
         
     def get_frame(self):
         """
@@ -346,61 +349,7 @@ class camara():
         """
         cv.destroyAllWindows()
         cv.waitKey(1)
-        
-    def set_camera(self,WIDTH,HEIGHT):
-        """
-        
-        Parameters
-        ----------
-        WIDTH : Width del frame
-        HEIGHT : Height del frame.
-        Returns
-        -------
-        cam : variable de tipo VideoCapture, para ser usado en la toma de foto..
-        """
-        #cam = cv.VideoCapture(0) #abre la camara web
-        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
-        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
-        #print("saliendo")
-        #cv.namedWindow("test") #crea la ventana
-    """
-    def tomar_foto(self,cam):
-        #
-        
-        Parameters
-        ----------
-        cam : Objeto de tipo VideoCapture, configuracion inicial de la camara.
-        Returns
-        -------
-        frame: fotograma tomado con la camara.
-        #
-        
-        img_counter = 0 #contador para las imagenes capturadas (opcional)
-        
-        while True: #bucle infinito
-            ret, frame = cam.read() #obtiene la informacion de la lectura de la camara
-            if not ret:
-                print("Error, frame no encontrado") #No hay frame, camara no encontrada
-                break
-            cv.imshow("test", frame) #muestra el video. 
-        
-            k = cv.waitKey(1) #k = 1 es para espacio
-            if k%256 == 27:
-                # ESC presionado para cerrar
-                print("Escape presionado, cerrando...")
-                break
-            elif k%256 == 32:
-                # SPACE presionado para capturar foto
-                img_name = "opencv_frame_{}.png".format(img_counter) #Formato del nombre de la imagen.
-                                                    #Guarda el numero de frame (foto) que se tomo.
-                cv.imwrite(img_name, frame) #Guarda la foro
-                print("{} Guardado!".format(img_name)) #mensaje de Ok para el save de la foto.
-                img_counter += 1 #aumenta el contador. 
-
-        cam.release()
-        cv.destroyAllWindows()            
-        return frame #retorna el frame que se va a utilizar  
-     """    
+  
     def Calibrar(self,Snapshot,Calib_param, Treshold):
         """
         
@@ -496,82 +445,50 @@ class Robot():
 
     """
     """
-        
-    def __init__(self, cam_num):
-        self.cap = cv.VideoCapture(cam_num)
-        
-    def initialize(self,WIDTH,HEIGHT):
-        """
-        
+    #se agregan los atributos para poder manejarlos en los metodos
+    id_robot = 0 #identificador
+    ip = '' #ip, es un string
+    pos = [0,0,0] #posicion, pos[0] es la posicion en x, pos[1] es la posicion en y, pos[2] es el angulo
+    #velocidades
+    vel_left = 0
+    vel_right = 0
+    
+    def __init__ (self,_id, _ip, _pos):
+        #el init cambia para inicializar los atributos
+        self.id_robot = _id
+        self.ip = _ip
+        self.pos = _pos
+        #las velocidades igual se colocan para poder pasarlas en el vector.
+        self.vel_left = 0
+        self.vel_right = 0
 
-        Parameters
-        ----------
-        WIDTH : Ancho del frame.
-        HEIGHT : Largo del frame.
-
-        Returns
-        -------
-        None.
-
-        """
-        #self.cap = cv.VideoCapture(self.cam_num)
-        self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
-        self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
         
     def Get_NewFrame(self,Mat, WiHe):
         self.NewMat = Mat
         self.MyWiHe_new = WiHe
         print("NewMat", self.NewMat)
         print("MyWiHe_new", self.MyWiHe_new)
-        
-    def set_robot(self, _id, _ip, _pos):
+     
+
+    def set_IP(self,_ip):
         """
         
 
         Parameters
         ----------
-        _id : TYPE
-            DESCRIPTION.
-        _ip : TYPE
-            DESCRIPTION.
-        _pos : TYPE
+        ip : TYPE
             DESCRIPTION.
 
         Returns
         -------
-        TYPE
+        ip : TYPE
             DESCRIPTION.
 
         """
-        self.id_robot = _id
         self.ip = _ip
-        self.x = _pos[0]
-        self.y = _pos[1]
-        self.theta = _pos[2]
-        self.vel_left = 0
-        self.vel_right = self.vel_left
-        self.robot = [self.id_robot,self.ip,self.x,self.y,self.theta,self.vel_right,self.vel_left]
-        return self.robot
-        
-    def set_IP(self,ip):
-        """
-        
-
-        Parameters
-        ----------
-        ip : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        ip : TYPE
-            DESCRIPTION.
-
-        """
-        self.ip = ip
-        return ip
+        return Robot.ip
     
-    def set_pos(self, pos):
+    def set_pos(self, _pos):
         """
         
 
@@ -585,9 +502,9 @@ class Robot():
         None.
 
         """
-        self.x = pos[0]
-        self.y = pos[1]
-        self.theta = pos[2]
+        self.pos[0] = _pos[0]
+        self.pos[1] = _pos[1]
+        self.pos[2] = _pos[2]
         
     def get_pos(self):
         """
@@ -599,11 +516,13 @@ class Robot():
             DESCRIPTION.
 
         """
+        """
         Pos = []
         Pos.append(self.x)
         Pos.append(self.y)
         Pos.append(self.theta)
-        return Pos
+        """
+        return self.pos
         
     def get_IP (self):
         """
@@ -648,46 +567,27 @@ class Robot():
         speed.append(self.vel_right)
         speed.append(self.vel_left)
         return speed
-    def get_code(self,snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod):
-        getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
     
-    def Capture_frame(self):
-        """
-        
-
-        Returns
-        -------
-        Retorna el frame capturado al momento de presionar la tecla ESC.
-
-        """
-        global MyWiHe
-        global Matrix
-        while True:
-            ret, self.last_frame_robot = self.cap.read()
-            cv.imshow("Captura de pose", self.last_frame_robot) #muestra el video. 
-            k = cv.waitKey(1) #k = 1 es para espacio
-            if k%256 == 27:
-                    # ESC presionado para cerrar
-                cv.destroyWindow("Captura de pose")
-                cv.waitKey(1)
-                print("Escape presionado, cerrando...")
-                break
-        #print("NewMat", self.NewMat)
-        #print("MyWiHe_new", self.MyWiHe_new)
-        #MyWiHe = self.MyWiHe_new
-        self.last_frame_robot = cv.warpPerspective(self.last_frame_robot, Matrix, (MyWiHe[0],  MyWiHe[1]))
-        return self.last_frame_robot
-    
+#_robot = Robot()
     
 class vector_robot():
     """
     """
-    #robot_vector_u = Robot()
+    
+    Robot_vector = [] #se agrega el atributo de vector
     def __init__(self):
         self.Robot_vector = []
         
+    def get_code(self,snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod):
+        return getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
+        
+    def calibrar_imagen(self, frame_robot):
+        global MyWiHe
+        global Matrix
+        self.last_frame_robot = cv.warpPerspective(frame_robot, Matrix, (MyWiHe[0],  MyWiHe[1]))
+        return self.last_frame_robot
     
-    def agregar_robot(self,vector_robot):
+    def agregar_robot(self,Robot):
         """
         
 
@@ -705,7 +605,16 @@ class vector_robot():
         #self.class_robot = class_robot
         #class_robot.id_robot = self
         #global _Robot
-        self.Robot_vector.append(vector_robot)
+
+        #print("vector en la posicion 0")
+        #print(self.Robot_vector[0])
+        #print("prueba de acceso a los atributos.")
+        #print(self.Robot_vector[0].id_robot)
+        #print("vamos a cambiar un atributo, la velocidad quiza")
+        #print(self.Robot_vector[0].set_speed([1,1]))
+        #print("vamos a ver la velocidad")
+        #print(self.Robot_vector[0].get_speed())
+        self.Robot_vector.append(Robot)
         return self.Robot_vector
     
     def search_id_robot(self, _id):
@@ -767,7 +676,7 @@ class vector_robot():
         
 #-------------------------------------------------------
 #Para la generacion de los codigos y la tome de poses
-robot = Robot(0) #Inicializa el objeto robot para la toma de poses y captura de imagen.
+#robot = Robot(0) #Inicializa el objeto robot para la toma de poses y captura de imagen.
 
 
 #from Robot import vector_robot, Robot
@@ -891,13 +800,16 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
         if (size[0] > (40 * rescale_factor_size) and size[1] > (40*rescale_factor_size)): #):
             #cv.drawContours(calib_snapshot, c,  -1, (10,200,20), 2) #dibuja los contornos
             #cv.waitKey(0)
-            vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
-
+           new_vector_robot =  vector.agregar_robot(getRobot_fromSnapshot(RecCod, gray_blur_img, Medida_cod))
+            
+    #print("Este es el vector que se agrego")
+    #print(new_vector_robot[0].id_robot)
+    #print(vector.Robot.id_robot)
     #para debug, imprime el ID del robot que se identifico y lo  busca en la base de vector_robot()
     #print("Yo soy el robot con 40 y tengo los siguientes atributos: ", vector.get_robot_id(40))
     #print("Yo soy el robot con 30 y tengo los siguientes atributos: ", vector.get_robot_id(30))
     #print("Yo soy el robot con 50 y tengo los siguientes atributos: ", vector.get_robot_id(50))
-    return vector
+    return new_vector_robot
 
 def getRobot_fromSnapshot(RecContorno, snap, codeSize):
     """
@@ -1382,6 +1294,7 @@ def getRobot_fromSnapshot(RecContorno, snap, codeSize):
             pos = [0, 0, 0]
         
 
-        
-        return robot.set_robot(tempID,"", pos) #si ctrl es 1, se retorna el valor correcto
-    return robot.set_robot(0,"", [0,0,0]) #si ctrl es 0, retorna un araray vacio.
+
+        #En ambos return, se manda a llamar a la clase Robot para pasar sus argumentos a la clase vector_robot
+        return Robot(tempID,"", pos) #si ctrl es 1, se retorna el valor correcto
+    return Robot(0,"", [0,0,0]) #si ctrl es 0, retorna un araray vacio.
