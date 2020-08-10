@@ -52,6 +52,10 @@ asi como la identifacion de sus codigos o marcadores.
 03/08/2020: Version 0.6.0 -- Se eliminan funciones de toma de pose y se agregan a la libreria Swarm_robotic.py
 
 03/08/2020: Version 0.6.1 -- Se agrega el metodo get_code de la clase Robot
+
+09/08/2020: Version 0.7.0 -- Cambio en los metodos de calibracion y en la deteccion de pose por las modificaciones 
+                             realizadas a la clase ***camara** y la clase ***vector_robot*** de la libreria
+                             Swarm_robotic.py
 """
 
 
@@ -108,7 +112,7 @@ class Window(QWidget):
     def capturar_button(self):
         btn1 = QPushButton("Calibrar", self)
         btn1.move(n,50)
-        self.Init_Cam
+        #self.Init_Cam
         btn1.clicked.connect(self.capturar)
     
     def limpiar_button(self):
@@ -132,7 +136,8 @@ class Window(QWidget):
         if text == '':
             text = '3'
         numCod = int(text)
-        snapshot_robot = vector_robot.Capture_frame()
+        foto = camara.get_frame()
+        snapshot_robot = vector_robot.calibrar_imagen(foto)
         cv.imshow("CapturaPoseRobot", snapshot_robot)
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
         vector = vector_robot.get_code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
@@ -161,9 +166,6 @@ class Window(QWidget):
             text = '0'
         num = int(text)
         camara.Generar_codigo(num)
-        
-    def Init_Cam(self):
-        camara.initialize(WIDTH, HEIGTH)
     
     def Init_pose(self):
         vector_robot.init_cam_robot(NUM_CAM)
