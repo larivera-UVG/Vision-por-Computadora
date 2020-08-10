@@ -56,6 +56,9 @@ asi como la identifacion de sus codigos o marcadores.
 09/08/2020: Version 0.7.0 -- Cambio en los metodos de calibracion y en la deteccion de pose por las modificaciones 
                              realizadas a la clase ***camara** y la clase ***vector_robot*** de la libreria
                              Swarm_robotic.py
+                             
+09/08/2020: Version 0.8.0 -- Cambio en la tome de pose, se importan las funciones (ya no forma parte de la clase ***vector_robot***)
+                             con el objetivo de usarlo en multi-hilos (aunque a esta version funciona normal, sin hilos).
 """
 
 
@@ -92,7 +95,10 @@ vector_robot = vector_robot()
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 
+# In[Definiendo hilos]:
+    
 
+# In[Definiendo la interfaz grafica]
 """
 Definiendo a la interfaz grafica. 
 """
