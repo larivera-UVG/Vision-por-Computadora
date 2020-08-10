@@ -4,6 +4,14 @@
 Created on Sun Aug  9 19:21:56 2020
 
 @author: joseguerra
+
+09/08/2020: Version 0.1.0 -- Creacion inicial del archivo
+
+09/08/2020: Version 0.2.0 -- Se toman las funciones de toma de pose de Swarm_robotic.py para usarlas en multi-hilos
+                             o bien, para usarlo normal, sin embargo, separarlo en archivos ayuda a que no sea tan
+                             cargado de codigo el archivo de Swarm_robotic.py (ver versionado del mencionado archivo
+                             para entender que hacen estas funciones y cuando son agregadas y elminadas)
+                             
 """
 import cv2 as cv #importando libreria para opencv 
 #from Swarm_robotic import Robot
@@ -36,26 +44,25 @@ TRESHOLD_DETECT_MAX = 130
 Definiendo las funciones para la toma de poses. 
 """
 
-def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
-    new_vector_robot = []
+def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup):
     """
-    
-
     Parameters
     ----------
-    calib_snapshot : TYPE
-        DESCRIPTION.
-    Canny_inf : TYPE
-        DESCRIPTION.
-    Canny_sup : TYPE
-        DESCRIPTION.
-    Medida_cod : TYPE
-        DESCRIPTION.
+    calib_snapshot : numpy Array
+        El vector calibrado (recortado y aplicado la matriz obtenido de la clase ***camara***)
+    Canny_inf : int
+        Parameto inferior para el Canny detection (ver documentacion de OpenCV para mas informacion)
+    Canny_sup : int
+        Parametro superior para el Canny detection (ver documentacion de OpenCV para mas informacion)
 
     Returns
     -------
-    vector : TYPE
-        DESCRIPTION.
+    contour : numpy Array
+        Contiene los contornos detectados, esto sirve para identificar los codigos
+    gray_blur_img : numpy Array
+        Imagen luego de pasarle el filtro blanco y negro y una difuminacion, de aqui se extraen los codigos
+    canny_img : numpy Array
+        Imagen luego de aplicarle el Canny Detection Edge Function
 
     """
     #vector = vector_robot() #inicializa el objeto vector_robot para agregar los diferentes parametros de cada robot como vector
@@ -89,23 +96,29 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     
     return contour,gray_blur_img, canny_img
 
-def getRobot_fromSnapshot(contour, snap, codeSize, mode = "CAPTURE"):
+def getRobot_fromSnapshot(contour, snap, codeSize = 3, mode = "CAPTURE"):
     """
     
 
     Parameters
     ----------
-    RecContorno : TYPE
-        DESCRIPTION.
-    snap : TYPE
-        DESCRIPTION.
-    codeSize : TYPE
-        DESCRIPTION.
+    contour : numpy Array
+        Los contornos detectados en la foto capturada
+    snap : numpy Array
+        La imagen calibrada y procesada con el filtro blanco y negro asi como la difuminacion
+    codeSize : TYPE, optional
+        DESCRIPTION. The default is 3. El tama;o del codigo. Usado normalmente para detectar codigos mas peque;os
+        de 3x3 cm, aunque la funcionalidad ha sido probado con resultados exitos de 3x3 cm en adelante.
+    mode : TYPE, optional
+        DESCRIPTION. The default is "CAPTURE". Determina el modo de operacion de esta funcion. Si es CAPTURE
+        obvia mostrar ciertas imagenes para ver si se esta detectando correctamente el codigo. Si es DEBUG, muestra 
+        estas figuras, pero esto puede interferir en el uso de los multi-hilos (ver documentacion de multi-hilos y OpenCV)
 
     Returns
     -------
-    TYPE
-        DESCRIPTION.
+    parameter_robot: Array
+        Retorna un array con el ID, IP y la posicion (pos[0] = x, pos[1] = y, pos[2] = theta -angulo-) para ser
+        agregado como objeto de tipo Robot (ver Swarm_robotic.py y clase ***Robot***)
 
     """
     parameter_robot = []
