@@ -71,14 +71,14 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     
     #para debug
     #muestra la imagen de canny para ver que contornos va a detectar.
-    cv.imshow("Canny_contour", canny_img)
+    #cv.imshow("Canny_contour", canny_img)
     #cv.waitKey(0)
     
     #obtiene los contornos de la imagen de Canny
     image, contour, hierarchy = cv.findContours(canny_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-    cv.drawContours(calib_snapshot, contour,  -1, (10,200,20), 2) #dibuja los contornos
-    cv.imshow("Canny_contour", calib_snapshot)
-    cv.waitKey(0)
+    #cv.drawContours(calib_snapshot, contour,  -1, (10,200,20), 2) #dibuja los contornos
+    #cv.imshow("Canny_contour", calib_snapshot)
+    #cv.waitKey(0)
     #para debug
     #dibuja los contornos detectados, descomentar estas lineas:
         
@@ -89,7 +89,7 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup, Medida_cod):
     
     return contour,gray_blur_img, canny_img
 
-def getRobot_fromSnapshot(contour, snap, codeSize):
+def getRobot_fromSnapshot(contour, snap, codeSize, mode = "CAPTURE"):
     """
     
 
@@ -110,8 +110,8 @@ def getRobot_fromSnapshot(contour, snap, codeSize):
     """
     parameter_robot = []
     for c in contour:
-        cv.drawContours(snap, c,  -1, (10,200,20), 2) #dibuja los contornos
-        cv.waitKey(0)
+        #cv.drawContours(snap, c,  -1, (10,200,20), 2) #dibuja los contornos
+        #cv.waitKey(0)
         #para debug, imprimi separadores de lo que se va realizando.
         
         print(" ")
@@ -207,10 +207,7 @@ def getRobot_fromSnapshot(contour, snap, codeSize):
             
             #cv.imshow("Init", SemiCropCod) 
             
-            #para debug, muestra la imagen recortada y rotada
-            cv.imshow("Rotated", dst) 
-            cv.imshow("Final_crop",Final_Crop_rotated)
-            cv.waitKey(0)
+
             
             #obtiene las nuevas dimensiones del recorte, esto servira para otro filtro y para el resize de las imagenes
             height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
@@ -269,8 +266,13 @@ def getRobot_fromSnapshot(contour, snap, codeSize):
             # resize image
             resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
             
-            #para debug muestra la imagen recortada
-            cv.imshow("Final_crop_resized",resized)
+            if (mode == "DEBUG"):
+                #para debug muestra la imagen recortada
+                cv.imshow("Final_crop_resized",resized)
+                #para debug, muestra la imagen recortada y rotada
+                cv.imshow("Rotated", dst) 
+                cv.imshow("Final_crop",Final_Crop_rotated)
+                cv.waitKey(0)
                 
             #obtiene las nuevas medidas para los calculos 
             height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
@@ -342,31 +344,15 @@ def getRobot_fromSnapshot(contour, snap, codeSize):
                 #print("Superior izquierdo")
                 #print(ColorSupIzq)
                 #print(" ") 
-                cv.imshow("ColorSupIzq_1",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
-                #cv.imshow("Pivote",Final_Crop_rotated[int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8) + 80, 35:110])
-                    
-                #ColorSupDer = sum(sum(Final_Crop_rotated[15:45, 70:105]))
-                    #ColorSupDer = (ColorSupDer1[0] + ColorSupDer1[1] + ColorSupDer1[2])/3
-                #print("Superior derecho")
-                #print(ColorSupDer)
-                #print(" ") 
-                cv.imshow("supderecho",resized[int(height_Final_Rotated*1/8):40, 65:100])
-                    
-                #ColorInfDer = sum(sum(Final_Crop_rotated[62:90, 70:90]))
-                    #ColorInfDer = (ColorInfDer1[0] + ColorInfDer1[1] + ColorInfDer1[2])/3
-                #print("inferior derecho")
-                #print(ColorInfDer)
-                #print(" ") 
                 
-                cv.imshow("ColorInfDer1",resized[62:90, 70:90])
-                    
-                #print("int(height_Final_Rotated*1/4 + 2))",int(height_Final_Rotated*1/4 + 2))
-                #ColorInfIzq = sum(sum(Final_Crop_rotated[int(height_Final_Rotated*1/4 + 50):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 25)]))
-                    #ColorInfIzq = (ColorInfIzq1[0] + ColorInfIzq1[1] + ColorInfIzq1[2])/3
-                #print("inferior izquierdo")
-                #print(ColorInfIzq)
-                #print(" ") 
-                cv.imshow("ColorInfIzq1",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
+                if (mode == "DEBUG"):
+                    cv.imshow("ColorSupIzq_1",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:35])
+    
+                    cv.imshow("supderecho",resized[int(height_Final_Rotated*1/8):40, 65:100])
+                        
+                    cv.imshow("ColorInfDer1",resized[62:90, 70:90])
+                        
+                    cv.imshow("ColorInfIzq1",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
                 #cv.imshow("ColorMiddleIzq",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10:35])
                 #cv.imshow("ColorMiddle",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2)+30:int(height_Final_Rotated*1/8 + 30)+30, 10+30:35+25])
                 #cv.imshow("Color_a0",Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10+30:35+30])
@@ -483,19 +469,24 @@ def getRobot_fromSnapshot(contour, snap, codeSize):
             #print(ColorInfIzq)
             #print(" ")
             
-            
-            #para debug, muestra los cuadros detectados
-            #--------------------------------
-            #cv.imshow("Color_a0",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52])
-            cv.imshow("Color_a0_2",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(width_Final_Rotated*1/8)+25:int(width_Final_Rotated*1/8)+55])
-            cv.imshow("Color_a1",resized[int(height_Final_Rotated*1/8):40, 65:100])
-            cv.imshow("Color_a2",resized[int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 30)+22, 12:38])
-            cv.imshow("Color_a3",resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30])
-            cv.imshow("Color_a4",resized[int(height_Final_Rotated*1/8)+30:40+30, 65:95])
-            cv.imshow("Color_a5",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
-            cv.imshow("Color_a6",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
-            cv.imshow("Color_a7",resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(width_Final_Rotated*1/2)+20 :int(width_Final_Rotated*1/2) + 45])
-            #--------------------------------
+            if (mode == "DEBUG"):
+                #para debug, muestra los cuadros detectados
+                #--------------------------------
+                #cv.imshow("Color_a0",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(height_Final_Rotated*1/8)+25:int(height_Final_Rotated*1/8)+52])
+                cv.imshow("Color_a0_2",resized[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), int(width_Final_Rotated*1/8)+25:int(width_Final_Rotated*1/8)+55])
+                cv.imshow("Color_a1",resized[int(height_Final_Rotated*1/8):40, 65:100])
+                cv.imshow("Color_a2",resized[int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 30)+22, 12:38])
+                cv.imshow("Color_a3",resized[int(height_Final_Rotated*1/8 + 2)+23:int(height_Final_Rotated*1/8 + 25)+30, 10+30:35+30])
+                cv.imshow("Color_a4",resized[int(height_Final_Rotated*1/8)+30:40+30, 65:95])
+                cv.imshow("Color_a5",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)])
+                cv.imshow("Color_a6",resized[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8)+30:int(height_Final_Rotated*1/8 + 23)+30])
+                cv.imshow("Color_a7",resized[int(height_Final_Rotated*1/2) + 15:int(height_Final_Rotated*1/2) + 45, int(width_Final_Rotated*1/2)+20 :int(width_Final_Rotated*1/2) + 45])
+                
+                            
+                #para debug, muestra como quedo el codigo al final
+                cv.imshow("Codigo", resized)
+                cv.waitKey(0) 
+                #--------------------------------
             
             
                 #Generando los valores para detectar el codigo.
@@ -530,10 +521,7 @@ def getRobot_fromSnapshot(contour, snap, codeSize):
                 
             #guarda los valores en este vector para luego proceder a su identificacion
             code = [a7,a6,a5,a4,a3,a2,a1,a0]
-            
-            #para debug, muestra como quedo el codigo al final
-            cv.imshow("Codigo", resized)
-            cv.waitKey(0)      
+                
             
             
             #NO SE USA, PERO DE MOMENTO, NO SE BORRARA HASTA VERIFICAR QUE NO INTERFIERA CON EL FUNCIONAMIENTO 
