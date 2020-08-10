@@ -65,11 +65,13 @@ asi como la identifacion de sus codigos o marcadores.
 from Swarm_robotic import camara, vector_robot, Robot #libreria swarm para la deteccion de la pose de agentes
 from toma_pose import getRobot_fromSnapshot, getRobot_Code
 import cv2 as cv #importando libreria para opencv 
+#import threading
 
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QVBoxLayout, QTextEdit,QLineEdit,QInputDialog
 import sys
 from PySide2.QtGui import QIcon
+from multiprocessing import Process, Lock, Queue
 
 n = 50 #para el boton1 de capturar
 n2 = 50 #para el boton3 del codigo
@@ -95,8 +97,61 @@ vector_robot = vector_robot()
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 
+snapshot_robot = {}
+RecCod = {}
+gray_blur_img = {}
+canny_img = {}
+a = 0
 # In[Definiendo hilos]:
+
+read_lock = Lock()
     
+def worker(q, n):
+    q.put(n)
+    pass
+
+def image_processing():
+    global snapshot_robot,gray_blur_img, RecCod, canny_img
+    print("Soy el hilo de procesamiento")
+    #while(1):
+    read_lock.acquire()
+    a = 1
+    print(a)
+    print("El procesamiento va a empezar")
+    #voy a procesar
+    RecCod, gray_blur_img, canny_img = getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup)
+    read_lock.release()
+
+def getting_robot_code(numCod):
+    global RecCod, gray_blur_img
+    print("Soy el hilo de obtener pose")
+    
+    #while(1):
+    read_lock.release()
+    read_lock.acquire()
+    a = 2
+    print(a)
+    print("La obtencion de pose va empezar")
+    #cv.imshow("CapturaPoseRobot", snapshot_robot)
+    #cv.waitKey(0)
+    parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,numCod)
+    size = len(parameters)
+    print(size)
+    for i in range (0, size):
+        temp_param = parameters[i]
+        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+        print("Este es el vector retornado: ",vector[0].id_robot)
+    #print("Este es el vector retornado: ",vector[1].id_robot)
+    read_lock.release()
+
+def capturar_foto():
+    pass
+
+
+
+
+
+#escribiendo.join()
 
 # In[Definiendo la interfaz grafica]
 """
@@ -139,22 +194,44 @@ class Window(QWidget):
         btn4.clicked.connect(self.pose)
         
     def pose(self):
+        global snapshot_robot, gray_blur_img, canny_img
         text = self.lineEdit2.text()
         if text == '':
             text = '3'
         numCod = int(text)
+        #read_lock.acquire()
         foto = camara.get_frame()
         snapshot_robot = vector_robot.calibrar_imagen(foto)
+        #read_lock.release()
         cv.imshow("CapturaPoseRobot", snapshot_robot)
+        cv.waitKey(0)
+        #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
+        procesar = Process(target = image_processing) #asignacion de los hilos a una variable
+        obtener_pose = Process(target = getting_robot_code, args=(numCod,))
+        procesar.start() #inicializa el hilo.
+        obtener_pose.start() #inicializa el hilo.
+        cv.waitKey(100)
+        cv.imshow("canny_img", canny_img)
+        cv.waitKey(0)
+        #cv.imshow("Imagen blur", gray_blur_img)
+        #cv.waitKey(0)
+        
+        #procesar.join()
+        #obtener_pose.join()
+        #actualizar = threading.Thread(target = read_2)
+        
+        """
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
         RecCod, gray_blur_img, canny_img = getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
         parameters = getRobot_fromSnapshot(RecCod,gray_blur_img,numCod)
+        
         size = len(parameters)
         for i in range (0, size):
             temp_param = parameters[i]
             vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
         print("Este es el vector retornado: ",vector[0].id_robot)
         print("Este es el vector retornado: ",vector[1].id_robot)
+        """
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
