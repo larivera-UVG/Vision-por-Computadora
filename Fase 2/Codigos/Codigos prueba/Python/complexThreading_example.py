@@ -63,9 +63,9 @@ def read_1():
         f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
         f2.write(buffer) #escribiendo linea por linea
         f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
+        print(cont)
         lock.release() #libera el recurso para alguien mas 
         
-        print(cont)
         #print(buffer)
         if not linea: 
             break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una ciclo
@@ -86,9 +86,9 @@ def read_2():
         f2 = open ('Lab6_reconstruido.txt','a') #abriendo el archivo donde se va a construir el nuevo texto.
         f2.write(buffer) #escribiendo linea por linea
         f2.close() #al finalizar, se cierra el archivo, para evitar corrupciones
-        lock.release() #libera el recurso para alguien mas 
-        
         print(cont)
+        lock.release() #libera el recurso para alguien mas 
+    
         if not linea:
             break #si ya no hay mas lineas, rompe el ciclo. break siempre debe ir en una ciclo
     f.close() #cierra el archivo 2. 
