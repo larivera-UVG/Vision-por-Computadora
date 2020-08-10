@@ -142,9 +142,13 @@ class Window(QWidget):
         cv.imshow("CapturaPoseRobot", snapshot_robot)
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
         RecCod, gray_blur_img, canny_img = getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
-        ID, IP, POS = getRobot_fromSnapshot(RecCod,gray_blur_img,numCod)
-        vector = vector_robot.agregar_robot(Robot(ID,IP,POS))
-        print("Este es el vector retornado: ",vector[0].pos)
+        parameters = getRobot_fromSnapshot(RecCod,gray_blur_img,numCod)
+        size = len(parameters)
+        for i in range (0, size):
+            temp_param = parameters[i]
+            vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+        print("Este es el vector retornado: ",vector[0].id_robot)
+        print("Este es el vector retornado: ",vector[1].id_robot)
     
     def TxtBox(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
