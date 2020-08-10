@@ -53,6 +53,10 @@ Version con Programacion Orientada a Objetos.
                              la calse ***camara***. Se agrega un nuevo metodo (o se modifica) de calibrar_imagen()
                              que recibe la foto, la calibra (recorta y usa la matriz de calibracion) y devuelve la
                              imagen calibrada para su posterior uso. 
+                             
+09/08/2020: Version 0.9.0 -- Se eliminan funciones de ***getRobot_Code*** y ***getRobot_fromSnapshot*** con el 
+                             objetivo de facilitar la verificacion de este codigo y pensado en el uso de multi-hilos
+                             Ahora forman parte del archivo toma_pose.py
 
 ***********************
 Anotaciones iniciales:
@@ -270,9 +274,6 @@ def getHomogenea(esquina):
     #lambda = getPerspectiveTransform(esquinaFloat, esquinasFinales);
     return M
 
-    
-def saveMat(name, src):
-    cv.FileStorage(name,src)
 
 #metodo -> que es capaz de hacer nuestra clase, comportamiento
     
@@ -291,7 +292,13 @@ class camara():
 
         Parameters
         ----------
-        cam_num : El numero del dispositivo que se quiere abrir, normalmente es 0.
+        cam_num : TYPE, optional
+            DESCRIPTION. The default is 0. Setea el valor de la camara en 0, normalmente una camara 
+            adicional (no la que la computadora trae) por default es 0
+        WIDTH : TYPE, optional
+            DESCRIPTION. The default is 960. El ancho del marco de captura
+        HEIGHT : TYPE, optional
+            DESCRIPTION. The default is 720. El alto del marco de captura
 
         Returns
         -------
@@ -356,9 +363,11 @@ class camara():
 
         Parameters
         ----------
-        Snapshot : Fotografia para la calibracion.
-        Calib_param : Parametro de calibracion para Canny.
-        Treshold : NO USADO.
+        Snapshot : numpy Array
+            La captura de imagen que se va a usar para calibrar
+        Calib_param : TYPE numpy Array
+            Imagen calibrada
+        Treshold : NO USADO
 
         Returns
         -------
@@ -391,11 +400,13 @@ class camara():
 
         Parameters
         ----------
-        val : Un valor entre 0 y 255 para generar los codigos de deteccion de los robots.
+        val : int
+            Un valor entre 0 y 255 para generar los codigos de deteccion de los robots.
 
         Returns
         -------
-        Cod : El codigo luego de la construccion de la matriz.
+        Cod : numpy Array
+            El codigo luego de la construccion de la matriz.
 
         """
         
@@ -442,7 +453,6 @@ class camara():
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
 class Robot():
-
     """
     """
     #se agregan los atributos para poder manejarlos en los metodos
@@ -454,6 +464,26 @@ class Robot():
     vel_right = 0
     
     def __init__ (self,_id, _ip, _pos):
+        """
+        
+
+        Parameters
+        ----------
+        _id : TYPE int
+            DESCRIPTION. El identificador (de 0 a 255) del robot
+        _ip : TYPE string
+            DESCRIPTION. La ip del robot
+        _pos : TYPE array (int)
+            DESCRIPTION. la posiciont del robot, es un array de 3 elementos. 
+            Posicion 0 es la coordenada en x
+            Posicion 1 es la coordenada en y
+            Posicion 2 es el angulo theta
+
+        Returns
+        -------
+        None.
+
+        """
         #el init cambia para inicializar los atributos
         self.id_robot = _id
         self.ip = _ip
@@ -476,12 +506,12 @@ class Robot():
 
         Parameters
         ----------
-        ip : TYPE
-            DESCRIPTION.
+        _ip : TYPE string
+            DESCRIPTION. parametro a setear como ip
 
         Returns
         -------
-        ip : TYPE
+        TYPE
             DESCRIPTION.
 
         """
@@ -494,8 +524,12 @@ class Robot():
 
         Parameters
         ----------
-        pos : TYPE
-            DESCRIPTION.
+        _pos : TYPE array de 3 elementos
+            DESCRIPTION. 
+            _pos[0] = x
+            _pos[1] = y
+            _pos[2] = theta
+            otros elementos ignorados
 
         Returns
         -------
@@ -512,15 +546,8 @@ class Robot():
 
         Returns
         -------
-        Pos : TYPE
-            DESCRIPTION.
+        Obtiene la posicion del robot
 
-        """
-        """
-        Pos = []
-        Pos.append(self.x)
-        Pos.append(self.y)
-        Pos.append(self.theta)
         """
         return self.pos
         
@@ -530,8 +557,7 @@ class Robot():
 
         Returns
         -------
-        TYPE
-            DESCRIPTION.
+        Obtiene la IP del robot
 
         """
         return self.ip
@@ -542,8 +568,8 @@ class Robot():
 
         Parameters
         ----------
-        vel : TYPE
-            DESCRIPTION.
+        vel : TYPE array (int)
+            DESCRIPTION. Setea la velocidad de las llantas (izquierda y derecha)
 
         Returns
         -------
@@ -559,8 +585,8 @@ class Robot():
 
         Returns
         -------
-        speed : TYPE
-            DESCRIPTION.
+        speed : TYPE array
+            DESCRIPTION. La velocidad del robot.
 
         """
         speed = []
@@ -575,7 +601,16 @@ class vector_robot():
     """
     
     Robot_vector = [] #se agrega el atributo de vector
+    
     def __init__(self):
+        """
+        
+
+        Returns
+        -------
+        None.
+
+        """
         self.Robot_vector = []
         
     #def get_code(self,snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod):
@@ -583,6 +618,21 @@ class vector_robot():
         #return RecCod, gray_blur_img, canny_img
         
     def calibrar_imagen(self, frame_robot):
+        """
+        
+
+        Parameters
+        ----------
+        frame_robot : Foto capturada para calibrar
+            DESCRIPTION.
+
+        Returns
+        -------
+        last_frame_robot
+        TYPE numpy Array
+            DESCRIPTION. La imagen ya calibrada (ver clase ***camara*** para ver los parametros de la funcion warpPerspective)
+
+        """
         global MyWiHe
         global Matrix
         self.last_frame_robot = cv.warpPerspective(frame_robot, Matrix, (MyWiHe[0],  MyWiHe[1]))
@@ -594,13 +644,14 @@ class vector_robot():
 
         Parameters
         ----------
-        vector_robot : TYPE
-            DESCRIPTION.
+        Robot : TYPE objeto de la clase ***Robot***
+            DESCRIPTION. Inicializacion del objeto de clase Robot
 
         Returns
         -------
-        TYPE
-            DESCRIPTION.
+        Robot_vector
+        TYPE  Array de objeto de tipo Robot
+            DESCRIPTION. Este array tiene los robots identificados
 
         """
         #self.class_robot = class_robot
