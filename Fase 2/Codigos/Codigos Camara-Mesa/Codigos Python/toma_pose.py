@@ -44,7 +44,8 @@ TRESHOLD_DETECT_MAX = 130
 Definiendo las funciones para la toma de poses. 
 """
 
-def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup):
+def process_image(calib_snapshot, Canny_inf, Canny_sup):
+    print("Entre a process_image")
     """
     Parameters
     ----------
@@ -68,13 +69,16 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup):
     #vector = vector_robot() #inicializa el objeto vector_robot para agregar los diferentes parametros de cada robot como vector
     blur_size = (3,3) #para la difuminacion, leer documentacion
     height_im, width_im = calib_snapshot.shape[:2] #obtiene los tama;os de la imagen capturada
-    
+    print(height_im, width_im)
     #PixCodeSize = Medida_cod * width_im / anchoMesa
-    
+    print("voy a prrocesar la imagen")
+    print("Aplicare filtro de grises")
     gray_img = cv.cvtColor(calib_snapshot, cv.COLOR_BGR2GRAY) #se le aplica filtro de grises
+    print("Aplicare blur")
     gray_blur_img = cv.blur(gray_img, blur_size) #difuminacion para elimiar detalles innecesarios
+    print("Obtendre canny")
     canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3) #a esto se le aplica Canny para la deteccion de bordes
-
+    print("Termine de procesar")
     
     #para debug
     #muestra la imagen de canny para ver que contornos va a detectar.
@@ -93,7 +97,7 @@ def getRobot_Code(calib_snapshot, Canny_inf, Canny_sup):
     #cv.imshow("Contornos", calib_snapshot)
     #cv.waitKey(0)
 
-    
+    print("voy a retonar algo")
     return contour,gray_blur_img, canny_img
 
 def getRobot_fromSnapshot(contour, snap, codeSize = 3, mode = "CAPTURE"):
