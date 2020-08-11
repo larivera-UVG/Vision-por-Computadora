@@ -59,19 +59,29 @@ asi como la identifacion de sus codigos o marcadores.
                              
 09/08/2020: Version 0.8.0 -- Cambio en la tome de pose, se importan las funciones (ya no forma parte de la clase ***vector_robot***)
                              con el objetivo de usarlo en multi-hilos (aunque a esta version funciona normal, sin hilos).
+
+10/08/2020: Version 0.9.0 -- Se agregan funciones multi-hilos utilizando las libreria threading (se probo con 
+                             multiprocessing pero por problemas del uso de GLI (consultar) no funciona algunas 
+                             funciones de OpenCV).
+                             hasta el momento se procesa la imagen, se obtiene el codigo y se actualiza el vector
+                             en 3 hilos diferentes con captura manual del usuario. Se planea agregar la funcion de
+                             captura continua como un 4 hilo. 
+
 """
 
 
 from Swarm_robotic import camara, vector_robot, Robot #libreria swarm para la deteccion de la pose de agentes
-from toma_pose import getRobot_fromSnapshot, getRobot_Code
+from toma_pose import getRobot_fromSnapshot, process_image
 import cv2 as cv #importando libreria para opencv 
-#import threading
-
-from PySide2.QtCore import Qt
+import threading
+import time
+#import numpy as np
+#from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QVBoxLayout, QTextEdit,QLineEdit,QInputDialog
 import sys
-from PySide2.QtGui import QIcon
-from multiprocessing import Process, Lock, Queue
+#from PySide2.QtGui import QIcon
+#from multiprocessing import Process, Lock, Queue
+#q = Queue()
 
 n = 50 #para el boton1 de capturar
 n2 = 50 #para el boton3 del codigo
@@ -97,52 +107,150 @@ vector_robot = vector_robot()
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 
-snapshot_robot = {}
-RecCod = {}
-gray_blur_img = {}
-canny_img = {}
+snapshot_robot = []
+RecCod = []
+gray_blur_img = []
+canny_img = []
+parameters = []
+activate = 0
 a = 0
 # In[Definiendo hilos]:
 
-read_lock = Lock()
+#read_lock = Lock()
+lock = threading.Lock()
     
 def worker(q, n):
     q.put(n)
     pass
 
 def image_processing():
-    global snapshot_robot,gray_blur_img, RecCod, canny_img
+    global gray_blur_img, RecCod, canny_img, snapshot_robot
     print("Soy el hilo de procesamiento")
-    #while(1):
-    read_lock.acquire()
-    a = 1
-    print(a)
-    print("El procesamiento va a empezar")
-    #voy a procesar
-    RecCod, gray_blur_img, canny_img = getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup)
-    read_lock.release()
+    while(1):
+        lock.acquire()
+        print("Estoy procesando...")
+        #read_lock.acquire()
+        """
+        while not q.empty():
+            snapshot_robot = q.get()
+            
+        if q.empty():
+            pass
+        else:
+        """
+        a = 1
+        print(a)
+        print("El procesamiento va a empezar")
+        """
+        #voy a procesar
+        blur_size = (3,3) #para la difuminacion, leer documentacion
+        #height_im, width_im = calib_snapshot.shape[:2] #obtiene los tama;os de la imagen capturada
+        #print(height_im, width_im)
+        #PixCodeSize = Medida_cod * width_im / anchoMesa
+        print("voy a prrocesar la imagen")
+        print("Aplicare filtro de grises")
+        gray_img = cv.cvtColor(snapshot_robot, cv.COLOR_BGR2GRAY) #se le aplica filtro de grises
+        #print(gray_img)
+        print("Aplicare blur")
+        gray_blur_img = cv.blur(gray_img, blur_size) #difuminacion para elimiar detalles innecesarios
+        print("Obtendre canny")
+        canny_img = cv.Canny(gray_blur_img, MyGlobalCannyInf, MyGlobalCannySup, apertureSize = 3) #a esto se le aplica Canny para la deteccion de bordes
+        print("Termine de procesar")
+        image, RecCod, hierarchy = cv.findContours(canny_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        print("Tengo los contornos")
+        """
+        RecCod, gray_blur_img, canny_img = process_image(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup)
+        #q.put(contour)
+        #q.put(gray_blur_img)
+        lock.release()
+        time.sleep(15)
+        print("Libere")
 
 def getting_robot_code(numCod):
-    global RecCod, gray_blur_img
+    global RecCod, gray_blur_img, parameters, activate
+    #print(RecCod)
     print("Soy el hilo de obtener pose")
+    while(1):
+        lock.acquire()
+        activate = 1
+        print("adquiri el recurso")
+        """
+        n = 0
+        while not q.empty():
+            if n == 0:
+                RecCod = q.get()
+                n+=1
+            if n == 1:
+                gray_blur_img = q.get()
+                n+=1
+        """
+                
+        #RecCod = q.get()
+        #gray_blur_img = q.get()
+        a = 2
+        print(a)
+        #print(n)
+        #if n == 2:
+        print("La obtencion de pose va empezar")
+        #cv.imshow("CapturaPoseRobot", snapshot_robot)
+        #cv.waitKey(0)
+        parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,numCod)
+        #break
+        #read_lock.release()
+
+        lock.release()
+        time.sleep(10)
+        
+def actualizar_robots():
+    global parameters, activate
     
-    #while(1):
-    read_lock.release()
-    read_lock.acquire()
-    a = 2
-    print(a)
-    print("La obtencion de pose va empezar")
-    #cv.imshow("CapturaPoseRobot", snapshot_robot)
-    #cv.waitKey(0)
-    parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,numCod)
+    lock.acquire()
+    
     size = len(parameters)
-    print(size)
+    print("El tama;o de los parametros: ", size)
     for i in range (0, size):
         temp_param = parameters[i]
         vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-        print("Este es el vector retornado: ",vector[0].id_robot)
-    #print("Este es el vector retornado: ",vector[1].id_robot)
-    read_lock.release()
+        #print(np.shape(vector))
+    size_vector = len(vector)
+    print("Este es el tama;o del vector antes de entrar: ",size_vector)
+    for v in range (0, size_vector):
+        print("Este es el vector retornado: ",vector[v].id_robot)
+    lock.release()
+    time.sleep(5)
+    if activate == 1:
+        n = 0
+        print("la bandera de activacion me hizo entrar")
+        while(1):
+            n+=1
+            if n > 0:
+                lock.acquire()
+            size = len(parameters)
+            #print("El tama;o de los parametros: ", size)
+            for i in range (0, size):
+                temp_param = parameters[i]
+                if vector_robot.get_robot_id(temp_param[0]):
+                    pass
+                else:
+                    vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+                 
+                """
+                size_vector = len(vector)
+                for v in range (0, size_vector):
+                    if temp_param[0] == vector[v].id_robot:
+                        pass
+                    else:
+                        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+                """
+            size_vector = len(vector)
+            print("Este es el tama;o del vector en el while: ",size_vector)
+            for v in range (0, size_vector):
+                print("Este es el vector retornado: ",vector[v].id_robot)
+                print("Este es el vector retornado: ",vector[v].get_pos())
+            lock.release()
+            time.sleep(5)
+            
+
 
 def capturar_foto():
     pass
@@ -159,6 +267,8 @@ Definiendo a la interfaz grafica.
 """
 
 class Window(QWidget):
+    #global q
+    #new_thread = 0
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Prueba de GUI")
@@ -169,6 +279,7 @@ class Window(QWidget):
         self.TxtBox()
         self.TxtBox2()
         self.codigo_button()
+        self.new_thread = 0
         self.Toma_pose()
 
     def capturar_button(self):
@@ -194,7 +305,7 @@ class Window(QWidget):
         btn4.clicked.connect(self.pose)
         
     def pose(self):
-        global snapshot_robot, gray_blur_img, canny_img
+        global gray_blur_img, canny_img, snapshot_robot
         text = self.lineEdit2.text()
         if text == '':
             text = '3'
@@ -202,17 +313,25 @@ class Window(QWidget):
         #read_lock.acquire()
         foto = camara.get_frame()
         snapshot_robot = vector_robot.calibrar_imagen(foto)
+        #q.put(snapshot_robot)
         #read_lock.release()
         cv.imshow("CapturaPoseRobot", snapshot_robot)
         cv.waitKey(0)
-        #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
-        procesar = Process(target = image_processing) #asignacion de los hilos a una variable
-        obtener_pose = Process(target = getting_robot_code, args=(numCod,))
-        procesar.start() #inicializa el hilo.
-        obtener_pose.start() #inicializa el hilo.
-        cv.waitKey(100)
-        cv.imshow("canny_img", canny_img)
-        cv.waitKey(0)
+        time.sleep(1)
+        if self.new_thread == 0:
+            #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
+            procesar = threading.Thread(target = image_processing) #asignacion de los hilos a una variable
+            obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,))
+            vector_update = threading.Thread(target = actualizar_robots)
+            procesar.start() #inicializa el hilo.
+            time.sleep(1)
+            obtener_pose.start() #inicializa el hilo.
+            time.sleep(1)
+            vector_update.start()
+            self.new_thread = 1
+        #cv.waitKey(100)
+        #cv.imshow("canny_img", canny_img)
+        #cv.waitKey(0)
         #cv.imshow("Imagen blur", gray_blur_img)
         #cv.waitKey(0)
         
