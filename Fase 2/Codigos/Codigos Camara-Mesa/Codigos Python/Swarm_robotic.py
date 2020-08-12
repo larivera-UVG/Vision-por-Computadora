@@ -58,11 +58,11 @@ Version con Programacion Orientada a Objetos.
                              objetivo de facilitar la verificacion de este codigo y pensado en el uso de multi-hilos
                              Ahora forman parte del archivo toma_pose.py
                              
-09/08/2020: Version 0.9.0 -- Se cambia el metodo *get_robot_id* de la clase ***vector_robot*** para devolver 
+09/08/2020: Version 0.10.0 -- Se cambia el metodo *get_robot_id* de la clase ***vector_robot*** para devolver 
                              un 1 en caso de encontrarlo o un 0 en caso de no existir. Esto sirve para evitar
                              duplicar el robot. Ahora, se debe actualizar dicho paso de robot. 
 
-11/08/2020: Version 0.10.0 -- Se cambia el metodo *get_robot_id* de la clase ***vector_robot*** para devolver 
+11/08/2020: Version 0.11.0 -- Se cambia el metodo *get_robot_id* de la clase ***vector_robot*** para devolver 
                              un 1 en caso de encontrarlo o un 0 en caso de no existir. Ademas de esto, tambien
                              se actualiza el robot identificado. Si el ID ya existe y hay algun cambio en la posicion
                              o su IP, el metodo lo actualiza. Se cambia el nombre de *get_robot_id* por *update_robot_byID*
