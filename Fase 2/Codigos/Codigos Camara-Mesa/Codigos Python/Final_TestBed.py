@@ -229,7 +229,7 @@ def actualizar_robots():
             #print("El tama;o de los parametros: ", size)
             for i in range (0, size):
                 temp_param = parameters[i]
-                if vector_robot.get_robot_id(temp_param[0]):
+                if vector_robot.update_robot_byID(temp_param[0], temp_param[1], temp_param[2]):
                     pass
                 else:
                     vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
