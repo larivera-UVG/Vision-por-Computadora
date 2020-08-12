@@ -19,3 +19,9 @@ El archivo general __main__ es llamado Final_TestBed.py
 
 Las imágenes agregadas en esta carpeta son pruebas correspondientes a la calibración para dejar constancia de su funcionamiento.
 la imagen Cod.jpg es el código generado para la detección de los robots, a manera de comparativa con el código de André Rodas.
+
+## Al 10 de agosto del 2020:
+
+Se añaden varias funciones tanto en la GUI como en las diferentes liberías usadas para estos códigos (Para mayor información leer el versionado en cada uno de los archivos que están incluidos dentro de esta carpeta. 
+
+Esta versión ya cuenta con dos variaciones de documentos, una sin hilos y otra con hilos. De momento, la versión con hilos puede procesar e identificar los códigos, aunque faltaría un hilo de captura continua. 
