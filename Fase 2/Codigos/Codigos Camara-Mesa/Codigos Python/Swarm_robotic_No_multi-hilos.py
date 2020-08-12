@@ -57,15 +57,6 @@ Version con Programacion Orientada a Objetos.
 09/08/2020: Version 0.9.0 -- Se eliminan funciones de ***getRobot_Code*** y ***getRobot_fromSnapshot*** con el 
                              objetivo de facilitar la verificacion de este codigo y pensado en el uso de multi-hilos
                              Ahora forman parte del archivo toma_pose.py
-                             
-09/08/2020: Version 0.10.0 -- Se cambia el metodo *get_robot_id* de la clase ***vector_robot*** para devolver 
-                             un 1 en caso de encontrarlo o un 0 en caso de no existir. Esto sirve para evitar
-                             duplicar el robot. Ahora, se debe actualizar dicho paso de robot. 
-
-11/08/2020: Version 0.11.0 -- Se cambia el metodo *get_robot_id* de la clase ***vector_robot*** para devolver 
-                             un 1 en caso de encontrarlo o un 0 en caso de no existir. Ademas de esto, tambien
-                             se actualiza el robot identificado. Si el ID ya existe y hay algun cambio en la posicion
-                             o su IP, el metodo lo actualiza. Se cambia el nombre de *get_robot_id* por *update_robot_byID*
 
 ***********************
 Anotaciones iniciales:
@@ -701,52 +692,34 @@ class vector_robot():
                 break
         return final_ID
     
-    def update_robot_byID(self, _id, _ip, pos):
+    def get_robot_id(self, _id):
         """
-        Funcion que actualiza los parametros de cada robot por la busqueda del ID
-        Actualiza posiciones en x,y,theta y la IP si fuese necesario.
+        
 
         Parameters
         ----------
-        _id : TYPE int
-            DESCRIPTION. El identificador de cada robot
-        _ip : TYPE string
-            DESCRIPTION. la ip en formato decimal xxx.xxx.xxx.xxx
-        pos : TYPE array
-            DESCRIPTION. posicion en x,y,theta para el robot.
+        _id : TYPE
+            DESCRIPTION.
 
         Returns
         -------
-        TYPE int
-            DESCRIPTION. 1 si el robot ya existe, ademas de actualizar sus parametros de posicion y la IP (si fuese necesario)
-                0 si el robot no existe, por lo tanto se puede agregar ese nuevo robot identificado al vector. 
+        TYPE
+            DESCRIPTION.
+
         """
-        #pos.sort()
         size_robot = len(self.Robot_vector)
         #print(size_robot)
         #print("Este es mi id", _id)
         #print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
-        a = 0
+        a = ''
         for i in range (0,size_robot):
             #print("entre al for")
-            temp_ID = self.Robot_vector[i].id_robot
+            temp_ID = self.Robot_vector[i][0]
             #print("Este es el ID que buscas: ", self.Robot_vector[i][0])
             if _id == temp_ID:
-                tempIP = self.Robot_vector[i].get_IP()
-                tempPos = self.Robot_vector[i].get_pos()
-                print(tempPos)
-                print(pos)
-                if _ip == tempIP:
-                    pass
-                else:
-                    self.Robot_vector[i].set_IP(_ip)
-                if pos == tempPos:
-                    pass
-                else:
-                    self.Robot_vector[i].set_pos(pos)
-                return 1
+                return self.Robot_vector[i]
             else: 
-                a = 0
+                a = ''
         return a
         #if _id == 0:
         #    return print("No hay robot")
