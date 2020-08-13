@@ -358,6 +358,7 @@ class Window(QWidget):
         #actualizar = threading.Thread(target = read_2)
         
         """
+        #Version sin hilos
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
         RecCod, gray_blur_img, canny_img = getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
         parameters = getRobot_fromSnapshot(RecCod,gray_blur_img,numCod)
@@ -365,7 +366,10 @@ class Window(QWidget):
         size = len(parameters)
         for i in range (0, size):
             temp_param = parameters[i]
-            vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+            if vector_robot.update_robot_byID(temp_param[0], temp_param[1], temp_param[2]):
+                pass
+            else:
+                vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
         print("Este es el vector retornado: ",vector[0].id_robot)
         print("Este es el vector retornado: ",vector[1].id_robot)
         """
