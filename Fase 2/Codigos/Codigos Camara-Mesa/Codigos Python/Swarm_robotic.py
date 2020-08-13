@@ -67,6 +67,11 @@ Version con Programacion Orientada a Objetos.
                              se actualiza el robot identificado. Si el ID ya existe y hay algun cambio en la posicion
                              o su IP, el metodo lo actualiza. Se cambia el nombre de *get_robot_id* por *update_robot_byID*
 
+12/08/2020: Version 0.11.1 -- Se retorna la variable MyWiHe de la calibracion en el metodo *calibrar_imagen* de la 
+                              clase ***vector_robot*** Esto sirve para ubicar al robot espacialmente en la mesa de
+                              pruebas al momento de realizar la captura e identificacion del codigo. (ver el archivo
+                              toma_pose.py para mas informacion.)
+
 ***********************
 Anotaciones iniciales:
 ***********************
@@ -645,7 +650,7 @@ class vector_robot():
         global MyWiHe
         global Matrix
         self.last_frame_robot = cv.warpPerspective(frame_robot, Matrix, (MyWiHe[0],  MyWiHe[1]))
-        return self.last_frame_robot
+        return self.last_frame_robot, MyWiHe
     
     def agregar_robot(self,Robot):
         """
