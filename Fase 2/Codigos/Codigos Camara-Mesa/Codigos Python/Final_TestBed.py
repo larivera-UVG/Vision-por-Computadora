@@ -71,22 +71,30 @@ asi como la identifacion de sus codigos o marcadores.
                               Esto depende del modo que se escoja en la funcion. Finalmente, se arreglan ciertos 
                               delay en los hilos para acelerar el procesamiento pero evitar colisiones y ayudar
                               a la sincronizacion.
+                              
+12/08/2020: Version 0.11.0 -- Se agrega un espacio para visualizar la imagen calibrada y la imagen de los robots a 
+                              identificar dentro de la GUI con el metodo *set_label_image* que recibe como argumentos
+                              la imagen y el nombre que se le pondra a la label de titulo. 
+                              
+12/08/2020: Version 0.12.0 -- Se agrega el boton para detener a los hilos y poder volver a iniciarlos con el boton
+                              de "Tomar Pose"
 
 """
 
 
 from Swarm_robotic import camara, vector_robot, Robot #libreria swarm para la deteccion de la pose de agentes
-from toma_pose import getRobot_fromSnapshot, process_image
+from toma_pose import getRobot_fromSnapshot, process_image #para la deteccion de pose de los robots. 
 import cv2 as cv #importando libreria para opencv 
-import threading
-import time
-#import numpy as np
-#from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QApplication, QWidget, QPushButton, QMessageBox,QVBoxLayout, QTextEdit,QLineEdit,QInputDialog
+import threading #para los hilos
+import time #para el delay
+
+#importando la librerias para la GUI, en teoria se puede usar PyQt por que las funciones son las mismas
+#aunque algunos metodos cambian, aunque se recomienda instalar PySide2 para compatibilidad con esta version
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QLabel, QApplication, QWidget, QPushButton,QLineEdit
 import sys
-#from PySide2.QtGui import QIcon
-#from multiprocessing import Process, Lock, Queue
-#q = Queue()
+from PySide2.QtGui import QImage, QPixmap
+
 
 n = 50 #para el boton1 de capturar
 n2 = 50 #para el boton3 del codigo
@@ -117,10 +125,13 @@ RecCod = []
 gray_blur_img = []
 canny_img = []
 parameters = []
-activate = 0
-a = 0
+activate = 0 #para activar alguna funcion
+a = 0 #para verificar el hilo que se esta usando, solo como debug.
+
 Final_Crop_rotated = []
 resized = []
+
+flag_detener = False
 
 #MyWiHe = []
 # In[Definiendo hilos]:
@@ -150,35 +161,20 @@ def image_processing():
         a = 1
         print(a)
         print("El procesamiento va a empezar")
-        """
-        #voy a procesar
-        blur_size = (3,3) #para la difuminacion, leer documentacion
-        #height_im, width_im = calib_snapshot.shape[:2] #obtiene los tama;os de la imagen capturada
-        #print(height_im, width_im)
-        #PixCodeSize = Medida_cod * width_im / anchoMesa
-        print("voy a prrocesar la imagen")
-        print("Aplicare filtro de grises")
-        gray_img = cv.cvtColor(snapshot_robot, cv.COLOR_BGR2GRAY) #se le aplica filtro de grises
-        #print(gray_img)
-        print("Aplicare blur")
-        gray_blur_img = cv.blur(gray_img, blur_size) #difuminacion para elimiar detalles innecesarios
-        print("Obtendre canny")
-        canny_img = cv.Canny(gray_blur_img, MyGlobalCannyInf, MyGlobalCannySup, apertureSize = 3) #a esto se le aplica Canny para la deteccion de bordes
-        print("Termine de procesar")
-        image, RecCod, hierarchy = cv.findContours(canny_img, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
-        print("Tengo los contornos")
-        """
         RecCod, gray_blur_img, canny_img = process_image(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup)
         #q.put(contour)
         #q.put(gray_blur_img)
         lock.release()
         print("Libere")
-        time.sleep(3)
+        time.sleep(2)
+        if flag_detener:
+            break
 
 def getting_robot_code(numCod, MyWiHe):
     global RecCod, gray_blur_img, parameters, activate, resized, Final_Crop_rotated
     #print(RecCod)
     print("Soy el hilo de obtener pose")
+    parameters = []
     while(1):
         lock.acquire()
         activate = 1
@@ -203,15 +199,21 @@ def getting_robot_code(numCod, MyWiHe):
         print("La obtencion de pose va empezar")
         #cv.imshow("CapturaPoseRobot", snapshot_robot)
         #cv.waitKey(0)
-        parameters,resized,Final_Crop_rotated, _ = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"DEBUG_ON_CAPTURE")
+        #parameters,resized,Final_Crop_rotated, _ = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"DEBUG_ON_CAPTURE")
+        parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE")
         #break
         #read_lock.release()
 
         lock.release()
         time.sleep(2)
+        if flag_detener:
+            break
         
 def actualizar_robots():
     global parameters, activate
+    
+    vector = []
+    vector_robot.clear_vector()
     
     lock.acquire()
     
@@ -258,6 +260,8 @@ def actualizar_robots():
                 print("Este es el vector retornado: ",vector[v].get_pos())
             lock.release()
             time.sleep(1)
+            if flag_detener:
+                break
             
 
 
@@ -280,42 +284,62 @@ class Window(QWidget):
     #new_thread = 0
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Prueba de GUI")
+        self.setWindowTitle("Sistema Swarm - Mesa Robotat")
         self.setGeometry(500,400,500,400)
         #self.setIcon()
+        self.image_frame = QLabel()
         self.capturar_button()
-        self.limpiar_button()
-        self.TxtBox()
-        self.TxtBox2()
+        self.detener_procesamiento_button()
+        self.Num_ID()
+        self.ingresar_codigo()
         self.codigo_button()
         self.new_thread = 0
         self.Toma_pose()
+        self.bToma_pose.setEnabled(False)
+        self.size_codigo.setEnabled(False)
+        self.detener.setEnabled(False)
+        #self.mostrar_imagen = QLabel()
+        
+        #Muestra el titulo de la imagen en la GUI
+        self.label_img_text = QLabel(self)
+        self.label_img_text.move(200,190)
+        self.label_img_text.setText("Visualizar Imagen")
+        self.label_img_text.setFixedWidth(125)
+        self.label_img_text.show()
+        
+        #Para mostrar la imagen en la GUI
+        self.label_img = QLabel(self)
+        #self.label_img.setText()
+        self.label_img.setGeometry(350, 200,340, 170)
+        self.label_img.move(95,210)
+        self.label_img.show()
+        #self.mostrar_imagen.addWidget(self.image_frame)
+        #self.setLayout(self.mostrar_imagen)
 
     def capturar_button(self):
-        btn1 = QPushButton("Calibrar", self)
-        btn1.move(n,50)
-        #self.Init_Cam
-        btn1.clicked.connect(self.capturar)
+        self.bcapturar = QPushButton("Calibrar", self)
+        self.bcapturar.move(n,50)
+        self.bcapturar.clicked.connect(self.capturar)
     
-    def limpiar_button(self):
-        btn2 = QPushButton("Limpiar", self)
-        btn2.move(n+90,50)
-        btn2.clicked.connect(self.limpiar_pantalla)
+    def detener_procesamiento_button(self):
+        self.detener = QPushButton("Detener Procesamiento", self)
+        self.detener.move(n+90,50)
+        self.detener.clicked.connect(self.detener_procesamiento)
         
     def codigo_button(self):
-        btn3 = QPushButton("Generar Codigo", self)
-        btn3.move(n2,90)
-        btn3.clicked.connect(self.codigo)
+        self.btn3 = QPushButton("Generar Codigo", self)
+        self.btn3.move(n2,90)
+        self.btn3.clicked.connect(self.codigo)
         
     def Toma_pose(self):
-        btn4 = QPushButton("Tomar Pose", self)
-        btn4.move(n2,140)
+        self.bToma_pose = QPushButton("Tomar Pose", self)
+        self.bToma_pose.move(n2,140)
         #self.Init_pose()
-        btn4.clicked.connect(self.pose)
+        self.bToma_pose.clicked.connect(self.pose)
         
     def pose(self):
         global gray_blur_img, canny_img, snapshot_robot, resized, Final_Crop_rotated
-        text = self.lineEdit2.text()
+        text = self.size_codigo.text()
         if text == '':
             text = '3'
         numCod = int(text)
@@ -324,20 +348,24 @@ class Window(QWidget):
         snapshot_robot,MyWiHe = vector_robot.calibrar_imagen(foto)
         #q.put(snapshot_robot)
         #read_lock.release()
-        cv.imshow("CapturaPoseRobot", snapshot_robot)
-        cv.waitKey(0)
-        time.sleep(1)
+        self.set_label_image(snapshot_robot,"Robots a identificar")
+        #cv.imshow("CapturaPoseRobot", snapshot_robot)
+        
+        #cv.waitKey(0)
+        #time.sleep(1)
         if self.new_thread == 0:
+            self.detener.setEnabled(True)
             #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
-            procesar = threading.Thread(target = image_processing) #asignacion de los hilos a una variable
-            obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
-            vector_update = threading.Thread(target = actualizar_robots)
-            procesar.start() #inicializa el hilo.
+            self.procesar = threading.Thread(target = image_processing) #asignacion de los hilos a una variable
+            self.obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
+            self.vector_update = threading.Thread(target = actualizar_robots)
+            self.procesar.start() #inicializa el hilo.
             time.sleep(1)
-            obtener_pose.start() #inicializa el hilo.
+            self.obtener_pose.start() #inicializa el hilo.
             time.sleep(1)
-            vector_update.start()
+            self.vector_update.start()
             self.new_thread = 1
+        """   
         if resized == [] or Final_Crop_rotated ==[]:
             pass
         else:
@@ -347,6 +375,7 @@ class Window(QWidget):
             cv.imshow("Final_Crop_rotated", Final_Crop_rotated)
             cv.imshow("canny_img",canny_img)
             cv.waitKey(0)
+        """
         #cv.waitKey(100)
         #cv.imshow("canny_img", canny_img)
         #cv.waitKey(0)
@@ -358,6 +387,7 @@ class Window(QWidget):
         #actualizar = threading.Thread(target = read_2)
         
         """
+        #Version sin hilos
         #Snapshot = cv.imread("opencv_CalibSnapshot_0.png")
         RecCod, gray_blur_img, canny_img = getRobot_Code(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup, numCod)
         parameters = getRobot_fromSnapshot(RecCod,gray_blur_img,numCod)
@@ -365,27 +395,37 @@ class Window(QWidget):
         size = len(parameters)
         for i in range (0, size):
             temp_param = parameters[i]
-            vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+            if vector_robot.update_robot_byID(temp_param[0], temp_param[1], temp_param[2]):
+                pass
+            else:
+                vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
         print("Este es el vector retornado: ",vector[0].id_robot)
         print("Este es el vector retornado: ",vector[1].id_robot)
         """
     
-    def TxtBox(self):
+    def Num_ID(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
         self.lineEdit.setFixedWidth(120)
         self.lineEdit.move(n2+140,93)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
     
-    def TxtBox2(self):
-        self.lineEdit2 = QLineEdit(self,placeholderText="Tamaño del código")
-        self.lineEdit2.setFixedWidth(125)
-        self.lineEdit2.move(n2+120,143)
+    def ingresar_codigo(self):
+        self.size_codigo = QLineEdit(self,placeholderText="Tamaño del código")
+        self.size_codigo.setFixedWidth(125)
+        self.size_codigo.move(n2+120,143)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
         
-    def limpiar_pantalla(self):
-        camara.destroy_window()
+    def detener_procesamiento(self):
+        global flag_detener
+        flag_detener = True
+        self.procesar.join()
+        self.obtener_pose.join()
+        self.vector_update.join()
+        self.new_thread = 0
+        flag_detener = False
+        self.detener.setEnabled(False)
         
     def codigo(self):
         text = self.lineEdit.text()
@@ -394,9 +434,31 @@ class Window(QWidget):
         num = int(text)
         camara.Generar_codigo(num)
         
+    def set_label_image(self, snap, text):
+        self.image = snap
+        height, width, channels = self.image.shape
+        bytesPerLine = channels * width
+        self.image_show = QImage(self.image.data, width, height,bytesPerLine, QImage.Format_RGB888)
+        self.image = QPixmap.fromImage(self.image_show)
+        self.pixmap_resized = self.image.scaled(self.label_img.width(), self.label_img.height(), Qt.KeepAspectRatio)
+        self.label_img.setPixmap(self.pixmap_resized)
+        self.label_img_text.setText(text)
+        
+        
     def capturar(self):
         foto = camara.get_frame()
-        camara.Calibrar(foto,Calib_param,Treshold)
+        CaliSnapshot = camara.Calibrar(foto,Calib_param,Treshold)
+        self.set_label_image(CaliSnapshot, "Imagen Calibrada")
+        #self.label_img.show()
+        #self.image = QImage(self.image.data, self.image.shape[1], self.image.shape[0], QImage.Format_RGB888).rgbSwapped()
+        #self.image_frame.setPixmap(QPixmap.fromImage(self.image))
+
+        #cv.imshow("Output Image", CaliSnapshot)
+        #cv.waitKey(2000)
+        #camara.destroy_window()
+        self.bToma_pose.setEnabled(True)
+        self.size_codigo.setEnabled(True)
+        self.bcapturar.setEnabled(False)
         
 
             

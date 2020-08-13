@@ -72,6 +72,11 @@ Version con Programacion Orientada a Objetos.
                               pruebas al momento de realizar la captura e identificacion del codigo. (ver el archivo
                               toma_pose.py para mas informacion.)
 
+12/08/2020: Version 0.11.2 -- Se agerga el metodo *clear_vector* de la clase ***vector_robot*** que limpia el array
+                              de robots en caso de haber paralizado el procesamiento o necesitar tomar nuevos datos 
+                              sin tener que escribir sobre el vector que ya exisita (usese sabiendo que esto
+                              limpia los datos que ya estaban.)
+
 ***********************
 Anotaciones iniciales:
 ***********************
@@ -262,8 +267,8 @@ def get_esquinas(frame, canny_value, pixelTreshold):
     cv.imwrite(edge_img, edge) #Guarda la foro
     print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
     img_counter += 1 #aumenta el contador. 
-    cv.imshow("prueba", edge)
-    cv.waitKey(1)
+    #cv.imshow("prueba", edge)
+    #cv.waitKey(1)
     return esquinas_final 
 
 def getHomogenea(esquina):
@@ -404,8 +409,9 @@ class camara():
         print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
         img_counter += 1 #aumenta el contador. 
         #cv.imshow("prueba", edge)
-        cv.imshow("Output Image", CaliSnapshot)
-        cv.waitKey(1)
+        #cv.imshow("Output Image", CaliSnapshot)
+        #cv.waitKey(1)
+        return CaliSnapshot
         
     def Generar_codigo(self,val):
         img_counter = 0
@@ -753,10 +759,18 @@ class vector_robot():
             else: 
                 a = 0
         return a
-        #if _id == 0:
-        #    return print("No hay robot")
-        #else:
-        #    return self.Robot_vector[_id]
+
+        
+    def clear_vector(self):
+        """
+        Limpia el vector de objetos de tipo Robot.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.Robot_vector = []
 
 
 
