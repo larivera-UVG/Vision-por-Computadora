@@ -77,16 +77,16 @@ def process_image(calib_snapshot, Canny_inf, Canny_sup):
     #vector = vector_robot() #inicializa el objeto vector_robot para agregar los diferentes parametros de cada robot como vector
     blur_size = (3,3) #para la difuminacion, leer documentacion
     height_im, width_im = calib_snapshot.shape[:2] #obtiene los tama;os de la imagen capturada
-    print(height_im, width_im)
+    #print(height_im, width_im)
     #PixCodeSize = Medida_cod * width_im / anchoMesa
-    print("voy a prrocesar la imagen")
-    print("Aplicare filtro de grises")
+    #print("voy a prrocesar la imagen")
+    #print("Aplicare filtro de grises")
     gray_img = cv.cvtColor(calib_snapshot, cv.COLOR_BGR2GRAY) #se le aplica filtro de grises
-    print("Aplicare blur")
+    #print("Aplicare blur")
     gray_blur_img = cv.blur(gray_img, blur_size) #difuminacion para elimiar detalles innecesarios
-    print("Obtendre canny")
+    #print("Obtendre canny")
     canny_img = cv.Canny(gray_blur_img, Canny_inf, Canny_sup, apertureSize = 3) #a esto se le aplica Canny para la deteccion de bordes
-    print("Termine de procesar")
+    #print("Termine de procesar")
     
     #para debug
     #muestra la imagen de canny para ver que contornos va a detectar.
@@ -105,7 +105,7 @@ def process_image(calib_snapshot, Canny_inf, Canny_sup):
     #cv.imshow("Contornos", calib_snapshot)
     #cv.waitKey(0)
 
-    print("voy a retonar algo")
+    #print("voy a retonar algo")
     return contour,gray_blur_img, canny_img
 
 def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
@@ -153,9 +153,7 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
         #cv.drawContours(snap, c,  -1, (10,200,20), 2) #dibuja los contornos
         #cv.waitKey(0)
         #para debug, imprimi separadores de lo que se va realizando.
-        
-        print(" ")
-        print("-----------------")
+
         #print("Este es el contador",a)
         RecCod = cv.minAreaRect(c)
         #cv.drawContours(calib_snapshot, c,  -1, (10*i + 100,15*i,20*i + 20), 2) #dibuja los contornos
@@ -172,10 +170,6 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
         if theta < -45:
             theta += 90
         
-        #separador
-        print("-----------------")
-        print(" ")
-        
 
         """
         A continuacion se detalla el procedimiento:
@@ -185,8 +179,10 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
         """
         rescale_factor_size = codeSize/3 #factor de escala
         
-        #para debug, imprime el tama;o del contorno, se puede descomentar
-        print("Size[0] y size[1]: ", size[0], size[1])
+        if mode == "DEBUG":
+            
+            #para debug, imprime el tama;o del contorno, se puede descomentar
+            print("Size[0] y size[1]: ", size[0], size[1])
 
         #Compara si ambos tama;os estan por arriba del minimo para no tener imagenes o contornos muy peque;os
         #y nada relevantes para este programa.
@@ -203,11 +199,12 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             MyGlobalWidth = snap.shape[1]
             MyGlobalHeigth = snap.shape[0]
             
-            #---------------------------------------------
-            #separador
-            print(" ")
-            print("-----------------")
-            print("Ingresando a getRobot_fromSnapshot")
+            if mode == "DEBUG":
+                #---------------------------------------------
+                #separador
+                print(" ")
+                print("-----------------")
+                print("Ingresando a getRobot_fromSnapshot")
         
             
             #Para obtener el snap recortado.
@@ -257,11 +254,11 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             
             #obtiene las nuevas dimensiones del recorte, esto servira para otro filtro y para el resize de las imagenes
             height_Final_Rotated, width_Final_Rotated = Final_Crop_rotated.shape[:2]
-            
-            #para debug, imprime las dimensiones actuales de la imagen
-            print("Dimensiones actuales: ")
-            print(height_Final_Rotated, width_Final_Rotated)
-            
+            if mode == "DEBUG":
+                #para debug, imprime las dimensiones actuales de la imagen
+                print("Dimensiones actuales: ")
+                print(height_Final_Rotated, width_Final_Rotated)
+                
             
             scale_percent = (codeSize/3.0)  # percent of original size, factor de reescala que se utiliza basado en el codigo
             #la variable MIN_IMAGE_SIZE es para que las imagenes mas peque;as que hayan pasado el primer filtro, no se tomen en cuenta
@@ -290,13 +287,14 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             height_percent = (116/height_Final_Rotated) 
             width_percent = (116/width_Final_Rotated)
             
-            #para debug, separador e imprime el factor de escala de la imagen.
-            print("-----------------")
-            print("% de escala", scale_percent)
-            
-            #para debug, muestra una de las medidas temporales de la imagen.
-            print("Medida temporal: ", width_Final_Rotated * scale_percent)
-            print("-----------------")
+            if mode == "DEBUG":
+                #para debug, separador e imprime el factor de escala de la imagen.
+                print("-----------------")
+                print("% de escala", scale_percent)
+                
+                #para debug, muestra una de las medidas temporales de la imagen.
+                print("Medida temporal: ", width_Final_Rotated * scale_percent)
+                print("-----------------")
             
             #calcula las nuevas medidas
             width = int(width_Final_Rotated * width_percent)
@@ -305,9 +303,10 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             #para debug, imprime como tupla las nuevas medidas.
             dim = (width, height)
             
-            print("Dimensiones resized: ")
-            print("-----------------")
-            print(dim)
+            if mode == "DEBUG":
+                print("Dimensiones resized: ")
+                print("-----------------")
+                print(dim)
             
             # resize image
             resized = cv.resize(Final_Crop_rotated, dim, interpolation = cv.INTER_AREA)
@@ -327,11 +326,11 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             #obtiene las nuevas medidas para los calculos 
             height_Final_Rotated, width_Final_Rotated = resized.shape[:2]
             
-            
-            #ppara debug, muestra las medidas, separador.
-            print("height_Final_Rotated: ", height_Final_Rotated)
-            print("width_Final_Rotated: ", width_Final_Rotated)
-            print("-----------------")
+            if mode == "DEBUG":
+                #ppara debug, muestra las medidas, separador.
+                print("height_Final_Rotated: ", height_Final_Rotated)
+                print("width_Final_Rotated: ", width_Final_Rotated)
+                print("-----------------")
         
             
     
@@ -615,8 +614,9 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             #Guardamos los valores
             if a == 0:
                 
-                #para debug, imprime el codigo binario en formato string
-                print("Codibo binario: ",CodigoBinString)
+                if mode == "DEBUG":
+                    #para debug, imprime el codigo binario en formato string
+                    print("Codibo binario: ",CodigoBinString)
                 
                 #esta funcion pasa el string de bits a formato de numero int.
                 tempID =int(CodigoBinString, 2)
@@ -629,10 +629,11 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 tempTheta = int(tempFloatTheta)
                 pos = [tempX, tempY, tempTheta]
                 
-                #para debug y seperacion
-                print("ID temporal",tempID)
-                print("-------------------")
-                print(" ")
+                if mode == "DEBUG":
+                    #para debug y seperacion
+                    print("ID temporal",tempID)
+                    print("-------------------")
+                    print(" ")
                 
             else:
                 #en caso de falla, aunque por las modificaciones ya no se usa,
