@@ -66,6 +66,11 @@ asi como la identifacion de sus codigos o marcadores.
                              hasta el momento se procesa la imagen, se obtiene el codigo y se actualiza el vector
                              en 3 hilos diferentes con captura manual del usuario. Se planea agregar la funcion de
                              captura continua como un 4 hilo. 
+        
+12/08/2020: Version 0.10.0 -- Se agregan ciertas ventanas en el hilo principal que muestra las imagenes para debug.
+                              Esto depende del modo que se escoja en la funcion. Finalmente, se arreglan ciertos 
+                              delay en los hilos para acelerar el procesamiento pero evitar colisiones y ayudar
+                              a la sincronizacion.
 
 """
 
@@ -114,6 +119,10 @@ canny_img = []
 parameters = []
 activate = 0
 a = 0
+Final_Crop_rotated = []
+resized = []
+
+#MyWiHe = []
 # In[Definiendo hilos]:
 
 #read_lock = Lock()
@@ -163,11 +172,11 @@ def image_processing():
         #q.put(contour)
         #q.put(gray_blur_img)
         lock.release()
-        time.sleep(15)
         print("Libere")
+        time.sleep(3)
 
-def getting_robot_code(numCod):
-    global RecCod, gray_blur_img, parameters, activate
+def getting_robot_code(numCod, MyWiHe):
+    global RecCod, gray_blur_img, parameters, activate, resized, Final_Crop_rotated
     #print(RecCod)
     print("Soy el hilo de obtener pose")
     while(1):
@@ -194,12 +203,12 @@ def getting_robot_code(numCod):
         print("La obtencion de pose va empezar")
         #cv.imshow("CapturaPoseRobot", snapshot_robot)
         #cv.waitKey(0)
-        parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,numCod)
+        parameters,resized,Final_Crop_rotated, _ = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"DEBUG_ON_CAPTURE")
         #break
         #read_lock.release()
 
         lock.release()
-        time.sleep(10)
+        time.sleep(2)
         
 def actualizar_robots():
     global parameters, activate
@@ -248,7 +257,7 @@ def actualizar_robots():
                 print("Este es el vector retornado: ",vector[v].id_robot)
                 print("Este es el vector retornado: ",vector[v].get_pos())
             lock.release()
-            time.sleep(5)
+            time.sleep(1)
             
 
 
@@ -305,14 +314,14 @@ class Window(QWidget):
         btn4.clicked.connect(self.pose)
         
     def pose(self):
-        global gray_blur_img, canny_img, snapshot_robot
+        global gray_blur_img, canny_img, snapshot_robot, resized, Final_Crop_rotated
         text = self.lineEdit2.text()
         if text == '':
             text = '3'
         numCod = int(text)
         #read_lock.acquire()
         foto = camara.get_frame()
-        snapshot_robot = vector_robot.calibrar_imagen(foto)
+        snapshot_robot,MyWiHe = vector_robot.calibrar_imagen(foto)
         #q.put(snapshot_robot)
         #read_lock.release()
         cv.imshow("CapturaPoseRobot", snapshot_robot)
@@ -321,7 +330,7 @@ class Window(QWidget):
         if self.new_thread == 0:
             #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
             procesar = threading.Thread(target = image_processing) #asignacion de los hilos a una variable
-            obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,))
+            obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
             vector_update = threading.Thread(target = actualizar_robots)
             procesar.start() #inicializa el hilo.
             time.sleep(1)
@@ -329,6 +338,15 @@ class Window(QWidget):
             time.sleep(1)
             vector_update.start()
             self.new_thread = 1
+        if resized == [] or Final_Crop_rotated ==[]:
+            pass
+        else:
+            #gray_blur_img
+            cv.imshow("gray_blur_img",gray_blur_img)
+            cv.imshow("resized",resized)
+            cv.imshow("Final_Crop_rotated", Final_Crop_rotated)
+            cv.imshow("canny_img",canny_img)
+            cv.waitKey(0)
         #cv.waitKey(100)
         #cv.imshow("canny_img", canny_img)
         #cv.waitKey(0)
