@@ -45,9 +45,9 @@ VectorRobots getRobotCodes(Mat _CropPhoto, int _CannyVinf, int _CannyVsup)
     cvtColor(_CropPhoto, _CropGrayPhoto, CV_BGR2GRAY);
     blur(_CropGrayPhoto, _CropGrayPhoto, Size(3, 3));
     Canny(_CropGrayPhoto, _CannyPhoto, _CannyVinf, _CannyVsup, 3);
-    //imshow("canny", _CannyPhoto);
-    //waitKey(0);
-    findContours(_CannyPhoto, contornos, jerarquia, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+    imshow("canny", _CannyPhoto);
+    waitKey(0);
+    findContours(_CannyPhoto, contornos, jerarquia, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     blur(_CropGrayPhoto, _CropGrayPhoto, Size(3, 3));
     cout << "He finalizado todo el proceso de procesamiento" << endl;
     RotatedRect SingleRecCod, LastRecCod;
@@ -231,8 +231,8 @@ int getLambdaWiHe()
 
             if (n == 0){
                 cout << "Leyendo la matriz" << endl;
-            for (int i = 0; i <4; i++){
-                for (int j=0; j < 4; j++){
+            for (int i = 0; i <3; i++){
+                for (int j=0; j < 3; j++){
                 //sleep(1);
                 cout << "matriz" << endl;
                 cout << i << endl;
