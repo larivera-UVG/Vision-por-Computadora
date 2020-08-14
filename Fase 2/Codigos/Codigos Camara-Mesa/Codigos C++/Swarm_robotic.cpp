@@ -192,8 +192,8 @@ void saveMat()
                 cout << n << endl;
 
                 if (n == 0){
-                for (int i = 0; i <4; i++){
-                    for (int j=0; j < 4; j++){
+                for (int i = 0; i <3; i++){
+                    for (int j=0; j < 3; j++){
                 sleep(1);
                 a = lambda.at<double>(i,j);
                 if(write(pipe_BtoA, &a, sizeof(a)) != sizeof(a))
@@ -207,7 +207,7 @@ void saveMat()
                }
 
              else if (n == 1){
-                    sleep(1);
+                    //sleep(1);
                 if(write(pipe_BtoA, &Widht, sizeof(Widht)) != sizeof(Widht))
                     {
                         cout <<"/tmp/CalibtoPose write error" << endl;;
@@ -217,7 +217,7 @@ void saveMat()
                 }
 
              else if (n == 2){
-                    sleep(1);
+                    //sleep(1);
 
                    if(write(pipe_BtoA, &Height, sizeof(Height)) != sizeof(Height))
                        {
