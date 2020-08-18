@@ -223,16 +223,14 @@ def actualizar_robots():
     
     size = len(parameters)
     print("El tama;o de los parametros: ", size)
+    
     for i in range (0, size):
         temp_param = parameters[i]
         vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
         #print(np.shape(vector))
-    size_vector = len(vector)
-    print("Este es el tama;o del vector antes de entrar: ",size_vector)
-    for v in range (0, size_vector):
-        print("Este es el vector retornado: ",vector[v].id_robot)
     lock.release()
     time.sleep(5)
+    
     if activate == 1:
         n = 0
         print("la bandera de activacion me hizo entrar")
@@ -261,9 +259,10 @@ def actualizar_robots():
             print("Este es el tama;o del vector en el while: ",size_vector)
             for v in range (0, size_vector):
                 print("Este es el vector retornado: ",vector[v].id_robot)
-                print("Este es el vector retornado: ",vector[v].get_pos())
+                print("La posicione de ese vector es: ",vector[v].get_pos())
             lock.release()
             time.sleep(1)
+            
             if flag_detener:
                 break
             
