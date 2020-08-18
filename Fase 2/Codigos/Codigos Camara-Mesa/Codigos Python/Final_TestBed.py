@@ -79,6 +79,9 @@ asi como la identifacion de sus codigos o marcadores.
 12/08/2020: Version 0.12.0 -- Se agrega el boton para detener a los hilos y poder volver a iniciarlos con el boton
                               de "Tomar Pose"
 
+18/08/2020: Version 0.12.1 -- Mejoras a la GUI para organizar mejor los botones. Se agrega el boton de Reiniciar calibracion
+                              y otros elementos visuales.
+
 """
 
 
@@ -96,8 +99,9 @@ import sys
 from PySide2.QtGui import QImage, QPixmap
 
 
-n = 50 #para el boton1 de capturar
-n2 = 50 #para el boton3 del codigo
+n = 35 #para el boton1 de capturar
+n2 = 300 #para el boton3 del codigo
+n3 = 35
 
 Canny_Factor = 2.5 #factor de multiplicacion para el limite superior de Canny
 Calib_param = 80 #Factor de calibracion para Canny, este factor se puede variar
@@ -285,10 +289,11 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sistema Swarm - Mesa Robotat")
-        self.setGeometry(500,400,500,400)
+        self.setGeometry(380,210,605,580)
         #self.setIcon()
         self.image_frame = QLabel()
         self.capturar_button()
+        self.Reiniciar_calibracion()
         self.detener_procesamiento_button()
         self.Num_ID()
         self.ingresar_codigo()
@@ -302,7 +307,7 @@ class Window(QWidget):
         
         #Muestra el titulo de la imagen en la GUI
         self.label_img_text = QLabel(self)
-        self.label_img_text.move(200,190)
+        self.label_img_text.move(220,220)
         self.label_img_text.setText("Visualizar Imagen")
         self.label_img_text.setFixedWidth(125)
         self.label_img_text.show()
@@ -310,32 +315,82 @@ class Window(QWidget):
         #Para mostrar la imagen en la GUI
         self.label_img = QLabel(self)
         #self.label_img.setText()
-        self.label_img.setGeometry(350, 200,340, 170)
-        self.label_img.move(95,210)
+        self.label_img.setGeometry(320, 220,450, 300)
+        self.label_img.move(70,220)
         self.label_img.show()
         #self.mostrar_imagen.addWidget(self.image_frame)
         #self.setLayout(self.mostrar_imagen)
+        
+        #Etiquetas para ordenar la GUI
+        
+        #Para mostrar etiqueta de calibracion
+        self.label_calib = QLabel(self)
+        self.label_calib.move(n+60,50-20)
+        self.label_calib.setText("Calibracion*")
+        self.label_calib.setFixedWidth(125)
+        self.label_calib.show()
+        
+        #Para mostrar etiqueta de generar codigo/marcador/identificador
+        self.label_code = QLabel(self)
+        self.label_code.move(n+330,50-20)
+        self.label_code.setText("Generacion Identificador")
+        self.label_code.setFixedWidth(170)
+        self.label_code.show()
+        
+        #Para mostrar etiqueta de obtencion de pose
+        self.label_Pose = QLabel(self)
+        self.label_Pose.move(n3+75,105)
+        self.label_Pose.setText("Obtencion de Pose**")
+        self.label_Pose.setFixedWidth(170)
+        self.label_Pose.show()
+        
+        #Para mostrar etiqueta de notas
+        self.label_note1 = QLabel(self)
+        self.label_note1.move(n3-5,505)
+        self.label_note1.setText("NOTA 1(*): Calibrar hasta ver las 4 esquinas del tablero (Presionar Reiniciar Calibracion)")
+        self.label_note1.setFixedWidth(600)
+        self.label_note1.show()
+        
+        #Para mostrar etiqueta de notas
+        self.label_note2 = QLabel(self)
+        self.label_note2.move(n3-5,525)
+        self.label_note2.setText("NOTA 2(**): Mejores resultados se obtienen con ilumacion directa sobre la mesa")
+        self.label_note2.setFixedWidth(600)
+        self.label_note2.show()
 
     def capturar_button(self):
         self.bcapturar = QPushButton("Calibrar", self)
         self.bcapturar.move(n,50)
         self.bcapturar.clicked.connect(self.capturar)
     
-    def detener_procesamiento_button(self):
-        self.detener = QPushButton("Detener Procesamiento", self)
-        self.detener.move(n+90,50)
-        self.detener.clicked.connect(self.detener_procesamiento)
+    def Reiniciar_calibracion(self):
+        self.bre_calib = QPushButton("Reiniciar calibracion", self)
+        self.bre_calib.move(n+90,50)
+        self.bre_calib.clicked.connect(self.Calibracion_reinit)
+    
         
     def codigo_button(self):
         self.btn3 = QPushButton("Generar Codigo", self)
-        self.btn3.move(n2,90)
+        self.btn3.move(n2,50)
         self.btn3.clicked.connect(self.codigo)
         
+    
     def Toma_pose(self):
         self.bToma_pose = QPushButton("Tomar Pose", self)
-        self.bToma_pose.move(n2,140)
+        self.bToma_pose.move(n3,120)
         #self.Init_pose()
         self.bToma_pose.clicked.connect(self.pose)
+        
+    def detener_procesamiento_button(self):
+        self.detener = QPushButton("Detener Procesamiento", self)
+        self.detener.move(n3,150)
+        self.detener.clicked.connect(self.detener_procesamiento)
+    
+    def Calibracion_reinit(self):
+        self.bcapturar.setEnabled(True)
+        self.bToma_pose.setEnabled(False)
+        self.size_codigo.setEnabled(False)
+        
         
     def pose(self):
         global gray_blur_img, canny_img, snapshot_robot, resized, Final_Crop_rotated
@@ -406,14 +461,14 @@ class Window(QWidget):
     def Num_ID(self):
         self.lineEdit = QLineEdit(self,placeholderText="Ingrese número")
         self.lineEdit.setFixedWidth(120)
-        self.lineEdit.move(n2+140,93)
+        self.lineEdit.move(n2+140,55)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
     
     def ingresar_codigo(self):
         self.size_codigo = QLineEdit(self,placeholderText="Tamaño del código")
         self.size_codigo.setFixedWidth(125)
-        self.size_codigo.move(n2+120,143)
+        self.size_codigo.move(n3+120,123)
         #vbox = QVBoxLayout(self)
         #vbox.addWidget(self.lineEdit)
         
