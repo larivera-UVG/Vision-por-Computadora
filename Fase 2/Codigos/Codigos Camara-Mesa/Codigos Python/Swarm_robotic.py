@@ -76,6 +76,10 @@ Version con Programacion Orientada a Objetos.
                               de robots en caso de haber paralizado el procesamiento o necesitar tomar nuevos datos 
                               sin tener que escribir sobre el vector que ya exisita (usese sabiendo que esto
                               limpia los datos que ya estaban.)
+                              
+18/08/2020: Version 0.11.3 -- Se agrega un raise exception en la parte de generar codigo para evitar erroes de numeros
+                              no admitidos y se cambia la variable local que lleva el conteo de las figuras para que
+                              se puedan guardar n codigos deseados (no sobreescribir como se estaba haciendo).
 
 ***********************
 Anotaciones iniciales:
@@ -328,6 +332,7 @@ class camara():
         self.cap.set(cv.CAP_PROP_FRAME_WIDTH, WIDTH)
         self.cap.set(cv.CAP_PROP_FRAME_HEIGHT, HEIGHT)
         self.cam_num = cam_num
+        self.img_counter_code = 0
         
     def get_frame(self):
         """
@@ -414,7 +419,6 @@ class camara():
         return CaliSnapshot
         
     def Generar_codigo(self,val):
-        img_counter = 0
         """
         
 
@@ -431,6 +435,9 @@ class camara():
         """
         
         #Si el valor no esta en el rango, retorna una matriz vacia
+        if val < 0 or val > 255:
+            raise Exception("Ingrese un numero valido entre 0 y 255")
+            
         if val < 0 or val > 255:
             print("Ingrese un numero valido entre 0 y 255")
             Cod = np.zeros([200,200], dtype = np.uint8)
@@ -464,12 +471,13 @@ class camara():
                             Cod[i3,i4] = n * 125
                 k = k + 1
         cv.imshow('cod', Cod)
-        cv.waitKey(1)
-        edge_img = "opencv_CodGenerator_{}.png".format(img_counter) #Formato del nombre de la imagen.
+        cv.waitKey(2000)
+        self.destroy_window()
+        edge_img = "opencv_CodGenerator_{}.png".format(self.img_counter_code) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
         cv.imwrite(edge_img, Cod) #Guarda la foro
         print("{} Canny Guardado!".format(edge_img)) #mensaje de Ok para el save de la foto.
-        img_counter += 1 #aumenta el contador. 
+        self.img_counter_code += 1 #aumenta el contador. 
         return Cod #retorna la matriz que luego puede ser mostrada como una foto del codigo.
         
 class Robot():
