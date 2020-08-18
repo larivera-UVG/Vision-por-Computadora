@@ -29,6 +29,7 @@ void updateRobotCodes(VectorRobots &_lastVRobotCodes, Mat _CropPhoto, int _Canny
 /// NO SE USA
 
 ///funcion
+/// En multi-hilos debe ira esta funcion
 VectorRobots getRobotCodes(Mat _CropPhoto, int _CannyVinf, int _CannyVsup)
 {
     VectorRobots ActualRobots;
@@ -41,7 +42,7 @@ VectorRobots getRobotCodes(Mat _CropPhoto, int _CannyVinf, int _CannyVsup)
     //waitKey(0);
 
     //float PixCodeSize = _CmCodeSize * (_CropPhoto.size().width / anchoMesa);
-
+    cout << "voy a hacer el procesamiento" << endl;
     cvtColor(_CropPhoto, _CropGrayPhoto, CV_BGR2GRAY);
     blur(_CropGrayPhoto, _CropGrayPhoto, Size(3, 3));
     Canny(_CropGrayPhoto, _CannyPhoto, _CannyVinf, _CannyVsup, 3);
@@ -54,8 +55,8 @@ VectorRobots getRobotCodes(Mat _CropPhoto, int _CannyVinf, int _CannyVsup)
     for (int i = 0; i < contornos.size(); i++)
     {
         SingleRecCod = minAreaRect(contornos[i]);
-        cout << SingleRecCod.size.width << endl;
-        cout << SingleRecCod.size.height << endl;
+        //cout << SingleRecCod.size.width << endl;
+        //cout << SingleRecCod.size.height << endl;
 
 
         if ((SingleRecCod.size.width  > GlobalCodePixThreshold) && (SingleRecCod.size.height  > GlobalCodePixThreshold))
@@ -90,26 +91,30 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     cout << "finalice los calculos" << endl;
     Range rows((int)(_RecContorno.center.y - tempHeMitad), (int)(_RecContorno.center.y + tempHeMitad));
     Range cols((int)(_RecContorno.center.x - tempWiMitad), (int)(_RecContorno.center.x + tempWiMitad));
+    /*
     cout << "Obtuve el range" << endl;
     cout << rows << endl;
     cout << cols << endl;
+    */
     Rect crop_region((int)(_RecContorno.center.y - tempHeMitad), (int)(_RecContorno.center.y + tempHeMitad),(int)(_RecContorno.center.x - tempWiMitad), (int)(_RecContorno.center.x + tempWiMitad));
     Mat SemiCropCod = GlobalCroppedActualSnap;
     cout << "Corte la imagen" << endl;
     //Mat tempRotMat = getRotationMatrix2D({ (float)(rows.size() / 2.0), (float)(cols.size() / 2.0)}, _RecContorno.angle, 1.0);
     Mat tempRotMat = getRotationMatrix2D(_RecContorno.center, _RecContorno.angle, 1.0);
-    cout << "Obtuve matriz de rotacion" << endl;
-    cout<< tempRotMat << endl;
+    //cout << "Obtuve matriz de rotacion" << endl;
+    //cout<< tempRotMat << endl;
     warpAffine(SemiCropCod, SemiCropCodRotated, tempRotMat, SemiCropCod.size(), INTER_LINEAR);
     cout << "Use la nueva matriz y encontre la nueva foto" << endl;
     getRectSubPix(SemiCropCodRotated, _RecContorno.size, _RecContorno.center, finalCropCodRotated);
     cvtColor(finalCropCodRotated, finalCropCodRotated, CV_BGR2GRAY, 0);
     cout << "Le aplique filtro de blanco y negro" << endl;
 
+    /*
     cout << "medidas de las fotos" << endl;
     cout << finalCropCodRotated.size() << endl;
     cout << finalCropCodRotated.size().width << endl;
     cout << finalCropCodRotated.size().height << endl;
+    */
 
     //if ((finalCropCodRotated.size().width > 70) && (finalCropCodRotated.size().height > 70)) {
 
@@ -234,9 +239,11 @@ int getLambdaWiHe()
             for (int i = 0; i <3; i++){
                 for (int j=0; j < 3; j++){
                 //sleep(1);
+                /*
                 cout << "matriz" << endl;
                 cout << i << endl;
                 cout << j << endl;
+                */
                 if(read(pipe_Calib, &a, sizeof(a)) < 0)
                 {
                         printf("/tmp/CalibtoPose pipe read error\n");
@@ -247,7 +254,7 @@ int getLambdaWiHe()
 
                     }
             }
-            cout << temp_mat << endl;
+            //cout << temp_mat << endl;
         }
 
        else if (n == 1){
@@ -258,8 +265,8 @@ int getLambdaWiHe()
                        cout <<"/tmp/CalibtoPose write error" << endl;;
                        exit(-1);
                    }
-               cout << "Width leido" << endl;
-               cout << GlobalWidth << endl;
+               //cout << "Width leido" << endl;
+               //cout << GlobalWidth << endl;
                }
 
             else if (n == 2){
@@ -271,7 +278,7 @@ int getLambdaWiHe()
                           cout <<"/tmp/CalibtoPose write error" << endl;;
                           exit(-1);
                       }
-                      cout << GlobalHeigth << endl;
+                      //cout << GlobalHeigth << endl;
                   }
 
                 //printf("Count TaskA: %d \n", counter);
