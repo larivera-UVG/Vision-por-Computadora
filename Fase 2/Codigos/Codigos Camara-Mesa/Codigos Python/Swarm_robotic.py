@@ -745,7 +745,7 @@ class vector_robot():
         #print(size_robot)
         #print("Este es mi id", _id)
         #print("Soy un robot en esta poiscion: ",self.Robot_vector[2][0])
-        a = 0
+        a = False
         for i in range (0,size_robot):
             #print("entre al for")
             temp_ID = self.Robot_vector[i].id_robot
@@ -763,9 +763,9 @@ class vector_robot():
                     pass
                 else:
                     self.Robot_vector[i].set_pos(pos)
-                return 1
+                return True
             else: 
-                a = 0
+                a = False
         return a
 
         
