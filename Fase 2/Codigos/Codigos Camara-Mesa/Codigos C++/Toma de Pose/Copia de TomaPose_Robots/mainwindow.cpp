@@ -25,8 +25,8 @@ Mat takePicture();
 Mat Snap, CropSnap;
 VectorRobots MyRobots;
 int MyIteratorRobot, MyInitialRobots = 0;
-int MyGlobalCannyInf = 100;
-int MyGlobalCannySup = 380;
+int MyGlobalCannyInf = 90;
+int MyGlobalCannySup = 300;
 float MyMedidaCodigoCM = 5.0;
 int activate = 0;
 
@@ -68,8 +68,10 @@ void *My_thread2(void *ptr)
     cout<<"corrida y obtencion de codigo" << endl;
         MyRobots = getRobotCodes(CropSnap, MyGlobalCannyInf, MyGlobalCannySup);
         cout << "Este es el vector robot" << endl;
-
-        //cout << MyRobots.Vrobots.at(0);
+        vector<int> a = MyRobots.Vrobots.at(0).get_Pose();
+        for(int i=0; i < a.size(); i++)
+        std::cout << a.at(i) << ' ';
+        //cout << a << endl;
         MyInitialRobots = MyRobots.Vrobots.size();
         cout << "El tama;o del vector de robots" << endl;
         cout << MyInitialRobots << endl;

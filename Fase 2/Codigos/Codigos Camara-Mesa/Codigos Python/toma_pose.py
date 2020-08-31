@@ -28,8 +28,8 @@ SQRTDE2 = 1.41421356
 MyPI = 3.14159265
 
 #revisar si es que se usan
-anchoMesa = 14.5
-largoMesa = 28.0
+anchoMesa = 12.5
+largoMesa = 25.8
 
 #de momento no se usan
 #GlobalCodePixThreshold = 80
@@ -643,6 +643,10 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 #calcula las posiciones y demas parametros del robot.
                 tempFloatX = (anchoMesa / GlobalWidth) * Cx;
                 tempFloatY = (largoMesa / GlobalHeigth) * Cy;
+                print("Estos son las posiciones")
+                print("PosX", tempFloatX)
+                print("PosY", tempFloatY)
+                
                 tempX = int(tempFloatX)
                 tempY = int(tempFloatY)
                 tempTheta = int(tempFloatTheta)

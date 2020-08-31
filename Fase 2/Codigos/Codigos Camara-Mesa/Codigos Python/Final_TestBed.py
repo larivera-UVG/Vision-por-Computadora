@@ -216,6 +216,7 @@ def getting_robot_code(numCod, MyWiHe):
 def actualizar_robots():
     global parameters, activate
     
+    """
     vector = []
     vector_robot.clear_vector()
     
@@ -229,23 +230,23 @@ def actualizar_robots():
         vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
         #print(np.shape(vector))
     lock.release()
-    time.sleep(5)
+    """
+    #time.sleep(5)
     
     if activate == 1:
         n = 0
         print("la bandera de activacion me hizo entrar")
         while(1):
+            vector = []
+            vector_robot.clear_vector()
             n+=1
-            if n > 0:
-                lock.acquire()
+            #if n > 0:
+            lock.acquire()
             size = len(parameters)
-            #print("El tama;o de los parametros: ", size)
+            print("El tama;o de los parametros: ", size)
             for i in range (0, size):
                 temp_param = parameters[i]
-                if vector_robot.update_robot_byID(temp_param[0], temp_param[1], temp_param[2]):
-                    pass
-                else:
-                    vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+                vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
                  
                 """
                 size_vector = len(vector)
