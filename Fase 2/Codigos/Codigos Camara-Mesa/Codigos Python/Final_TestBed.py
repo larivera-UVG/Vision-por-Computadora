@@ -81,6 +81,8 @@ asi como la identifacion de sus codigos o marcadores.
 
 18/08/2020: Version 0.12.1 -- Mejoras a la GUI para organizar mejor los botones. Se agrega el boton de Reiniciar calibracion
                               y otros elementos visuales.
+                              
+31/08/2020: Version 0.12.2 -- Actualizacion a uno de los hilos eliminando lineas innecesarias. 
 
 """
 
@@ -124,30 +126,39 @@ vector_robot = vector_robot()
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 
-snapshot_robot = []
-RecCod = []
-gray_blur_img = []
-canny_img = []
-parameters = []
+
+"""
+Para los hilos se definen las siguientes variables globales
+"""
+snapshot_robot = [] #para la foto de donde se calibrara 
+RecCod = [] #los contornos obtenidos al momento de analizar cada foto
+gray_blur_img = [] #la imagen de donde se extraera la informacion 
+canny_img = [] #el contorno de canny 
+parameters = [] #los parametros de los robots detectados. 
 activate = 0 #para activar alguna funcion
 a = 0 #para verificar el hilo que se esta usando, solo como debug.
 
+#otras
 Final_Crop_rotated = []
 resized = []
 
-flag_detener = False
+flag_detener = False #detiene los hilos ejecutados. 
 
 #MyWiHe = []
 # In[Definiendo hilos]:
 
 #read_lock = Lock()
-lock = threading.Lock()
+lock = threading.Lock() #recurso para adquirir y bloquear el hilo mientras usa los recursos compartidos.
     
-def worker(q, n):
-    q.put(n)
-    pass
-
 def image_processing():
+    """
+    Procesa la imagen y obtiene los contornos de donde se obtendran las pose de los robots
+
+    Returns
+    -------
+    None. Pero utiliza las variables globales RecCod, gray_blur_img, canny_img para enviar info a otros hilos
+
+    """
     global gray_blur_img, RecCod, canny_img, snapshot_robot
     print("Soy el hilo de procesamiento")
     while(1):
@@ -175,13 +186,30 @@ def image_processing():
             break
 
 def getting_robot_code(numCod, MyWiHe):
+    """
+    Una vez se obtiene los contornos de RecCod, se procesa y se obtiene los parametros de cada robot
+    (posicion e ID)
+
+    Parameters
+    ----------
+    numCod : TYPE int 
+        DESCRIPTION. El tama;o del codigo (normalmente solo se usa si hay codigos menores a 2 x 2 cm)
+    MyWiHe : TYPE array 
+        DESCRIPTION. Las dimensiones de la calibracion, en este caso, se devuelve de la funcion calibrar_imagen()
+        metodo de la clase vector_robot
+
+    Returns
+    -------
+    None, pero usa la variable global parameters que es la informacion de todos los robots identificados.
+
+    """
     global RecCod, gray_blur_img, parameters, activate, resized, Final_Crop_rotated
     #print(RecCod)
     print("Soy el hilo de obtener pose")
     parameters = []
     while(1):
-        lock.acquire()
-        activate = 1
+        lock.acquire() #adquiere erl recurso
+        activate = 1 #para activar el tercer hilo
         print("adquiri el recurso")
         """
         n = 0
@@ -193,10 +221,8 @@ def getting_robot_code(numCod, MyWiHe):
                 gray_blur_img = q.get()
                 n+=1
         """
-                
-        #RecCod = q.get()
-        #gray_blur_img = q.get()
-        a = 2
+
+        a = 2 #identificador del hilo, solo para ver el orden
         print(a)
         #print(n)
         #if n == 2:
@@ -204,9 +230,13 @@ def getting_robot_code(numCod, MyWiHe):
         #cv.imshow("CapturaPoseRobot", snapshot_robot)
         #cv.waitKey(0)
         #parameters,resized,Final_Crop_rotated, _ = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"DEBUG_ON_CAPTURE")
-        parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE")
-        #break
-        #read_lock.release()
+        """
+        Esta funcion lee la pose de robots y devuelve un vector de arrays con las posiciones de cada uno
+        de los robots identificados. Ver a fondo la documentacion o la descripcion de toma_pose.py para ver 
+        los otros parametros de esta fucnion
+        """
+        parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE") 
+
 
         lock.release()
         time.sleep(2)
@@ -214,8 +244,18 @@ def getting_robot_code(numCod, MyWiHe):
             break
         
 def actualizar_robots():
+    """
+    Recibe el vector de arrays de parametros, crea objetos de tipo Robot con esa informacion y los agrega
+    a al objeto Vector_robot para su posterior uso. 
+
+    Returns
+    -------
+    None.
+
+    """
     global parameters, activate
     
+    """
     vector = []
     vector_robot.clear_vector()
     
@@ -229,23 +269,23 @@ def actualizar_robots():
         vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
         #print(np.shape(vector))
     lock.release()
-    time.sleep(5)
+    """
+    #time.sleep(5)
     
     if activate == 1:
         n = 0
         print("la bandera de activacion me hizo entrar")
         while(1):
+            vector = []
+            vector_robot.clear_vector()
             n+=1
-            if n > 0:
-                lock.acquire()
+            #if n > 0:
+            lock.acquire()
             size = len(parameters)
-            #print("El tama;o de los parametros: ", size)
+            print("El tama;o de los parametros: ", size)
             for i in range (0, size):
                 temp_param = parameters[i]
-                if vector_robot.update_robot_byID(temp_param[0], temp_param[1], temp_param[2]):
-                    pass
-                else:
-                    vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+                vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
                  
                 """
                 size_vector = len(vector)
