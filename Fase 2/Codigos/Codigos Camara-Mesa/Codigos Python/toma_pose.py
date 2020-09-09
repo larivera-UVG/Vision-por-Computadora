@@ -19,6 +19,8 @@ Created on Sun Aug  9 19:21:56 2020
                              mesa basado en las dimensiones de la calibracion (antes estaban basados en la imagen
                              de toma de pose).
 
+08/09/2020: Version 0.3.1 -- Se elimina el factor de correccion del angulo para que se asemeje al codigo en C++
+
 
 """
 import cv2 as cv #importando libreria para opencv
@@ -28,8 +30,8 @@ SQRTDE2 = 1.41421356
 MyPI = 3.14159265
 
 #revisar si es que se usan
-anchoMesa = 12.5
-largoMesa = 25.8
+anchoMesa = 16.0
+largoMesa = 24.0
 
 #de momento no se usan
 #GlobalCodePixThreshold = 80
@@ -164,11 +166,11 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
 
         center, size, theta = RecCod #SingleRecCod.size, del codigo de C++, obtiene el angulo, centro y tama;o del contorno
         center, size = tuple(map(int, center)), tuple(map(int, size)) #lo vuelve un int.
-
+        print("Angulo sin complemento:", theta)
         #para debug, imprimi el valor del centro.
         #print(center)
-        if theta < -45:
-            theta += 90
+        #if theta < -45:
+        #    theta += 90
 
 
         """
@@ -647,8 +649,11 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 print("PosX", tempFloatX)
                 print("PosY", tempFloatY)
                 
-                tempX = int(tempFloatX)
-                tempY = int(tempFloatY)
+                tempX = tempFloatX
+                tempY = tempFloatY
+                
+                #tempX = int(tempFloatX)
+                #tempY = int(tempFloatY)
                 tempTheta = int(tempFloatTheta)
                 pos = [tempX, tempY, tempTheta]
 
