@@ -21,6 +21,8 @@ Created on Sun Aug  9 19:21:56 2020
 
 08/09/2020: Version 0.3.1 -- Se elimina el factor de correccion del angulo para que se asemeje al codigo en C++
 
+16/09/2020: Version 0.3.2 -- Se redondea a 3 cifras decimales los datos de pose en X e Y
+
 
 """
 import cv2 as cv #importando libreria para opencv
@@ -649,8 +651,8 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 print("PosX", tempFloatX)
                 print("PosY", tempFloatY)
                 
-                tempX = tempFloatX
-                tempY = tempFloatY
+                tempX =  round(tempFloatX, 3)
+                tempY =  round(tempFloatY, 3)
                 
                 #tempX = int(tempFloatX)
                 #tempY = int(tempFloatY)
@@ -667,8 +669,8 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 #en caso de falla, aunque por las modificaciones ya no se usa,
                 #de igual forma se deja para evitar errores
                 tempID = 0
-                tempFloatX = (anchoMesa / GlobalWidth) * Cx;
-                tempFloatY = (largoMesa / GlobalHeigth) * Cy;
+                tempFloatX = 1.00* (anchoMesa / GlobalWidth) * Cx;
+                tempFloatY = 1.00*(largoMesa / GlobalHeigth) * Cy;
                 tempX = int(tempFloatX)
                 tempY = int(tempFloatY)
                 tempTheta = int(tempFloatTheta)
