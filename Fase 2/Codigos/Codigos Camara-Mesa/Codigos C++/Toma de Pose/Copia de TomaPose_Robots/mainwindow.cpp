@@ -11,6 +11,7 @@
 #include <thread>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/time.h>
 
 //using namespace cv;
 //using namespace std;
@@ -21,8 +22,9 @@ Camara camara;
 
 Mat takePicture();
 //void Set_Camara(int WIDTH, int HEIGHT);
-
+struct timeval ti, tf;
 Mat Snap, CropSnap;
+double tiempo;
 VectorRobots MyRobots;
 int MyIteratorRobot, MyInitialRobots = 0;
 int MyGlobalCannyInf = 90;
@@ -42,31 +44,14 @@ sem_t my_semaphore;	// counting semaphore
 ///mediante las mismas funciones ya declaradas en tomarposerobots.h
 ///
 
-void My_thread1()
-{
-    cout<<"entre al hilo" << endl;
-    while(1) {
-    cout<<"corrida y obtencion de codigo" << endl;
-        MyRobots = getRobotCodes(CropSnap, MyGlobalCannyInf, MyGlobalCannySup);
-        cout << "Este es el vector robot" << endl;
-
-        //cout << MyRobots.Vrobots.at(0);
-        MyInitialRobots = MyRobots.Vrobots.size();
-        cout << "El tama;o del vector de robots" << endl;
-        cout << MyInitialRobots << endl;
-    //
-     sleep(1);
-    }
-
-    //pthread_exit(0);
-}
-
 void *My_thread2(void *ptr)
 {
     cout<<"entre al hilo" << endl;
-    while(1) {
-    cout<<"corrida y obtencion de codigo" << endl;
+    //cout<<"corrida y obtencion de codigo" << endl;
         MyRobots = getRobotCodes(CropSnap, MyGlobalCannyInf, MyGlobalCannySup);
+        MyInitialRobots = MyRobots.Vrobots.size();
+        cout << "El hilo termino" << endl;
+        /*
         cout << "Este es el vector robot" << endl;
         vector<int> a = MyRobots.Vrobots.at(0).get_Pose();
         for(int i=0; i < a.size(); i++)
@@ -75,11 +60,9 @@ void *My_thread2(void *ptr)
         MyInitialRobots = MyRobots.Vrobots.size();
         cout << "El tama;o del vector de robots" << endl;
         cout << MyInitialRobots << endl;
-    //
-    sleep(2);
-    }
+       */
 
-    //pthread_exit(0);
+      pthread_exit(NULL);
 }
 
 
@@ -137,23 +120,25 @@ void MainWindow::on_boton_ObtenerFirst_pressed()
     }
     */
     cout << "Voy a tomar la foto" << endl;
+    gettimeofday(&ti, NULL);   // Instante inicial
     Snap = camara.Take_picture();
-    cout << "Tome la foto" << endl;
+    //cout << "Tome la foto" << endl;
     CropSnap = getCroppedSnapshot(Snap); //esto solo se hace la primera vez
-    cout << "foto" << endl;
+    //cout << "foto" << endl;
     //imshow("Cropped", CropSnap);
-    cout << "A obtener el codigo" << endl;
+    //cout << "A obtener el codigo" << endl;
     //esta es la funcion que debo poner en el multi-hilos
     cout << "Abri el hilo" << endl;
     //std::thread thread1(My_thread1);
 
-    if (activate == 0){
     pthread_t thread2;
     pthread_create(&thread2, NULL, My_thread2, NULL);
-    activate = 1;
-    }
-    //thread1.join();
-
+    pthread_join(thread2, NULL);
+    gettimeofday(&tf, NULL);   // Instante final
+    tiempo = (tf.tv_sec - ti.tv_sec) * 1e6;
+    tiempo = (tiempo + (tf.tv_usec - ti.tv_usec)) * 1e-6;
+    cout << "Time taken by program is : " << fixed << tiempo << setprecision(6);
+    activate = 0;
 /*
     MyRobots = getRobotCodes(CropSnap, MyGlobalCannyInf, MyGlobalCannySup);
     cout << "Este es el vector robot" << endl;
@@ -166,7 +151,7 @@ void MainWindow::on_boton_ObtenerFirst_pressed()
     if (MyInitialRobots>0)
     {
         Mat Icod = imagenCod(MyRobots.Vrobots.at(0).id);
-        imshow("ejempo", Icod);
+        imshow("ejemplo", Icod);
         QImage imgCod((const uchar*)Icod.data, Icod.cols, Icod.rows, Icod.step, QImage::Format_Indexed8);
         ui->label_ImgRobot->setPixmap(QPixmap::fromImage(imgCod));
         string MySid = to_string(MyRobots.Vrobots.at(0).id);
