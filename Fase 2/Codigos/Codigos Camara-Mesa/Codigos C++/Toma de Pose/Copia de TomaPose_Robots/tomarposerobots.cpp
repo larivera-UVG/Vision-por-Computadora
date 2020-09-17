@@ -3,8 +3,8 @@
 #define SQRTDE2 1.41421356
 #define MyPI 3.14159265
 
-const float largoMesa = 12.5; //16 para el papel milimetrado
-const float anchoMesa = 25.8; //24 para el papel milimetrado
+const float largoMesa = 16.0; //16 para el papel milimetrado
+const float anchoMesa = 24.0; //24 para el papel milimetrado
 
 int GlobalCodePixThreshold = 70;
 int GlobalColorDifThreshold = 20;
@@ -42,15 +42,15 @@ VectorRobots getRobotCodes(Mat _CropPhoto, int _CannyVinf, int _CannyVsup)
     //waitKey(0);
 
     //float PixCodeSize = _CmCodeSize * (_CropPhoto.size().width / anchoMesa);
-    cout << "voy a hacer el procesamiento" << endl;
+    //cout << "voy a hacer el procesamiento" << endl;
     cvtColor(_CropPhoto, _CropGrayPhoto, CV_BGR2GRAY);
     blur(_CropGrayPhoto, _CropGrayPhoto, Size(3, 3));
     Canny(_CropGrayPhoto, _CannyPhoto, _CannyVinf, _CannyVsup, 3);
-    imshow("canny", _CannyPhoto);
-    waitKey(0);
+    //imshow("canny", _CannyPhoto);
+    //waitKey(0);
     findContours(_CannyPhoto, contornos, jerarquia, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
     blur(_CropGrayPhoto, _CropGrayPhoto, Size(3, 3));
-    cout << "He finalizado todo el proceso de procesamiento" << endl;
+    //cout << "He finalizado todo el proceso de procesamiento" << endl;
     RotatedRect SingleRecCod, LastRecCod;
     for (int i = 0; i < contornos.size(); i++)
     {
@@ -85,12 +85,12 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     Mat SemiCropCodRotated, finalCropCodRotated;
     int tempID, tempX, tempY, tempTheta;
     float tempFloatX, tempFloatY, tempFloatTheta, tempWiMitad, tempHeMitad;
-
+    cout << "inicie la toma de pose" << endl;
     tempWiMitad = SQRTDE2 *_RecContorno.size.width / 2;
     tempHeMitad = SQRTDE2 * _RecContorno.size.height / 2;
-    cout << "finalice los calculos" << endl;
-    Range rows((int)(_RecContorno.center.y - tempHeMitad), (int)(_RecContorno.center.y + tempHeMitad));
-    Range cols((int)(_RecContorno.center.x - tempWiMitad), (int)(_RecContorno.center.x + tempWiMitad));
+    //cout << "finalice los calculos" << endl;
+    //Range rows((int)(_RecContorno.center.y - tempHeMitad), (int)(_RecContorno.center.y + tempHeMitad));
+    //Range cols((int)(_RecContorno.center.x - tempWiMitad), (int)(_RecContorno.center.x + tempWiMitad));
     /*
     cout << "Obtuve el range" << endl;
     cout << rows << endl;
@@ -99,13 +99,13 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     Rect crop_region((int)(_RecContorno.center.y - tempHeMitad), (int)(_RecContorno.center.y + tempHeMitad),(int)(_RecContorno.center.x - tempWiMitad), (int)(_RecContorno.center.x + tempWiMitad));
 
     Mat SemiCropCod = GlobalCroppedActualSnap;
-    cout << "Corte la imagen" << endl;
+    //cout << "Corte la imagen" << endl;
     Mat tempRotMat = getRotationMatrix2D(_RecContorno.center, _RecContorno.angle, 1.0);
     warpAffine(SemiCropCod, SemiCropCodRotated, tempRotMat, SemiCropCod.size(), INTER_LINEAR);
-    cout << "Use la nueva matriz y encontre la nueva foto" << endl;
+    //cout << "Use la nueva matriz y encontre la nueva foto" << endl;
     getRectSubPix(SemiCropCodRotated, _RecContorno.size, _RecContorno.center, finalCropCodRotated);
     cvtColor(finalCropCodRotated, finalCropCodRotated, CV_BGR2GRAY, 0);
-    cout << "Le aplique filtro de blanco y negro" << endl;
+    //cout << "Le aplique filtro de blanco y negro" << endl;
 
     /*
     cout << "medidas de las fotos" << endl;
@@ -116,7 +116,7 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
 
     //if ((finalCropCodRotated.size().width > 70) && (finalCropCodRotated.size().height > 70)) {
 
-    cout<< "A encontrar el codigo" << endl;
+    //cout<< "A encontrar el codigo" << endl;
     int EscalaColores[3]; //[2] blaco, [1] gris, [0] negro
     int ColorSupIzq = finalCropCodRotated.at<uchar>(finalCropCodRotated.size().height * 1 / 4, finalCropCodRotated.size().width * 1 / 4);
     int ColorSupDer = finalCropCodRotated.at<uchar>(finalCropCodRotated.size().height * 1 / 4, finalCropCodRotated.size().width * 3 / 4);
@@ -125,9 +125,9 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     EscalaColores[0] = EscalaColores[1] = EscalaColores[2] = ColorSupIzq;
     tempFloatTheta = _RecContorno.angle;
 
-     cout << "defini las esquinas" << endl;
+     //cout << "defini las esquinas" << endl;
 
-     cout<< "comparando las esquinas para encontrar el pivote" << endl;
+     //cout<< "comparando las esquinas para encontrar el pivote" << endl;
     if ((ColorSupDer > ColorSupIzq) && (ColorSupDer > ColorInfDer) && (ColorSupDer > ColorInfIzq))
     {
         rotate(finalCropCodRotated, finalCropCodRotated, ROTATE_90_COUNTERCLOCKWISE);
@@ -148,7 +148,7 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     }
 
 
-      cout << "actualizando esquinas y colores" << endl;
+      //cout << "actualizando esquinas y colores" << endl;
     if ((ColorSupIzq <= ColorSupDer) && (ColorSupIzq <= ColorInfDer) && (ColorSupIzq <= ColorInfIzq))
         EscalaColores[0] = ColorSupIzq;
     else if ((ColorSupDer <= ColorSupIzq) && (ColorSupDer <= ColorInfDer) && (ColorSupDer <= ColorInfIzq))
@@ -158,13 +158,13 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     else
         EscalaColores[0] = ColorInfIzq;
 
-     cout << "a mostrar el codigo" << endl;
-    imshow("Codigo", finalCropCodRotated);
-    waitKey(0);
+    //cout << "a mostrar el codigo" << endl;
+    //imshow("Codigo", finalCropCodRotated);
+    //waitKey(0);
 
     int MatrizValColores[3][3];
 
-     cout << "Encontrando los valores de la matriz" << endl;
+     //cout << "Encontrando los valores de la matriz" << endl;
     for (int u = 1; u <= 3; ++u) {
         for (int v = 1; v <= 3; ++v) {
             int ValColorTemp = finalCropCodRotated.at<uchar>((finalCropCodRotated.size().height * u / 4), (finalCropCodRotated.size().width * v / 4));
@@ -176,7 +176,7 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     }
 
     //Extraemos el codigo binario
-     cout << "Extraemos el codigo binario" << endl;
+     //cout << "Extraemos el codigo binario" << endl;
     string CodigoBinString = "";
     for (int u = 0; u < 3; ++u) {
         for (int v = 0; v < 3; ++v) {
@@ -190,19 +190,20 @@ robot getRobotfromSnapShot(RotatedRect _RecContorno)
     }
 
     //Guardamos los valores
-     cout << "guardamos los valores" << endl;
+    //cout << "guardamos los valores" << endl;
     tempID = binTxttoint(CodigoBinString);
-    cout << "este es el codigo encontrado" << endl;
-    cout << tempID << endl;
+    //cout << "este es el codigo encontrado" << endl;
+    //cout << tempID << endl;
     tempFloatX = (anchoMesa / GlobalWidth) * _RecContorno.center.x;
     tempFloatY = (largoMesa / GlobalHeigth) * _RecContorno.center.y;
-    cout<<"Las posiciones son estas" << endl;
-    cout<<"PosX" << tempFloatX << endl;
-    cout<<"PosY" << tempFloatY << endl;
+    //cout<<"Las posiciones son estas" << endl;
+    //cout<<"PosX" << tempFloatX << endl;
+    //cout<<"PosY" << tempFloatY << endl;
     tempX = (int)tempFloatX;
     tempY = (int)tempFloatY;
     //tempFloatTheta = tempFloatTheta * MyPI / 180;
     tempTheta = (int)tempFloatTheta;
+    cout << "Termine la obtencion de pose" << endl;
     return robot(tempID,"", tempX, tempY, tempTheta);
    //}
     //return robot(0,"", 0, 0, 0);
