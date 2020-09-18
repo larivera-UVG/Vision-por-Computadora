@@ -85,7 +85,9 @@ asi como la identifacion de sus codigos o marcadores.
 31/08/2020: Version 0.12.2 -- Actualizacion a uno de los hilos eliminando lineas innecesarias. 
 
 16/09/2020: Version 0.12.3 -- Eliminacion del ciclo while en los hilos, se ejecutan cada vez que se toma
-                              una nueva foto, para captura continua se puede agregar un hilo mas (pendiente) 
+                              una nueva foto, para captura continua se puede agregar un hilo mas (pendiente)
+
+18/09/2020: Version 0.13.0 -- Eliminacion de un hilo (el hilo de update de posicion) para compactar el codigo.                              
 
 """
 
@@ -192,6 +194,8 @@ def image_processing():
     #    break
 
 def getting_robot_code(numCod, MyWiHe):
+    vector = []
+    vector_robot.clear_vector()
     """
     Una vez se obtiene los contornos de RecCod, se procesa y se obtiene los parametros de cada robot
     (posicion e ID)
@@ -242,88 +246,30 @@ def getting_robot_code(numCod, MyWiHe):
     los otros parametros de esta fucnion
     """
     parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE") 
-
+    
+    size = len(parameters)
+    #print("El tama;o de los parametros: ", size)
+    for i in range (0, size):
+        temp_param = parameters[i]
+        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+         
+        
+       
+    size_vector = len(vector)
+    print("Este es el tama;o del vector en el while: ",size_vector)
+    for v in range (0, size_vector):
+        print("Este es el vector retornado: ",vector[v].id_robot)
+        print("La posicione de ese vector es: ",vector[v].get_pos())
+    
 
     lock.release()
     #time.sleep(1)
     #if flag_detener:
     #    break
         
-def actualizar_robots():
-    """
-    Recibe el vector de arrays de parametros, crea objetos de tipo Robot con esa informacion y los agrega
-    a al objeto Vector_robot para su posterior uso. 
-
-    Returns
-    -------
-    None.
-
-    """
-    global parameters, activate
-    
-    """
-    vector = []
-    vector_robot.clear_vector()
-    
-    lock.acquire()
-    
-    size = len(parameters)
-    print("El tama;o de los parametros: ", size)
-    
-    for i in range (0, size):
-        temp_param = parameters[i]
-        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-        #print(np.shape(vector))
-    lock.release()
-    """
-    #time.sleep(5)
-    
-    if activate == 1:
-        n = 0
-        #print("la bandera de activacion me hizo entrar")
-        #while(1):
-        vector = []
-        vector_robot.clear_vector()
-        n+=1
-        #if n > 0:
-        lock.acquire()
-        a = 3
-        print("Soy el hilo: ",a)
-        size = len(parameters)
-        #print("El tama;o de los parametros: ", size)
-        for i in range (0, size):
-            temp_param = parameters[i]
-            vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-             
-            """
-            size_vector = len(vector)
-            for v in range (0, size_vector):
-                if temp_param[0] == vector[v].id_robot:
-                    pass
-                else:
-                    vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-            """
-        size_vector = len(vector)
-        print("Este es el tama;o del vector en el while: ",size_vector)
-        for v in range (0, size_vector):
-            print("Este es el vector retornado: ",vector[v].id_robot)
-            print("La posicione de ese vector es: ",vector[v].get_pos())
-        lock.release()
-        #time.sleep(0.5)
-        
-        #if flag_detener:
-        #    break
-            
-
-
 def capturar_foto():
     pass
 
-
-
-
-
-#escribiendo.join()
 
 # In[Definiendo la interfaz grafica]
 """
@@ -447,7 +393,7 @@ class Window(QWidget):
         numCod = int(text)
         #read_lock.acquire()
         start_time = time.time()
-        foto = camara.get_frame()
+        foto = camara.get_frame("SINGLE")
         snapshot_robot,MyWiHe = vector_robot.calibrar_imagen(foto)
         #q.put(snapshot_robot)
         #read_lock.release()
@@ -466,14 +412,14 @@ class Window(QWidget):
             time.sleep(0.1)
             self.obtener_pose.start() #inicializa el hilo.
             time.sleep(0.1)
-            self.vector_update.start()
+            #self.vector_update.start()
             #self.new_thread = 1
             
             self.procesar.join()
             self.obtener_pose.join()
-            self.vector_update.join()
+            #self.vector_update.join()
             elapsed_time = time.time() - start_time
-            elapsed_time = round(elapsed_time,2)
+            elapsed_time = round(elapsed_time,3)
             print("Elapsed time: %.10f seconds." % elapsed_time)
             time_vector.append(elapsed_time)
             print(time_vector)
