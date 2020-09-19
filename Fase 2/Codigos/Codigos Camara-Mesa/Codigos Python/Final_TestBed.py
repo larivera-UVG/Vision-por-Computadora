@@ -87,7 +87,9 @@ asi como la identifacion de sus codigos o marcadores.
 16/09/2020: Version 0.12.3 -- Eliminacion del ciclo while en los hilos, se ejecutan cada vez que se toma
                               una nueva foto, para captura continua se puede agregar un hilo mas (pendiente)
 
-18/09/2020: Version 0.13.0 -- Eliminacion de un hilo (el hilo de update de posicion) para compactar el codigo.                              
+18/09/2020: Version 0.13.0 -- Eliminacion de un hilo (el hilo de update de posicion) para compactar el codigo.
+
+18/09/2020: Version 0.14.0 -- Unificacion de los hilos en uno solo ademas del hilo main.                             
 
 """
 
@@ -158,7 +160,10 @@ flag_detener = False #detiene los hilos ejecutados.
 #read_lock = Lock()
 lock = threading.Lock() #recurso para adquirir y bloquear el hilo mientras usa los recursos compartidos.
     
-def image_processing():
+def image_processing(numCod, MyWiHe):
+    vector = []
+    vector_robot.clear_vector()
+    parameters = []
     """
     Procesa la imagen y obtiene los contornos de donde se obtendran las pose de los robots
 
@@ -185,6 +190,23 @@ def image_processing():
     print("Soy el hilo: ",a)
     #print("El procesamiento va a empezar")
     RecCod, gray_blur_img, canny_img = process_image(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup)
+    parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE") 
+    
+    size = len(parameters)
+    #print("El tama;o de los parametros: ", size)
+    for i in range (0, size):
+        temp_param = parameters[i]
+        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+         
+        
+    """   
+    size_vector = len(vector)
+    print("Este es el tama;o del vector en el while: ",size_vector)
+    for v in range (0, size_vector):
+        print("Este es el vector retornado: ",vector[v].id_robot)
+        print("La posicione de ese vector es: ",vector[v].get_pos())
+    """    
+        
     #q.put(contour)
     #q.put(gray_blur_img)
     lock.release()
@@ -405,18 +427,18 @@ class Window(QWidget):
         if self.new_thread == 0:
             self.detener.setEnabled(True)
             #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
-            self.procesar = threading.Thread(target = image_processing) #asignacion de los hilos a una variable
-            self.obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
-            self.vector_update = threading.Thread(target = actualizar_robots)
+            self.procesar = threading.Thread(target = image_processing, args=(numCod,MyWiHe,)) #asignacion de los hilos a una variable
+            #self.obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
+            #self.vector_update = threading.Thread(target = actualizar_robots)
             self.procesar.start() #inicializa el hilo.
-            time.sleep(0.1)
-            self.obtener_pose.start() #inicializa el hilo.
-            time.sleep(0.1)
+            #time.sleep(0.1)
+            #self.obtener_pose.start() #inicializa el hilo.
+            #time.sleep(0.1)
             #self.vector_update.start()
             #self.new_thread = 1
             
             self.procesar.join()
-            self.obtener_pose.join()
+            #self.obtener_pose.join()
             #self.vector_update.join()
             elapsed_time = time.time() - start_time
             elapsed_time = round(elapsed_time,3)
