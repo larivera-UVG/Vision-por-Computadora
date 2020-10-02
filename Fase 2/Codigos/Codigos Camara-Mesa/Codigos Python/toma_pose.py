@@ -658,6 +658,8 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 #tempY = int(tempFloatY)
                 tempTheta = int(tempFloatTheta)
                 pos = [tempX, tempY, tempTheta]
+                print("ID del robot",tempID)
+                print(pos)
 
                 if mode == "DEBUG":
                     #para debug y seperacion
