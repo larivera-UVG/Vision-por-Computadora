@@ -490,7 +490,7 @@ class camara():
                             Cod[i3,i4] = n * 125
                 k = k + 1
         cv.imshow('cod', Cod)
-        cv.waitKey(2000)
+        cv.waitKey(5000)
         self.destroy_window()
         edge_img = "opencv_CodGenerator_{}.png".format(self.img_counter_code) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.
