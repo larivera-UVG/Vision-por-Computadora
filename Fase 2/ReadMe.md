@@ -6,7 +6,6 @@
 2. [Requerimientos](#Requerimientos)
 
   1.[Versiones de Software](#versiones-soft)
-  
   2.[Hardware](#versiones-hard)
 
 3. [Contenido del Repositorio](#RepoContent)
@@ -16,7 +15,7 @@
 5. [Uso de la Herramienta](#Herramienta)
 
   *[Calibración de Cámara](#calibración-de-cámara)
-  *[Creación de Marcadaores](#creación-de-marcadores)
+  *[Creación de Marcadores](#creación-de-marcadores)
   *[Obtención de Pose](#obtención-de-pose)
 
 
@@ -38,7 +37,7 @@ Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-c
 
 ## Uso de la Herramienta <a name="Herramienta"></a>
 ### Calibración de Cámara
-### Creación de Marcadaores
+### Creación de Marcadores
 ### Obtención de Pose
 
 
