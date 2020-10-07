@@ -5,9 +5,9 @@
 
 2. [Requerimientos](#Requerimientos)
 
-  1. [Versiones de Software](#versiones-soft)
+   1. [Versiones de Software](#versiones-soft)
   
-  2. [Hardware](#versiones-hard)
+   2. [Hardware](#versiones-hard)
 
 3. [Contenido del Repositorio](#RepoContent)
 
@@ -15,9 +15,11 @@
 
 5. [Uso de la Herramienta](#Herramienta)
 
-  *[Calibración de Cámara](#calibración-de-cámara)
-  *[Creación de Marcadores](#creación-de-marcadores)
-  *[Obtención de Pose](#obtención-de-pose)
+   1. [Calibración de Cámara](#calibración-de-cámara)
+   
+   2. [Creación de Marcadores](#creación-de-marcadores)
+   
+   3. [Obtención de Pose](#obtención-de-pose)
 
 
 
