@@ -15,10 +15,18 @@
 
 5. [Uso de la Herramienta](#Herramienta)
 
+  *[Calibración de Cámara](#calibración-de-cámara)
+  *[Creación de Marcadaores](#creación-de-marcadores)
+  *[Obtención de Pose](#obtención-de-pose)
+
 
 
 ## Introducción
+El objetivo principal de este repositorio es brindarle al usuario una herramienta de _software_ diseñada para reconocer o identificar la posición de los agentes o robots, normalmente empleados en la Robótica de Enjambre. 
 
+Principalmente se presentan dos versiones para dos lenguajes distintos: __C++__ y __Python__.
+La versión original de esta herramienta fue creada en __C++__ y como objetivo de la __Fase 2__ se presenta una migración hacia __Python___.
+Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-cámara), la generación de [_marcadores_](#creación-de-marcadores) y la [_obtención de pose de los robots en la mesa de trabajo_](#obtención-de-pose)
 
 ## Requerimientos <a name="Requerimientos"></a>
   ### Versiones de Software <a name="versiones-soft"></a>
@@ -29,6 +37,9 @@
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a> 
 
 ## Uso de la Herramienta <a name="Herramienta"></a>
+### Calibración de Cámara
+### Creación de Marcadaores
+### Obtención de Pose
 
 
 
