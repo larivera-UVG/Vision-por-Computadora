@@ -3,20 +3,31 @@
 ## Indice:
 1. [Introducción](#intro)
 
-2. [Example](#example)
+2. [Requerimientos](#Requerimientos)
+  1. Versiones de Software(#versiones-soft)
+  2. Hardware(#versiones-hard)
 
-3. [Example2](#example2)
+3. [Contenido del Repositorio](#RepoContent)
 
-4. [Third Example](#third-example)
+4. [Algoritmo Para el Reconocimiento de la Pose de Agentes](#algoritmo-pose-python)
 
-5. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
+5. [Uso de la Herramienta](#Herramienta)
+
+
 
 ## Introducción <a name="intro"></a>
 
-## Example
-## Example2
-## Third Example
-## [Fourth Example](http://www.fourthexample.com) 
+
+## Requerimientos <a name="Requerimientos"></a>
+  ### Versiones de Software <a name="versiones-soft"></a>
+  ### Hardware <a name="versiones-hard"></a>
+
+## Contenido del Repositorio <a name="RepoContent"></a>
+
+## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a> 
+
+## Uso de la Herramienta <a name="Herramienta"></a>
+
 
 
 ## Fase 2(#intro)
