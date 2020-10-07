@@ -1,4 +1,4 @@
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/<Python>-<V4.1.4>-<COLOR>.svg)](https://shields.io/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/Spyder-v4.1.4-<COLOR>.svg)](https://shields.io/)
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
 ## Indice:
