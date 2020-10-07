@@ -1,7 +1,7 @@
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
 ## Indice:
-1. [Introducción](#intro)
+1. [Introducción](#Introducción)
 
 2. [Requerimientos](#Requerimientos)
   1. Versiones de Software(#versiones-soft)
@@ -15,7 +15,7 @@
 
 
 
-## Introducción <a name="intro"></a>
+## Introducción
 
 
 ## Requerimientos <a name="Requerimientos"></a>
