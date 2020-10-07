@@ -1,7 +1,7 @@
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
 ## Indice:
-1.[Introducción](#intro)
+1. [Introducción](#intro)
 
 2. [Example](#example)
 
