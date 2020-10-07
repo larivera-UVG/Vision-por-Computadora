@@ -14,8 +14,7 @@
 ## [Fourth Example](http://www.fourthexample.com) 
 
 
-## Fase 2
-#intro
+## Fase 2(#intro)
 En esta carpeta incluye la documentación y programas de la fase 2. 
 El objetivo es realizar la migraición del programa orignal en C++ hacia el lenguaje Python.
 Contiene dos carpetas "Codigos" y "Doc".
