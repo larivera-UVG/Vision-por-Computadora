@@ -1,6 +1,11 @@
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
+## Indice:
+1.[Introducción](#intro)
+
+
 ## Fase 2
+#intro
 En esta carpeta incluye la documentación y programas de la fase 2. 
 El objetivo es realizar la migraición del programa orignal en C++ hacia el lenguaje Python.
 Contiene dos carpetas "Codigos" y "Doc".
