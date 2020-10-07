@@ -1,4 +1,4 @@
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/Spyder-v4.1.4-<COLOR>.svg)](https://shields.io/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/Spyder-v4.1.4-<COLOR>.svg)](https://shields.io/) [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
 ## Indice:
@@ -33,6 +33,41 @@ Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-c
 
 ## Requerimientos <a name="Requerimientos"></a>
   ### Versiones de Software <a name="versiones-soft"></a>
+  Para la versión en Python se utiliza la Suite de Anaconda que incluye diferentes programas relacionados con Python. Es recomendable utilizar esta suite ya que incluye todos las librerías que se necesitan y hace más fácil la instalación de cualquier otra que se necesite.
+  Su versión de instalación para Windows, MacOS y Linux se puede obtener de aquí: https://www.anaconda.com/products/individual
+  La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder. 
+  
+  #### Instalación OpenCV utilizando Anaconda y MacOS
+  En caso de desear utilizar la suite de anaconda, se instala anaconda utilizando el instalador del sitio web oficial y se procede a seguir este hilo de solución:
+  https://github.com/conda/conda/issues/9367
+  
+Específicamente, estos comandos son los que se necesita correr en la terminal:
+
+conda create -n opencv
+conda activate opencv
+conda install -c anaconda opencv
+
+estos comandos instalan la version 3.4.2 que para fines de uso, considero adecuados, si se desea la 4 (por alguna razón) ejecutar este comando (no probado)
+
+conda install -c conda-forge opencv
+
+esto instala opencv3
+
+Se procede a instalar opencv en el environment de anaconda llamado OpenCV (creado con las líneas de comando mencionadas arriba) y se requiere instalar spyder en este nuevo environment (probado).
+
+#### Tutorial para instalar openCV para Python MacOS
+
+Esta versión de instalación se usa para correr OpenCV sin utilizar la Suite de Anaconda. 
+
+https://www.youtube.com/watch?v=nO3csmVyoOQ
+
+Y en caso de falla, utilizar el siguiente en comando
+pip install opencv-python==4.1.2.30
+
+De preferencia, instalar python 3.7 (probado) no la version 3.8
+
+  
+  
   ### Hardware <a name="versiones-hard"></a>
 
 ## Contenido del Repositorio <a name="RepoContent"></a>
