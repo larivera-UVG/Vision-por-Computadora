@@ -36,6 +36,13 @@ Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-c
   ### Hardware <a name="versiones-hard"></a>
 
 ## Contenido del Repositorio <a name="RepoContent"></a>
+### Fase 2
+En esta carpeta incluye la documentación y programas de la fase 2. 
+El objetivo es realizar la migraición del programa orignal en C++ hacia el lenguaje Python.
+Contiene dos carpetas "Codigos" y "Doc".
+
+Los programas ubicados en la carpeta __Codigos__ estan los codigos en Python y C++ con implementación de POO y programación multi-hilos.
+Los programas ubicados en la carpeta __Doc__ se tienen los archivos referentes a guías, manuales y documentación en general.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a> 
 
@@ -46,11 +53,4 @@ Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-c
 
 
 
-## Fase 2(#intro)
-En esta carpeta incluye la documentación y programas de la fase 2. 
-El objetivo es realizar la migraición del programa orignal en C++ hacia el lenguaje Python.
-Contiene dos carpetas "Codigos" y "Doc".
-
-Los programas ubicados en la carpeta __Codigos__ estan los codigos en Python y C++ con implementación de POO y programación multi-hilos.
-Los programas ubicados en la carpeta __Doc__ se tienen los archivos referentes a guías, manuales y documentación en general.
 
