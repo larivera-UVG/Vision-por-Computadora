@@ -38,31 +38,45 @@ Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-c
   La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder. 
   
   #### Instalación OpenCV utilizando Anaconda y MacOS
+  __Primero__ 
+  Se requiere verificar que el comando de _conda_ funcione correctamente en MacOS, de lo contrario, realizar el siguiente proceso:
+  https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac-os-x-7c1c7247d896
+Este link ayuda a configurar el comando de conda para MacOS en caso de usarse para instalar python y OpenCV
+
+__Segundo__   
   En caso de desear utilizar la suite de anaconda, se instala anaconda utilizando el instalador del sitio web oficial y se procede a seguir este hilo de solución:
   https://github.com/conda/conda/issues/9367
   
 Específicamente, estos comandos son los que se necesita correr en la terminal:
 
+ 
+```
 conda create -n opencv
 conda activate opencv
 conda install -c anaconda opencv
+```
 
 estos comandos instalan la version 3.4.2 que para fines de uso, considero adecuados, si se desea la 4 (por alguna razón) ejecutar este comando (no probado)
 
+```
 conda install -c conda-forge opencv
+```
 
 esto instala opencv3
 
 Se procede a instalar opencv en el environment de anaconda llamado OpenCV (creado con las líneas de comando mencionadas arriba) y se requiere instalar spyder en este nuevo environment (probado).
 
-#### Tutorial para instalar openCV para Python MacOS
+__Tercero__
 
 Esta versión de instalación se usa para correr OpenCV sin utilizar la Suite de Anaconda. 
 
 https://www.youtube.com/watch?v=nO3csmVyoOQ
 
 Y en caso de falla, utilizar el siguiente en comando
+
+```
 pip install opencv-python==4.1.2.30
+```
 
 De preferencia, instalar python 3.7 (probado) no la version 3.8
 
@@ -76,7 +90,7 @@ En esta carpeta incluye la documentación y programas de la fase 2.
 El objetivo es realizar la migraición del programa orignal en C++ hacia el lenguaje Python.
 Contiene dos carpetas "Codigos" y "Doc".
 
-Los programas ubicados en la carpeta __Codigos__ estan los codigos en Python y C++ con implementación de POO y programación multi-hilos.
+Los programas ubicados en la carpeta [__Codigos__](Codigos) estan los codigos en Python y C++ con implementación de POO y programación multi-hilos.
 Los programas ubicados en la carpeta __Doc__ se tienen los archivos referentes a guías, manuales y documentación en general.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a> 
