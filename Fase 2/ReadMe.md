@@ -4,9 +4,9 @@
 1. [Introducción](#Introducción)
 
 2. [Requerimientos](#Requerimientos)
-  1.[Versiones de Software](#versiones-soft)
+  1. [Versiones de Software](#versiones-soft)
   
-  2.[Hardware](#versiones-hard)
+  2. [Hardware](#versiones-hard)
 
 3. [Contenido del Repositorio](#RepoContent)
 
