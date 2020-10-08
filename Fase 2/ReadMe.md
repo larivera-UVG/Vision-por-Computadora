@@ -15,7 +15,7 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
 
 2. [Requerimientos](#Requerimientos)
 
-   1. [Versiones de Software](#versiones-soft)
+   1. [Software](#versiones-soft)
       1. [Instalación OpenCV utilizando Anaconda y MacOS](#Anaconda_install) 
       2. [Librerías utilizadas en Python](#lib_python) 
   
@@ -42,9 +42,12 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
   Su versión de instalación para Windows, MacOS y Linux se puede obtener de aquí: https://www.anaconda.com/products/individual
   La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder. 
   
+  La herramienta desarrollada y migrada en __Python__ consta de dos archivos llamados _Swarm_robotic.py_ cuya versión es la 0.11.4, el archivo _toma_pose.py_, versión 0.3.2 y la Interfaz de usuario con versión _0.14.0_. Cada uno de estos programas y sus versiones esta debidamente comentado para que el usuario sepa cual ha sido el proceso y en que parte se encuentra cada uno de ellos. 
+  
   #### Instalación OpenCV utilizando Anaconda y MacOS <a name="Anaconda_install"></a>
   __Primero__ 
-  Se requiere verificar que el comando de _conda_ funcione correctamente en MacOS, de lo contrario, realizar el siguiente proceso:
+  
+   Se requiere verificar que el comando de _conda_ funcione correctamente en MacOS, de lo contrario, realizar el siguiente proceso:
   https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac-os-x-7c1c7247d896
 Este link ayuda a configurar el comando de conda para MacOS en caso de usarse para instalar python y OpenCV
 
