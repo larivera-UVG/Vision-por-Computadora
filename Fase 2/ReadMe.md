@@ -187,3 +187,5 @@ tempFloatY = (largoMesa / GlobalHeigth) * Cy;
 Donde __anchoMesa__ representa el ancho de la mesa física, así como __largoMesa__ es el largo de esta mesa y __GloblaWidth__, __GlobalHeigth__ representan las dimensiones de la imagen de donde se está obteniendo el marcador. Esto, al ser multiplicado por el centro del contorno (__Cx__ y __Cy__), devuelve las coordenadas reales del marcador en la mesa.
 
 Finalmente, esta posición, con el respectivo ángulo de rotación, se agregan al ID y esto es el identificador completo del robot en la mesa.
+
+Una explicación más general del código se encuentra en el ReadMe de la carpeta [__Codigos__](Codigos).
