@@ -85,7 +85,11 @@ asi como la identifacion de sus codigos o marcadores.
 31/08/2020: Version 0.12.2 -- Actualizacion a uno de los hilos eliminando lineas innecesarias. 
 
 16/09/2020: Version 0.12.3 -- Eliminacion del ciclo while en los hilos, se ejecutan cada vez que se toma
-                              una nueva foto, para captura continua se puede agregar un hilo mas (pendiente) 
+                              una nueva foto, para captura continua se puede agregar un hilo mas (pendiente)
+
+18/09/2020: Version 0.13.0 -- Eliminacion de un hilo (el hilo de update de posicion) para compactar el codigo.
+
+18/09/2020: Version 0.14.0 -- Unificacion de los hilos en uno solo ademas del hilo main.                             
 
 """
 
@@ -94,7 +98,8 @@ from Swarm_robotic import camara, vector_robot, Robot #libreria swarm para la de
 from toma_pose import getRobot_fromSnapshot, process_image #para la deteccion de pose de los robots. 
 import cv2 as cv #importando libreria para opencv 
 import threading #para los hilos
-import time #para el delay
+#from time import time
+import time
 
 #importando la librerias para la GUI, en teoria se puede usar PyQt por que las funciones son las mismas
 #aunque algunos metodos cambian, aunque se recomienda instalar PySide2 para compatibilidad con esta version
@@ -129,6 +134,8 @@ vector_robot = vector_robot()
 MyGlobalCannyInf = 185
 MyGlobalCannySup = 330
 
+time_vector = []
+
 
 """
 Para los hilos se definen las siguientes variables globales
@@ -153,7 +160,10 @@ flag_detener = False #detiene los hilos ejecutados.
 #read_lock = Lock()
 lock = threading.Lock() #recurso para adquirir y bloquear el hilo mientras usa los recursos compartidos.
     
-def image_processing():
+def image_processing(numCod, MyWiHe):
+    vector = []
+    vector_robot.clear_vector()
+    parameters = []
     """
     Procesa la imagen y obtiene los contornos de donde se obtendran las pose de los robots
 
@@ -163,10 +173,10 @@ def image_processing():
 
     """
     global gray_blur_img, RecCod, canny_img, snapshot_robot
-    print("Soy el hilo de procesamiento")
+    #print("Soy el hilo de procesamiento")
     #while(1):
     lock.acquire()
-    print("Estoy procesando...")
+    #print("Estoy procesando...")
     #read_lock.acquire()
     """
     while not q.empty():
@@ -178,17 +188,36 @@ def image_processing():
     """
     a = 1
     print("Soy el hilo: ",a)
-    print("El procesamiento va a empezar")
+    #print("El procesamiento va a empezar")
     RecCod, gray_blur_img, canny_img = process_image(snapshot_robot, MyGlobalCannyInf, MyGlobalCannySup)
+    parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE") 
+    
+    size = len(parameters)
+    #print("El tama;o de los parametros: ", size)
+    for i in range (0, size):
+        temp_param = parameters[i]
+        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+         
+        
+    """   
+    size_vector = len(vector)
+    print("Este es el tama;o del vector en el while: ",size_vector)
+    for v in range (0, size_vector):
+        print("Este es el vector retornado: ",vector[v].id_robot)
+        print("La posicione de ese vector es: ",vector[v].get_pos())
+    """    
+        
     #q.put(contour)
     #q.put(gray_blur_img)
     lock.release()
-    print("Libere")
+    #print("Libere")
     #time.sleep(1.5)
     #if flag_detener:
     #    break
 
 def getting_robot_code(numCod, MyWiHe):
+    vector = []
+    vector_robot.clear_vector()
     """
     Una vez se obtiene los contornos de RecCod, se procesa y se obtiene los parametros de cada robot
     (posicion e ID)
@@ -208,12 +237,12 @@ def getting_robot_code(numCod, MyWiHe):
     """
     global RecCod, gray_blur_img, parameters, activate, resized, Final_Crop_rotated
     #print(RecCod)
-    print("Soy el hilo de obtener pose")
+    #print("Soy el hilo de obtener pose")
     parameters = []
     #while(1):
     lock.acquire() #adquiere erl recurso
     activate = 1 #para activar el tercer hilo
-    print("adquiri el recurso")
+    #print("adquiri el recurso")
     """
     n = 0
     while not q.empty():
@@ -229,7 +258,7 @@ def getting_robot_code(numCod, MyWiHe):
     print("Soy el hilo: ",a)
     #print(n)
     #if n == 2:
-    print("La obtencion de pose va empezar")
+    #print("La obtencion de pose va empezar")
     #cv.imshow("CapturaPoseRobot", snapshot_robot)
     #cv.waitKey(0)
     #parameters,resized,Final_Crop_rotated, _ = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"DEBUG_ON_CAPTURE")
@@ -239,88 +268,30 @@ def getting_robot_code(numCod, MyWiHe):
     los otros parametros de esta fucnion
     """
     parameters = getRobot_fromSnapshot(RecCod, gray_blur_img,MyWiHe,numCod,"CAPTURE") 
-
+    
+    size = len(parameters)
+    #print("El tama;o de los parametros: ", size)
+    for i in range (0, size):
+        temp_param = parameters[i]
+        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
+         
+        
+       
+    size_vector = len(vector)
+    print("Este es el tama;o del vector en el while: ",size_vector)
+    for v in range (0, size_vector):
+        print("Este es el vector retornado: ",vector[v].id_robot)
+        print("La posicione de ese vector es: ",vector[v].get_pos())
+    
 
     lock.release()
     #time.sleep(1)
     #if flag_detener:
     #    break
         
-def actualizar_robots():
-    """
-    Recibe el vector de arrays de parametros, crea objetos de tipo Robot con esa informacion y los agrega
-    a al objeto Vector_robot para su posterior uso. 
-
-    Returns
-    -------
-    None.
-
-    """
-    global parameters, activate
-    
-    """
-    vector = []
-    vector_robot.clear_vector()
-    
-    lock.acquire()
-    
-    size = len(parameters)
-    print("El tama;o de los parametros: ", size)
-    
-    for i in range (0, size):
-        temp_param = parameters[i]
-        vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-        #print(np.shape(vector))
-    lock.release()
-    """
-    #time.sleep(5)
-    
-    if activate == 1:
-        n = 0
-        print("la bandera de activacion me hizo entrar")
-        #while(1):
-        vector = []
-        vector_robot.clear_vector()
-        n+=1
-        #if n > 0:
-        lock.acquire()
-        a = 3
-        print("Soy el hilo: ",a)
-        size = len(parameters)
-        print("El tama;o de los parametros: ", size)
-        for i in range (0, size):
-            temp_param = parameters[i]
-            vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-             
-            """
-            size_vector = len(vector)
-            for v in range (0, size_vector):
-                if temp_param[0] == vector[v].id_robot:
-                    pass
-                else:
-                    vector = vector_robot.agregar_robot(Robot(temp_param[0],temp_param[1],temp_param[2]))
-            """
-        size_vector = len(vector)
-        print("Este es el tama;o del vector en el while: ",size_vector)
-        for v in range (0, size_vector):
-            print("Este es el vector retornado: ",vector[v].id_robot)
-            print("La posicione de ese vector es: ",vector[v].get_pos())
-        lock.release()
-        #time.sleep(0.5)
-        
-        #if flag_detener:
-        #    break
-            
-
-
 def capturar_foto():
     pass
 
-
-
-
-
-#escribiendo.join()
 
 # In[Definiendo la interfaz grafica]
 """
@@ -443,7 +414,8 @@ class Window(QWidget):
             text = '3'
         numCod = int(text)
         #read_lock.acquire()
-        foto = camara.get_frame()
+        start_time = time.time()
+        foto = camara.get_frame("SINGLE")
         snapshot_robot,MyWiHe = vector_robot.calibrar_imagen(foto)
         #q.put(snapshot_robot)
         #read_lock.release()
@@ -455,19 +427,24 @@ class Window(QWidget):
         if self.new_thread == 0:
             self.detener.setEnabled(True)
             #capturar = threading.Thread(target = capturar_foto, args=(numCod,)) #asignacion de los hilos a una variable
-            self.procesar = threading.Thread(target = image_processing) #asignacion de los hilos a una variable
-            self.obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
-            self.vector_update = threading.Thread(target = actualizar_robots)
+            self.procesar = threading.Thread(target = image_processing, args=(numCod,MyWiHe,)) #asignacion de los hilos a una variable
+            #self.obtener_pose = threading.Thread(target = getting_robot_code, args=(numCod,MyWiHe,))
+            #self.vector_update = threading.Thread(target = actualizar_robots)
             self.procesar.start() #inicializa el hilo.
-            time.sleep(1)
-            self.obtener_pose.start() #inicializa el hilo.
-            time.sleep(1)
-            self.vector_update.start()
+            #time.sleep(0.1)
+            #self.obtener_pose.start() #inicializa el hilo.
+            #time.sleep(0.1)
+            #self.vector_update.start()
             #self.new_thread = 1
             
             self.procesar.join()
-            self.obtener_pose.join()
-            self.vector_update.join()
+            #self.obtener_pose.join()
+            #self.vector_update.join()
+            elapsed_time = time.time() - start_time
+            elapsed_time = round(elapsed_time,3)
+            print("Elapsed time: %.10f seconds." % elapsed_time)
+            time_vector.append(elapsed_time)
+            print(time_vector)
         """   
         if resized == [] or Final_Crop_rotated ==[]:
             pass

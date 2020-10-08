@@ -80,6 +80,12 @@ Version con Programacion Orientada a Objetos.
 18/08/2020: Version 0.11.3 -- Se agrega un raise exception en la parte de generar codigo para evitar erroes de numeros
                               no admitidos y se cambia la variable local que lleva el conteo de las figuras para que
                               se puedan guardar n codigos deseados (no sobreescribir como se estaba haciendo).
+                              
+16/09/2020: Version 0.11.4 -- Se agrega un modo de captura -SINGLE- para un unico frame o -CONTINUE- para varios
+                              frames segun se desee. El modo -CONTINUE- sirve para ver constamente un cuadro
+                              que muestra lo que esta viendo la camara y luego con la tecla escape, capturarlo
+                              en foto. El modo -SINGLE- captura automaticamente. Esto en la clase CAMARA
+                              en el metodo get_frame()
 
 ***********************
 Anotaciones iniciales:
@@ -334,26 +340,39 @@ class camara():
         self.cam_num = cam_num
         self.img_counter_code = 0
         
-    def get_frame(self):
+    def get_frame(self, capture_mode = "CONTINUE"):
         """
         
 
+        Parameters
+        ----------
+        capture_mode : TYPE string, optional, modo de captura
+            DESCRIPTION. The default is "CONTINUE".
+            Permite capturar un unico frame o mostrar un video en una pantalla 
+            y luego con la tecla escape capturar la foto. El modo CONTINUE
+            es muy similar a lo que se ve en la camara de un telefono. 
+
         Returns
         -------
-        Retorna el frame capturado al momento de presionar la tecla ESC.
+        TYPE numpy.array
+            DESCRIPTION 
+                Retorna el frame capturado al momento de presionar la tecla ESC.
 
         """
         while True:
-            ret, self.last_frame = self.cap.read()
-            cv.imshow("test", self.last_frame) #muestra el video. 
-            k = cv.waitKey(1) #k = 1 es para espacio
-            if k%256 == 27:
-                    # ESC presionado para cerrar
-                cv.destroyWindow("test")
-                cv.waitKey(1)
-                print("Escape presionado, cerrando...")
+            if capture_mode == "SINGLE":
+                ret, self.last_frame = self.cap.read()
                 break
-            
+            elif capture_mode == "CONTINUE":
+                ret, self.last_frame = self.cap.read()
+                cv.imshow("test", self.last_frame) #muestra el video. 
+                k = cv.waitKey(1) #k = 1 es para espacio
+                if k%256 == 27:
+                        # ESC presionado para cerrar
+                    cv.destroyWindow("test")
+                    cv.waitKey(1)
+                    print("Escape presionado, cerrando...")
+                    break
         return self.last_frame
     
     def update_frame(self):
@@ -471,7 +490,7 @@ class camara():
                             Cod[i3,i4] = n * 125
                 k = k + 1
         cv.imshow('cod', Cod)
-        cv.waitKey(2000)
+        cv.waitKey(5000)
         self.destroy_window()
         edge_img = "opencv_CodGenerator_{}.png".format(self.img_counter_code) #Formato del nombre de la imagen.
                                                     #Guarda el numero de frame (foto) que se tomo.

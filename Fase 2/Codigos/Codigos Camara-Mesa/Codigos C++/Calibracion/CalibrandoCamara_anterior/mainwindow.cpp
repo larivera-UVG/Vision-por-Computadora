@@ -3,6 +3,7 @@
 //#include "calibracam.h"
 #include <QPixmap>
 #include "Swarm_robotic.h"
+#include <sys/time.h>
 /*
  * Revision al 26 de junio de 2020
  * Se realiza una captura con mi mesa de pruebas de manera exitosa, la calibracion esta en un 70% correcta
@@ -89,6 +90,14 @@ void MainWindow::on_botonTomar_pressed()
 {
 
     Snapshot = camara.Take_picture();
+    struct timeval ti, tf;
+        double tiempo;
+        gettimeofday(&ti, NULL);   // Instante inicial
+        cout << "Lee este mensaje y pulsa ENTER\n" << endl;
+        //getchar();
+        gettimeofday(&tf, NULL);   // Instante final
+        tiempo= (tf.tv_sec - ti.tv_sec)*1000 + (tf.tv_usec - ti.tv_usec)/1000.0;
+        cout <<"Has tardado: %g milisegundos" << tiempo << endl;
     QImage img((const uchar*)Snapshot.data, Snapshot.cols, Snapshot.rows, Snapshot.step, QImage::Format_RGB888);
     QPixmap pixmap = QPixmap::fromImage(img.rgbSwapped());
     ui->label_ori->setPixmap(pixmap.scaled(ui->label_ori->width(),ui->label_ori->height(),Qt::KeepAspectRatio));

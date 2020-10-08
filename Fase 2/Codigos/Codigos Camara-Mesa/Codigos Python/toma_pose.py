@@ -168,7 +168,7 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
 
         center, size, theta = RecCod #SingleRecCod.size, del codigo de C++, obtiene el angulo, centro y tama;o del contorno
         center, size = tuple(map(int, center)), tuple(map(int, size)) #lo vuelve un int.
-        print("Angulo sin complemento:", theta)
+        #print("Angulo sin complemento:", theta)
         #para debug, imprimi el valor del centro.
         #print(center)
         #if theta < -45:
@@ -436,29 +436,29 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                #cuadro inferior derecho: 70:105, 70:105
 
             tempFloatTheta = theta #el angulo al que esta rotado el codigo.
-            print("este es el angulo de mi robot al inicio", tempFloatTheta)
+            #print("este es el angulo de mi robot al inicio", tempFloatTheta)
 
             #comparacion mencionada, detecta cual de las esquinas tiene el mayor color para hacer la rotacion.
             if ((ColorSupDer > ColorSupIzq) and (ColorSupDer > ColorInfDer) and (ColorSupDer > ColorInfIzq)):
-                print("90 en contra del reloj")
-                print(" ")
+                #print("90 en contra del reloj")
+                #print(" ")
                 resized = cv.rotate(resized, cv.ROTATE_90_COUNTERCLOCKWISE)
                 tempFloatTheta = tempFloatTheta + 90
                 EscalaColores[2] = ColorSupDer
             elif ((ColorInfDer > ColorSupIzq) and (ColorInfDer > ColorSupDer) and (ColorInfDer > ColorInfIzq)):
-                print("rotado 180")
-                print(" ")
+                #print("rotado 180")
+                #print(" ")
                 resized = cv.rotate(resized,cv.ROTATE_180);
                 tempFloatTheta = tempFloatTheta + 180;
                 EscalaColores[2] = ColorInfDer
 
             elif ((ColorInfIzq > ColorSupIzq) and (ColorInfIzq > ColorInfDer) and (ColorInfIzq > ColorSupDer)):
-                print("90 a favor del reloj")
-                print(" ")
+                #print("90 a favor del reloj")
+                #print(" ")
                 resized = cv.rotate(resized, cv.ROTATE_90_CLOCKWISE)
                 tempFloatTheta = tempFloatTheta - 90
                 EscalaColores[2] = ColorInfIzq
-            print("este es el angulo de mi robot rotado", tempFloatTheta)
+            #print("este es el angulo de mi robot rotado", tempFloatTheta)
             #temp_ColorSupIzq = Final_Crop_rotated[int(height_Final_Rotated*1/8 + 2):int(height_Final_Rotated*1/8 + 30), 10:40]
             #temp_a5 = Final_Crop_rotated[int(height_Final_Rotated*1/4 + 42):int(height_Final_Rotated*1/2 + 40), int(height_Final_Rotated*1/8):int(height_Final_Rotated*1/8 + 23)]
             #temp_a1 = Final_Crop_rotated[int(height_Final_Rotated*1/8):40, 65:100]
@@ -611,7 +611,7 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
             CodigoBinString = ""
 
             #para debug, imprime el valor del vector de bits.
-            print(code)
+            #print(code)
             #print(len(code))
 
             """
@@ -647,9 +647,9 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 #calcula las posiciones y demas parametros del robot.
                 tempFloatX = (anchoMesa / GlobalWidth) * Cx;
                 tempFloatY = (largoMesa / GlobalHeigth) * Cy;
-                print("Estos son las posiciones")
-                print("PosX", tempFloatX)
-                print("PosY", tempFloatY)
+                #print("Estos son las posiciones")
+                #print("PosX", tempFloatX)
+                #print("PosY", tempFloatY)
                 
                 tempX =  round(tempFloatX, 3)
                 tempY =  round(tempFloatY, 3)
@@ -658,6 +658,8 @@ def getRobot_fromSnapshot(contour, snap, MyWiHe, codeSize = 3,mode = "CAPTURE"):
                 #tempY = int(tempFloatY)
                 tempTheta = int(tempFloatTheta)
                 pos = [tempX, tempY, tempTheta]
+                print("ID del robot",tempID)
+                print(pos)
 
                 if mode == "DEBUG":
                     #para debug y seperacion
