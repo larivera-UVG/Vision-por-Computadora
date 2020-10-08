@@ -17,7 +17,7 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
 
    2. [Librería para la Toma de Pose](#TomaPose)
 
-   3. [Documento Principal e Interfaz de Usuario](#GUI)
+   3. [Programa Principal e Interfaz de Usuario](#GUI)
 
 5. [Otra documentación](#otra-documentación)
    1. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
@@ -39,7 +39,7 @@ La carpeta contiene lo siguiente:
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
 ### Librería Swarm_robotic.py  <a name="Swarm"></a>
 ### Librería para la Toma de Pose  <a name="TomaPose"></a>
-### Documento Principal e Interfaz de Usuario  <a name="GUI"></a>
+### Programa Principal e Interfaz de Usuario  <a name="GUI"></a>
 
 ## Otra documentación
 ### Versionado de los programs en python
