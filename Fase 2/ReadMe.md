@@ -16,6 +16,8 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
 2. [Requerimientos](#Requerimientos)
 
    1. [Versiones de Software](#versiones-soft)
+      1. [Instalación OpenCV utilizando Anaconda y MacOS](#Anaconda_install) 
+      2. [Librerías utilizadas en Python](#lib_python) 
   
    2. [Hardware](#versiones-hard)
 
@@ -40,7 +42,7 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
   Su versión de instalación para Windows, MacOS y Linux se puede obtener de aquí: https://www.anaconda.com/products/individual
   La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder. 
   
-  #### Instalación OpenCV utilizando Anaconda y MacOS
+  #### Instalación OpenCV utilizando Anaconda y MacOS <a name="Anaconda_install"></a>
   __Primero__ 
   Se requiere verificar que el comando de _conda_ funcione correctamente en MacOS, de lo contrario, realizar el siguiente proceso:
   https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac-os-x-7c1c7247d896
@@ -83,7 +85,7 @@ pip install opencv-python==4.1.2.30
 
 De preferencia, instalar python 3.7 (probado) no la version 3.8
 
-#### Librerías utilizadas en Python
+#### Librerías utilizadas en Python <a name="lib_python"></a>
 Para una referencia, estas son las librerías que se usan en los distintos códigos de esta herramienta de __Python__:
 
 1. cv2 #importando libreria para opencv 
