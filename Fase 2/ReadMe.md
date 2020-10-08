@@ -113,7 +113,10 @@ Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones so
 
 
   ### Hardware <a name="versiones-hard"></a>
+El Hardware necesario para que esta herramienta funcione es una cámara web y una computadora o laptop que pueda correr __Python__ y __C++__.
+La cámara utilizada fue una de marca Logitech. La cámara debe colocarse sobre la mesa lo más perpendicular posible a esta para mejores resultados. La iluminación sobre la mesa debe ser adecuada para facilitar alto contraste entre los objetos de interés.
 
+Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__.
 ## Contenido del Repositorio <a name="RepoContent"></a>
 ### Fase 2
 Los programas están ubicados en la carpeta [__Codigos__](Codigos). Estos códigos son todos los programas utilizados para la herramienta de la toma de pose, creación de marcadores y calibración de la cámara. Están implementados en Python y C++ con implementación de POO y programación multi-hilos. Además, incluyen otros programas de ejemplos y referencias para el uso de la herramienta, así como ilustrar el uso de multi-hilos y las funciones de OpenCV.
