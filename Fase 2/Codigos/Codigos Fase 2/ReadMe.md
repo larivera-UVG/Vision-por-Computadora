@@ -1,8 +1,37 @@
 # Codigos de lenguaje Python para Visión por Computadora
 
+## Introducción
+
 Esta carpeta incluye los códigos en lenguaje Python con POO y programación multi-hilos donde aplique.
 
-## Al 5 de julio del 2020:
+## Indice:
+1. [Introducción](#Introducción)
+
+2. [Requerimientos](#Requerimientos)
+
+   1. [Software](#versiones-soft)
+      1. [Instalación OpenCV utilizando Anaconda y MacOS](#Anaconda_install)
+      2. [Librerías utilizadas en Python](#lib_python)
+
+   2. [Hardware](#versiones-hard)
+
+3. [Contenido de la carpeta](#RepoContent)
+
+4. [Algoritmo Para el Reconocimiento de la Pose de Agentes](#algoritmo-pose-python)
+
+   1. [Calibración de Cámara](#calibración-de-cámara)
+
+   2. [Creación de Marcadores](#creación-de-marcadores)
+
+   3. [Obtención de Pose](#obtención-de-pose)
+
+5. [Otra documentación](#otra-documentación)
+
+
+## Otra documentación
+### Versionado de los programs en python
+
+#### Al 5 de julio del 2020:
 Se tiene la calibración ya incluida, con unas funciones por migrar a Python.
 Pruebas realizadas, exitosas. Calibración OK.
 
@@ -11,7 +40,7 @@ Luego de eso, con estas esquinas, se ajusta la perspectiva de la imagen, se guar
 
 Función de guardar la matriz pendiente.
 
-## 08/07/2020:
+#### 08/07/2020:
 Versión final (pendiente guardar calibración) de la calibración. Se agrega la parte de generar código para la detección de los robots en la mesa. Se agrega una interfaz gráfica que se pretende ir mejorando.
 
 Los métodos y funciones están en el archivo: Calibracion.py
@@ -20,13 +49,13 @@ El archivo general __main__ es llamado Final_TestBed.py
 Las imágenes agregadas en esta carpeta son pruebas correspondientes a la calibración para dejar constancia de su funcionamiento.
 la imagen Cod.jpg es el código generado para la detección de los robots, a manera de comparativa con el código de André Rodas.
 
-## Al 10 de agosto del 2020:
+#### Al 10 de agosto del 2020:
 
-Se añaden varias funciones tanto en la GUI como en las diferentes liberías usadas para estos códigos (Para mayor información leer el versionado en cada uno de los archivos que están incluidos dentro de esta carpeta. 
+Se añaden varias funciones tanto en la GUI como en las diferentes liberías usadas para estos códigos (Para mayor información leer el versionado en cada uno de los archivos que están incluidos dentro de esta carpeta.
 
-Esta versión ya cuenta con dos variaciones de documentos, una sin hilos y otra con hilos. De momento, la versión con hilos puede procesar e identificar los códigos, aunque faltaría un hilo de captura continua. 
+Esta versión ya cuenta con dos variaciones de documentos, una sin hilos y otra con hilos. De momento, la versión con hilos puede procesar e identificar los códigos, aunque faltaría un hilo de captura continua.
 
 
-## 5 de octubre del 2020:
+#### 5 de octubre del 2020:
 
-GUI mejor diseñada que unifica todas las funciones de esta herramienta. Mejoras al código en general y una versión _release_ que podría considerarse como final (a falta de revisar otros puntos de mejora si los hubiera. 
+GUI mejor diseñada que unifica todas las funciones de esta herramienta. Mejoras al código en general y una versión _release_ que podría considerarse como final (a falta de revisar otros puntos de mejora si los hubiera.
