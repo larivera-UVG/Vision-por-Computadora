@@ -153,7 +153,9 @@ Con esta imagen también se explica el porqué se recomienda no tener ningún ot
 Los marcadores son imágenes que representan un ID, que puede ir desde 0 hasta 255. El objetivo de este marcador es qué se tenga una forma visual de ubicar a los robots dentro de la mesa o espacio de trabajo, además de poder asignarle un código único para que, al momento de obtener la posición, pueda asociarse a dicho ID.
 El algoritmo toma el número entero y lo convierte en una matriz de 8 bits que representa la imagen.
 
-  ¿Por qué debe ser la matriz de 8 bits? Como muestra la imagen siguiente. La imagen muestra el resultado de un marcador. El ID que representa es 40.
+  ¿Por qué debe ser la matriz de 8 bits? Como muestra la imagen siguiente, hay cuadros negros, blancos y gris. El cuadro blanco sirve como pivote de la imagen, es decir, en caso de que la imagen este rotada, este cuadro blanco siempre debe estar en la esquina superior izquierda. Los cuadros negros y grises forman el código. Para poder crear estos cuadros internos, se usan rangos. De 0 a 100 115 representa un negro, de 115 a 175 representa gris y arriba de eso hasta 255 puede ser blanco. Al final, la imagen es una representación binaria del ID. Cada cuadro representa una potencia de 2 hasta 8 bits (254), los cuadros grises son 1 (o bit encendido) y los cuadros negros son 0 (o bits apagados).
+
+  Los 2 primeros cuadros de la fila superior (donde está ubicado el cuadro blanco) representan los primeros bits ($2^0$ y $2^1$), y subsecuentemente cada uno crece hasta $2^8$ Por eso se usa una matriz de 8 bits. La imagen muestra el resultado de un marcador. El ID que representa es 40.
 
 ![ID](media/Cod40.png)
 
