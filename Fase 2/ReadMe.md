@@ -25,8 +25,6 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
 
 4. [Algoritmo Para el Reconocimiento de la Pose de Agentes](#algoritmo-pose-python)
 
-5. [Uso de la Herramienta](#Herramienta)
-
    1. [Calibración de Cámara](#calibración-de-cámara)
 
    2. [Creación de Marcadores](#creación-de-marcadores)
@@ -128,8 +126,6 @@ El algoritmo fue originalmente desarrollo por André Rodas en el lenguaje de pro
 
 Con el objetivo de desarrollar una herramienta más versátil, y que tuviera una ampliación en sus aplicaciones, se migró estos programas a una versión en __Python__ que incluye las mismas funciones. Además de eso, el objetivo era desarrollar una herramienta más eficiente y que fuera modular. Con esto en mente, se realizó mejoras a la versión presentada por André. Entre estas mejoras se encuentra el uso de multi-hilos (tanto en __C++__ como en __Python__) que ayudan a realizar multiples tareas al mismo tiempo y da modularidad y paralelización al código. Segundo, se implementó Programación Orientada a Objetos para darle más modularidad a las diferentes funciones del código. Finalmente, se realizaron algunos cambios en distintas partes del código que suponen una mejora en la experiencia del usuario al momento de usar la herramienta en __Python__.
 
-
-## Uso de la Herramienta <a name="Herramienta"></a>
 ### Calibración de Cámara
 La calibración de la cámara consiste en tomar de referencia 4 puntos dentro de la mesa de trabajo para ser utilizados como nuevas esquinas de la imagen. El objetivo de esto es que cuando la cámara tome una fotografía de la mesa, le aplique corrección de perspectiva (si la necesitara) así como recortar la imagen y dejar únicamente los puntos de interés.
 
