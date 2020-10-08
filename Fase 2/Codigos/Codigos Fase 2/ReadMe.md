@@ -9,13 +9,7 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
 
 2. [Requerimientos](#Requerimientos)
 
-   1. [Software](#versiones-soft)
-      1. [Instalación OpenCV utilizando Anaconda y MacOS](#Anaconda_install)
-      2. [Librerías utilizadas en Python](#lib_python)
-
-   2. [Hardware](#versiones-hard)
-
-3. [Contenido de la carpeta](#RepoContent)
+3. [Contenido de la Carpeta](#Contenido-de-la-Carpeta)
 
 4. [Algoritmo Para el Reconocimiento de la Pose de Agentes](#algoritmo-pose-python)
 
@@ -31,6 +25,11 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
       2. [Versión 0.1](#Al-8-de-agosto-del-2020)
       3. [Versión 0.2](#Al-10-de-agosto-del-2020)
       4. [Versión Release](#5-de-octubre-del-2020)
+## Requerimientos
+
+Favor referirse al [ReadMe](Fase%202) de la carpeta principal.
+
+## Contenido de la Carpeta
 
 ## Otra documentación
 ### Versionado de los programs en python
