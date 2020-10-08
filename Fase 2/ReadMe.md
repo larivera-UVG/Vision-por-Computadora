@@ -144,9 +144,15 @@ Para lograr el anterior resultado (tanto en __Python__ como en __C++__) se neces
 
 El procedimiento para calibrar se hace mediante la detección de bordes o contornos de en la imagen. Dichos contornos son identificados utilizando la función de __Detección de Bordes de Canny__ de _OpenCV_. La siguiente imagen muestra el resultado de aplicar el _filtro de Canny_ a la imagen. Como se observa, el filtro es capaz de reconocer 4 esquinas (las marcadas en la mesa), así como otras figuras que en este caso representa un robot. Sin embargo, el algoritmo esta diseñado para buscar contornos circulares, y además de eso, que los contornos estén lo más cercano a los bordes de la imagen original. Si estás dos condiciones se cumplen, tomará estos puntos como las esquinas y a partir de estas generará la calibración de la cámara.
 
+Con esta imagen también se explica el porqué se recomienda no tener ningún otro objeto fuera de estos 4 puntos, ya que si el filtro de Canny lo detecta, puede tomarlo como una esquina errónea.
+
 ![Bordes](./media/Contornos_Calibracion.png)
 
 
-
 ### Creación de Marcadores
+Los marcadores son imágenes que representan un ID, que puede ir desde 0 hasta 255. El objetivo de este marcador es qué se tenga una forma visual de ubicar a los robots dentro de la mesa o espacio de trabajo, además de poder asignarle un código único para que, al momento de obtener la posición, pueda asociarse a dicho ID.
+El algoritmo toma el número y convierte el valor a entero para luego convertirlo en una matriz que representa la imagen. La imagen siguiente muestra el resultado de un marcador. El ID que representa es 40.
+
+![ID](./media/Cod40.png)
+
 ### Obtención de Pose
