@@ -156,6 +156,6 @@ El algoritmo toma el número entero y lo convierte en una matriz de 8 bits que r
 
 La imagen siguiente muestra el resultado de un marcador. El ID que representa es 40.
 
-![ID](./media/Cod40.png)
+![ID](media/Cod40.png)
 
 ### Obtención de Pose
