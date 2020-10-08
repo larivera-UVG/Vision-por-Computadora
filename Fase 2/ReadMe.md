@@ -1,6 +1,15 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/Spyder-v4.1.4-<COLOR>.svg)](https://shields.io/) [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
+## Introducción
+El objetivo principal de este repositorio es brindarle al usuario una herramienta de _software_ diseñada para reconocer o identificar la posición de los agentes o robots, normalmente empleados en la Robótica de Enjambre. 
+
+Principalmente se presentan dos versiones para dos lenguajes distintos: __C++__ y __Python__.
+La versión original de esta herramienta fue creada en __C++__ y como objetivo de la __Fase 2__ se presenta una migración hacia __Python___.
+Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-cámara), la generación de [_marcadores_](#creación-de-marcadores) y la [_obtención de pose_](#obtención-de-pose) de los robots en la mesa de trabajo. 
+
+Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que permiten al usuario a encontrar de mejor manera las secciones dentro de este documento o carpetas dentro de este repositorio.
+
 ## Indice:
 1. [Introducción](#Introducción)
 
@@ -24,12 +33,6 @@
 
 
 
-## Introducción
-El objetivo principal de este repositorio es brindarle al usuario una herramienta de _software_ diseñada para reconocer o identificar la posición de los agentes o robots, normalmente empleados en la Robótica de Enjambre. 
-
-Principalmente se presentan dos versiones para dos lenguajes distintos: __C++__ y __Python__.
-La versión original de esta herramienta fue creada en __C++__ y como objetivo de la __Fase 2__ se presenta una migración hacia __Python___.
-Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-cámara), la generación de [_marcadores_](#creación-de-marcadores) y la [_obtención de pose de los robots en la mesa de trabajo_](#obtención-de-pose)
 
 ## Requerimientos <a name="Requerimientos"></a>
   ### Versiones de Software <a name="versiones-soft"></a>
@@ -86,12 +89,8 @@ De preferencia, instalar python 3.7 (probado) no la version 3.8
 
 ## Contenido del Repositorio <a name="RepoContent"></a>
 ### Fase 2
-En esta carpeta incluye la documentación y programas de la fase 2. 
-El objetivo es realizar la migraición del programa orignal en C++ hacia el lenguaje Python.
-Contiene dos carpetas "Codigos" y "Doc".
-
-Los programas ubicados en la carpeta [__Codigos__](Codigos) estan los codigos en Python y C++ con implementación de POO y programación multi-hilos.
-Los programas ubicados en la carpeta __Doc__ se tienen los archivos referentes a guías, manuales y documentación en general.
+Los programas ubicados en la carpeta [__Codigos__](Codigos) estan los codigos en Python y C++ con implementación de POO y programación multi-hilos, así como otros ejemplos y referencias para el uso de la herramienta.
+Los documentos, manuales y otros están ubicados en la carpeta [__Doc__](Doc).
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a> 
 
