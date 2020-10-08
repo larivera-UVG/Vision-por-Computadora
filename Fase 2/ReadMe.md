@@ -168,7 +168,9 @@ El algoritmo ubica los contornos mediante Canny. Ahora, el objetivo de detectar 
 
 ![ID2](media/Ejemplo_Canny.png)
 
-Posterior a detectar los diferentes contornos, el algoritmo es capaz de distinguir los tamaños de estos contornos, ya que pueden haber contornos muy pequeños que no representan los marcadores. Este es un primer filtro. Si el contorno esta dentro del rango esperado de tamaño (que es de 116 x 116) más una cota superior y menos una cota inferior, entonces el programa recorta ese contorno de la imagen y procede a rotarlo si fuese necesario como lo muestra la siguiente imagen:
+Posterior a detectar los diferentes contornos, el algoritmo es capaz de distinguir los tamaños de estos contornos, ya que pueden haber contornos muy pequeños que no representan los marcadores. Este es un primer filtro. El programa esta diseñado para detectar marcadores de 3 x 3 cm de tamaño. Sin embargo, si el marcador fuese más grande o más pequeño de este tamaño, lo lleva reescala a llevarlo a un aproximado de 116 x 116 para realizar todo el procedimiento.
+Se define este tamaño como estandár ya que la mayoría de pruebas se realizaron con marcadores de 3 x 3 cm por lo que se uso de base para tamaños diferentes.
+Luego, si el contorno esta dentro del rango esperado de tamaño (que es de 116 x 116) más una cota superior y menos una cota inferior, entonces el programa recorta ese contorno de la imagen y procede a rotarlo si fuese necesario como lo muestra la siguiente imagen:
 
 ![ID2](media/rotated.png)
 
