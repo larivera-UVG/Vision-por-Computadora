@@ -151,7 +151,10 @@ Con esta imagen también se explica el porqué se recomienda no tener ningún ot
 
 ### Creación de Marcadores
 Los marcadores son imágenes que representan un ID, que puede ir desde 0 hasta 255. El objetivo de este marcador es qué se tenga una forma visual de ubicar a los robots dentro de la mesa o espacio de trabajo, además de poder asignarle un código único para que, al momento de obtener la posición, pueda asociarse a dicho ID.
-El algoritmo toma el número y convierte el valor a entero para luego convertirlo en una matriz que representa la imagen. La imagen siguiente muestra el resultado de un marcador. El ID que representa es 40.
+El algoritmo toma el número entero y lo convierte en una matriz de 8 bits que representa la imagen.
+  ¿Por qué debe ser la matriz de 8 bits? Como muestra la [imagen](#ID)
+
+La imagen siguiente muestra el resultado de un marcador. El ID que representa es 40.
 
 ![ID](./media/Cod40.png)
 
