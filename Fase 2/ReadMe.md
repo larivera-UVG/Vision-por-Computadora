@@ -8,7 +8,7 @@ Principalmente se presentan dos versiones para dos lenguajes distintos: __C++__ 
 La versión original de esta herramienta fue creada en __C++__ y como objetivo de la __Fase 2__ se presenta una migración hacia __Python___.
 Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-cámara), la generación de [_marcadores_](#creación-de-marcadores) y la [_obtención de pose_](#obtención-de-pose) de los robots en la mesa de trabajo.
 
-Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que permiten al usuario a encontrar de mejor manera las secciones dentro de este documento o carpetas dentro de este repositorio.
+Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que permiten al usuario encontrar de mejor manera las secciones dentro de este documento o carpetas dentro de este repositorio.
 
 ## Indice:
 1. [Introducción](#Introducción)
@@ -37,7 +37,7 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
 
 
 ## Requerimientos <a name="Requerimientos"></a>
-  ### Versiones de Software <a name="versiones-soft"></a>
+  ### Software <a name="versiones-soft"></a>
   Para la versión en Python se utiliza la Suite de Anaconda que incluye diferentes programas relacionados con Python. Es recomendable utilizar esta suite ya que incluye todos las librerías que se necesitan y hace más fácil la instalación de cualquier otra que se necesite.
   Su versión de instalación para Windows, MacOS y Linux se puede obtener de aquí: https://www.anaconda.com/products/individual
   La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder.
@@ -130,5 +130,6 @@ Con el objetivo de desarrollar una herramienta más versátil, y que tuviera una
 
 ## Uso de la Herramienta <a name="Herramienta"></a>
 ### Calibración de Cámara
+![Modelo Canónico](./media/Calibracion_ejemplo.png)
 ### Creación de Marcadores
 ### Obtención de Pose
