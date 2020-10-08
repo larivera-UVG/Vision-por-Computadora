@@ -1,4 +1,4 @@
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/Spyder-v4.1.4-<COLOR>.svg)](https://shields.io/) [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) [![Generic badge](https://img.shields.io/badge/Spyder-v4.1.4-<COLOR>.svg)](https://shields.io/) [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/ansicolortags/) [![Generic badge](https://img.shields.io/badge/Swarm_robotic-v0.11.4-<COLOR>.svg)](https://shields.io/) [![Generic badge](https://img.shields.io/badge/toma_pose-v0.3.2-<COLOR>.svg)](https://shields.io/) [![Generic badge](https://img.shields.io/badge/GUI-v0.14.0-<COLOR>.svg)](https://shields.io/)
 # Continuación Fase 1 de Algoritmo de Visión por Computadora.
 
 ## Introducción
@@ -83,6 +83,32 @@ pip install opencv-python==4.1.2.30
 
 De preferencia, instalar python 3.7 (probado) no la version 3.8
 
+#### Librerías utilizadas en Python
+Para una referencia, estas son las librerías que se usan en los distintos códigos de esta herramienta de __Python__:
+
+1. cv2 #importando libreria para opencv 
+
+2. numpy #para la creacion de arrays
+
+3. math #para el uso de herramientas matematicas como raiz cuadrada
+
+4. from Swarm_robotic import camara, vector_robot, Robot #libreria swarm para la deteccion de la pose de agentes (incluida en este repositorio).
+
+5. from toma_pose import getRobot_fromSnapshot, process_image #para la deteccion de pose de los robots (incluida en este repositorio).
+
+6. threading #para los hilos
+
+7. time #delays y otros tiempos de medición
+
+Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones son las mismas aunque algunos metodos cambian. Se recomienda instalar __PySide2__ para compatibilidad con la versión de este repositorio.
+
+1. from PySide2.QtCore import Qt
+
+2. from PySide2.QtWidgets import QLabel, QApplication, QWidget, QPushButton,QLineEdit
+
+3. sys
+
+4. from PySide2.QtGui import QImage, QPixmap
   
   
   ### Hardware <a name="versiones-hard"></a>
