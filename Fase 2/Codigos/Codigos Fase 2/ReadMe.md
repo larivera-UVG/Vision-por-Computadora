@@ -27,7 +27,7 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
       4. [Versión Release](#5-de-octubre-del-2020)
 ## Requerimientos
 
-Favor referirse al [ReadMe](https://github.com/larivera-UVG/Vision-por-Computadora/blob/master/Fase%202/ReadMe.md) de la carpeta principal.
+Favor referirse a la sección de Requerimientos en el [ReadMe](https://github.com/larivera-UVG/Vision-por-Computadora/blob/master/Fase%202/ReadMe.md#Requerimientos) de la carpeta principal.
 
 ## Contenido de la Carpeta
 
