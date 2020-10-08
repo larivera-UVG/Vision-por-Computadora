@@ -1,6 +1,6 @@
 # Read Me - Codigos
 
-08/07/2020:
+Actualización al 07/10/2020:
 
 Se tienen las siguientes carpetas:
 
