@@ -31,6 +31,7 @@ Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que perm
 
    3. [Obtención de Pose](#obtención-de-pose)
 
+5. [Otra documentación](#otra-documentación)
 
 
 
@@ -188,4 +189,5 @@ Donde __anchoMesa__ representa el ancho de la mesa física, así como __largoMes
 
 Finalmente, esta posición, con el respectivo ángulo de rotación, se agregan al ID y esto es el identificador completo del robot en la mesa.
 
+## Otra documentación
 Una explicación más general del código se encuentra en el ReadMe de la carpeta [__Codigos__](Codigos).
