@@ -11,13 +11,13 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
 
 3. [Contenido de la Carpeta](#Contenido-de-la-Carpeta)
 
-4. [Algoritmo Para el Reconocimiento de la Pose de Agentes](#algoritmo-pose-python)
+4. [Algoritmo Para el Reconocimiento de la Pose de Agentes en Python](#Algoritmo-Para-el-Reconocimiento-de-la-Pose-de-Agentes-en-Python)
 
-   1. [Calibración de Cámara](#calibración-de-cámara)
+   1. [Librería Swarm_robotic.py](#Swarm)
 
-   2. [Creación de Marcadores](#creación-de-marcadores)
+   2. [Librería para la Toma de Pose](#TomaPose)
 
-   3. [Obtención de Pose](#obtención-de-pose)
+   3. [Documento Principal e Interfaz de Usuario](#GUI)
 
 5. [Otra documentación](#otra-documentación)
    1. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
@@ -35,7 +35,12 @@ La carpeta contiene lo siguiente:
 1. [Codigos Python](Codigos%20Python) que contiene todos los códigos de la migración desde la versión original de __C++__ a __Python___
 
 2. [Codigos C++](Codigos%20C++) que contiene la versión original en __C++__ pero con aplicación de Progrmación Orientada a Objetos y multi-hilos.
- 
+
+## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
+### Librería Swarm_robotic.py  <a name="Swarm"></a>
+### Librería para la Toma de Pose  <a name="TomaPose"></a>
+### Documento Principal e Interfaz de Usuario  <a name="GUI"></a>
+
 ## Otra documentación
 ### Versionado de los programs en python
 
