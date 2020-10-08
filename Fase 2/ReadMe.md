@@ -157,7 +157,13 @@ El algoritmo toma el número entero y lo convierte en una matriz de 8 bits que r
 
 La imagen siguiente representa un 170 e ilustra de mejor manera la explicación de los cuadros, ya que para este caso el código binario es 01010101.
 
-![ID](media/170.png)
+![ID2](media/170.png)
 
 ### Obtención de Pose
-La obtención de pose es la parte de esta herramienta que unifica todo lo mencionado anteriormente. Lo primero que se hace es [calibrar la cámara](#calibración-de-cámara). Los robots son ubicados en la mesa y posteriormente identificados con los [marcadores](#creación-de-marcadores).
+La obtención de pose es la parte de esta herramienta que unifica todo lo mencionado anteriormente. Lo primero que se hace es [calibrar la cámara](#calibración-de-cámara). Los robots son ubicados en la mesa y se les coloca un [marcador](#creación-de-marcadores) para su identificación.
+
+El algoritmo ubica los contornos mediante Canny. Ahora, el objetivo de detectar estos contornos es poder ubicar los diferentes marcadores en la mesa. Por ejemplo, la siguiente muestra algunos robots ubicados en la mesa. La primera imagen muestra la imagen calibrada en los puntos deseados y un robot sobre ella. La segunda imagen muestra como Canny detecta varios contornos y entre ellos, detecta al robot.
+
+![ID2](media/Calib_Canny.png)
+
+![ID2](media/Ejemplo_Canny.png)
