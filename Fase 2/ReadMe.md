@@ -118,8 +118,9 @@ Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones so
 
 ## Contenido del Repositorio <a name="RepoContent"></a>
 ### Fase 2
-Los programas ubicados en la carpeta [__Codigos__](Codigos) estan los codigos en Python y C++ con implementación de POO y programación multi-hilos, así como otros ejemplos y referencias para el uso de la herramienta.
-Los documentos, manuales y otros están ubicados en la carpeta [__Doc__](Doc).
+Los programas están ubicados en la carpeta [__Codigos__](Codigos). Estos códigos son todos los programas utilizados para la herramienta de la toma de pose, creación de marcadores y calibración de la cámara. Están implementados en Python y C++ con implementación de POO y programación multi-hilos. Además, incluyen otros programas de ejemplos y referencias para el uso de la herramienta, así como ilustrar el uso de multi-hilos y las funciones de OpenCV.
+
+Los documentos como manuales, la tesis de la fase 2 y otra documentación están ubicados en la carpeta [__Doc__](Doc).
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a>
 El algoritmo fue originalmente desarrollo por André Rodas en el lenguaje de programación __C++__.
@@ -130,6 +131,22 @@ Con el objetivo de desarrollar una herramienta más versátil, y que tuviera una
 
 ## Uso de la Herramienta <a name="Herramienta"></a>
 ### Calibración de Cámara
-![Modelo Canónico](./media/Calibracion_ejemplo.png)
+La calibración de la cámara consiste en tomar de referencia 4 puntos dentro de la mesa de trabajo para ser utilizados como nuevas esquinas de la imagen. El objetivo de esto es que cuando la cámara tome una fotografía de la mesa, le aplique corrección de perspectiva (si la necesitara) así como recortar la imagen y dejar únicamente los puntos de interés.
+
+Un ejemplo claro de calibración de cámara es lo que utiliza CamScanner al momento de escanear un documento:
+Se toma la foto de la página que se desea escanear, luego, la aplicación corrige la perspectiva de la foto para que tenga una mejor vista frontal (es decir que si el escaneo se hace un poco de inclinado, la imagen final no presente esa inclinación). Todo esto lo hace tomando 4 puntos de referencia, los mismos que toma este algoritmo para calibrar la cámara con respecto a la mesa de trabajo.
+
+La imagen siguiente muestra un ejemplo de una calibración exitosa.
+
+![Imagen Calibrada](./media/Calibracion_ejemplo.png)
+
+Para lograr el anterior resultado (tanto en __Python__ como en __C++__) se necesita que las esquinas marcadas contrasten altamente con la mesa (que sea un color que resalte). En el caso de __Python__, se necesita que las formas sean circulares o lo más cercano a un círculo y que no existan objetos __fuera__ del área de interés, ya que esto podría hacer que el programa tome dichas objetos como posibles esquinas. En el caso de __C++__ también aplica esto aunque puede que con otras figuras funcione de igual forma.
+
+El procedimiento para calibrar se hace mediante la detección de bordes o contornos de en la imagen. Dichos contornos son identificados utilizando la función de __Detección de Bordes de Canny__ de _OpenCV_. La siguiente imagen muestra el resultado de aplicar el _filtro de Canny_ a la imagen. Como se observa, el filtro es capaz de reconocer 4 esquinas (las marcadas en la mesa), así como otras figuras que en este caso representa un robot. Sin embargo, el algoritmo esta diseñado para buscar contornos circulares, y además de eso, que los contornos estén lo más cercano a los bordes de la imagen original. Si estás dos condiciones se cumplen, tomará estos puntos como las esquinas y a partir de estas generará la calibración de la cámara.
+
+![Bordes](./media/Contornos_Calibracion.png)
+
+
+
 ### Creación de Marcadores
 ### Obtención de Pose
