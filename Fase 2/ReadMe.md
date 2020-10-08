@@ -159,4 +159,7 @@ El algoritmo toma el número entero y lo convierte en una matriz de 8 bits que r
 
 ![ID](media/Cod40.png)
 
+La imagen siguiente representa un 170 e ilustra de mejor manera la explicación de los cuadros, ya que para este caso el código binario es 01010101.
+![ID](media/170.png)
+
 ### Obtención de Pose
