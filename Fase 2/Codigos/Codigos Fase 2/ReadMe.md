@@ -30,7 +30,12 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
 Favor referirse a la sección de Requerimientos en el [ReadMe](https://github.com/larivera-UVG/Vision-por-Computadora/blob/master/Fase%202/ReadMe.md#Requerimientos) de la carpeta principal.
 
 ## Contenido de la Carpeta
+La carpeta contiene lo siguiente:
 
+1. [Codigos Python](Codigos%20Python) que contiene todos los códigos de la migración desde la versión original de __C++__ a __Python___
+
+2. [Codigos C++](Codigos%20C++) que contiene la versión original en __C++__ pero con aplicación de Progrmación Orientada a Objetos y multi-hilos.
+ 
 ## Otra documentación
 ### Versionado de los programs en python
 
