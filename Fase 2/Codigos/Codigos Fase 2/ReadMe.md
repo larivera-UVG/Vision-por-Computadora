@@ -28,7 +28,7 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
 5. [Otra documentación](#otra-documentación)
    1. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
       1. [Versión inicial](#Al-5-de-julio-del-2020)
-      2. [Versión 0.1](#08/07/2020)
+      2. [Versión 0.1](#Al-8-de-agosto-del-2020)
       3. [Versión 0.2](#Al-10-de-agosto-del-2020)
       4. [Versión Release](#5-de-octubre-del-2020)
 
@@ -45,7 +45,7 @@ Luego de eso, con estas esquinas, se ajusta la perspectiva de la imagen, se guar
 
 Función de guardar la matriz pendiente.
 
-#### 08/07/2020
+#### al 08 de agosto del 2020
 
 Versión final (pendiente guardar calibración) de la calibración. Se agrega la parte de generar código para la detección de los robots en la mesa. Se agrega una interfaz gráfica que se pretende ir mejorando.
 
