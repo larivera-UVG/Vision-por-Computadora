@@ -45,7 +45,7 @@ Luego de eso, con estas esquinas, se ajusta la perspectiva de la imagen, se guar
 
 Función de guardar la matriz pendiente.
 
-#### Al 08 de agosto del 2020
+#### Al 8 de agosto del 2020
 
 Versión final (pendiente guardar calibración) de la calibración. Se agrega la parte de generar código para la detección de los robots en la mesa. Se agrega una interfaz gráfica que se pretende ir mejorando.
 
