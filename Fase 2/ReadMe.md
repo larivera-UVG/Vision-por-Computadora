@@ -160,3 +160,4 @@ La imagen siguiente representa un 170 e ilustra de mejor manera la explicación 
 ![ID](media/170.png)
 
 ### Obtención de Pose
+La obtención de pose es la parte de esta herramienta que unifica todo lo mencionado anteriormente. Lo primero que se hace es [calibrar la cámara](#calibración-de-cámara). Los robots son ubicados en la mesa y posteriormente identificados con los [marcadores](#creación-de-marcadores).
