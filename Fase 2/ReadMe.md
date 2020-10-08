@@ -171,3 +171,14 @@ El algoritmo ubica los contornos mediante Canny. Ahora, el objetivo de detectar 
 Posterior a detectar los diferentes contornos, el algoritmo es capaz de distinguir los tamaños de estos contornos, ya que pueden haber contornos muy pequeños que no representan los marcadores. Este es un primer filtro. Si el contorno esta dentro del rango esperado de tamaño (que es de 116 x 116) más una cota superior y menos una cota inferior, entonces el programa recorta ese contorno de la imagen y procede a rotarlo si fuese necesario como lo muestra la siguiente imagen:
 
 ![ID2](media/rotated.png)
+
+Luego de eso, el algoritmo corta la imagen en cada cuadro que forma el ID (como se explico en la sección de los [marcadores](#creación-de-marcadores)) y realiza una comparación para detectar si el cuadro es gris o negro y si debe poner 1 o 0 al código. Luego, genera el código binario y lo pasa a entero para tener el ID del marcador. Finalmente realiza la siguiente operación:
+
+```python
+tempFloatX = (anchoMesa / GlobalWidth) * Cx;
+tempFloatY = (largoMesa / GlobalHeigth) * Cy;
+```
+
+Donde __anchoMesa__ representa el ancho de la mesa física, así como __largoMesa__ es el largo de esta mesa y __GloblaWidth__, __GlobalHeigth__ representan las dimensiones de la imagen de donde se está obteniendo el marcador. Esto, al ser multiplicado por el centro del contorno (__Cx__ y __Cy__), devuelve las coordenadas reales en del marcador.
+
+Finalmente, esta posición, con el respectivo ángulo de rotación, se agregan al ID y esto es el identificador completo del robot en la mesa.
