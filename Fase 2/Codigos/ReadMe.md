@@ -141,6 +141,7 @@ Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones so
 Links para instalación funcional de openCV en C++
 
 (Este primer link instala opencv4)
+
 https://medium.com/beesightsoft/macos-mojave-10-14-3-setup-environment-for-opencv4-0-1-c-develop-fcae955d6b33
 
 https://medium.com/@jaskaranvirdi/setting-up-opencv-and-c-development-environment-in-xcode-b6027728003
@@ -168,6 +169,7 @@ https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac
 Este link ayuda a configurar el comando de conda para MacOS en caso de usarse para instalar python y OpenCV. Esto solo en caso que el comando __conda__ no funcione al momento de ejecutar las instrucciones arriba mencionadas.
 
 Es necesario instalar Cmake para correr Qt Creator en C++ y generar ciertas dependencias de archivos necesarias.
+
 https://cmake.org/install/
 
 ### Hardware <a name="versiones-hard"></a>
