@@ -45,7 +45,7 @@
   Su versión de instalación para Windows, MacOS y Linux se puede obtener de aquí: https://www.anaconda.com/products/individual
   La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder.
 
-  La herramienta desarrollada y migrada en __Python__ consta de dos archivos llamados _Swarm_robotic.py_ cuya versión es la 0.11.4, el archivo _toma_pose.py_, versión 0.3.2 y la Interfaz de usuario con versión _0.14.0_. Cada uno de estos programas esta debidamente comentado para que el usuario sepa en que versión está, cual ha sido el proceso de desarrollo y en que parte se encuentra cada uno de ellos.
+  La herramienta desarrollada y migrada en __Python__ consta de dos archivos llamados _Swarm_robotic.py_ cuya versión es la 0.11.4, el archivo _toma_pose.py_, versión 0.3.2 y la Interfaz de usuario con versión _0.14.0_. Cada uno de estos programas está debidamente comentado para que el usuario sepa en que versión está, cual ha sido el proceso de desarrollo y en que parte se encuentra cada uno de ellos.
 
 #### Instalación OpenCV utilizando Anaconda y MacOS <a name="Anaconda_install"></a>
   __Primero__
@@ -136,12 +136,29 @@ Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones so
 
 4. from PySide2.QtGui import QImage, QPixmap
 
+#### Preparación para correr los programas en C++
+
+Para correr los programas de C++ es necesario tener instalado Xcode en la MacBook. La versión que se utilizó para las pruebas y resultados en este repositorio fue Xcode 12.0. También puede ser útil instalar Qt Creator, el IDE de Qt que permite correr las librerías para el uso de la interfaz gráfica, de lo contrario, el programa no correra porque no se podrá mostrar la interfaz. En caso de no poder o no querer instalar Qt Creator, se puede usar un comando para compilar un proyecto de Xcode y correrlo directamente desde ahí.
+
+El comando es:
+
+```
+qmake -spec macx-xcode project.pro
+```
+
+Es posible que no requiera ninguna instalación adicional, pero siempre verificar en caso de error.
 
 ### Hardware <a name="versiones-hard"></a>
 El Hardware necesario para que esta herramienta funcione es una cámara web y una computadora o laptop que pueda correr __Python__ y __C++__.
-La cámara utilizada fue una de marca Logitech. La cámara debe colocarse sobre la mesa lo más perpendicular posible a esta para mejores resultados. La iluminación sobre la mesa debe ser adecuada para facilitar alto contraste entre los objetos de interés.
+La cámara utilizada fue una de marca Logitech. La cámara debe colocarse sobre la mesa lo más perpendicular posible a esta para mejores resultados. La iluminación sobre la mesa debe ser adecuada para facilitar alto contraste entre los objetos de interés y la mesa de pruebas.
 
-Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__.
+Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__. Además, es necesario tener al menos 30 GB de espacio disponible (que al momento de instalar todo lo necesario deje al menos 5GB libres todavía.), ya que Xcode puede llegar a pesar entre 12 a 14 GB más las otras herramientas adicionales, se necesita espacio para instalar dichos programas. 
+
+__ACTUALIZACION AL 15/11/2020__
+
+Se actualizo el sistema operativo de la computadora MacBook Air de _MacOs Catalina 10.15.7_ a _MacOs Big Sur 11.0.1_
+
+Todos las instrucciones anteriores funcionan perfectamente en esta versión más reciente, por lo que, valida nuevamente el funcionamiento de estas instrucciones.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
 ### Librería Swarm_robotic.py  <a name="Swarm"></a>
