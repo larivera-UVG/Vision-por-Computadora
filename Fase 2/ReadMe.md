@@ -36,4 +36,8 @@ Ambas herramientas permiten la [_calibración de la cámara_](#calibración-de-c
 
 Para una mejor navegación, este _ReadMe_ contiene varios hipervinculos que permiten al usuario encontrar de mejor manera las secciones dentro de este documento o carpetas dentro de este repositorio.
 
-##Contenido del Repositorio
+## Contenido del Repositorio
+### Fase 2
+Los programas están ubicados en la carpeta [__Codigos__](Codigos). Estos códigos son todos los programas utilizados para la herramienta de la toma de pose, creación de marcadores y calibración de la cámara. Están implementados en Python y C++ con implementación de POO y programación multi-hilos. Además, incluyen otros programas de ejemplos y referencias para el uso de la herramienta, así como ilustrar el uso de multi-hilos y las funciones de OpenCV.
+
+Los documentos como manuales, la tesis de la fase 2 y otra documentación están ubicados en la carpeta [__Doc__](Doc).
