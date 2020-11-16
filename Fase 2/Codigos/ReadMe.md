@@ -168,7 +168,7 @@ https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac
 
 Este link ayuda a configurar el comando de conda para MacOS en caso de usarse para instalar python y OpenCV. Esto solo en caso que el comando __conda__ no funcione al momento de ejecutar las instrucciones arriba mencionadas.
 
-Es necesario instalar Cmake para correr Qt Creator en C++ y generar ciertas dependencias de archivos necesarias.
+Es necesario instalar Cmake para correr Qt Creator (y en general el make o qmake) en C++ y generar ciertas dependencias de archivos necesarias. Para esto ver el siguiente link, aunque existe mucha otra documentación. 
 
 https://cmake.org/install/
 
