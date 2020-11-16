@@ -107,7 +107,7 @@ conda install -c conda-forge pyside2
 
 ![conda-install-opencv](./media/conda-install-pyside.png)
 
-Esto, nuevamente, instala PySide2 en el environment de opencv en el Suite. Es posible que este disponible en otro environment ()
+Esto, nuevamente, instala PySide2 en el environment de opencv en el Suite. Es posible que este disponible en otro environment (Aunque para fines del uso, el que este en el environment de opencv es suficiente).
 
 #### Librerías utilizadas en Python <a name="lib_python"></a>
 Para una referencia, estas son las librerías que se usan en los distintos códigos de esta herramienta de __Python__:
@@ -152,7 +152,7 @@ Formato para correr desde consola:
 g++ $(pkg-config --cflags --libs opencv4) -std=c++11 Midemo.cpp -o Midemo
 
 
-Para correr los programas de C++ es necesario tener instalado Xcode en la MacBook. La versión que se utilizó para las pruebas y resultados en este repositorio fue Xcode 12.0. También puede ser útil instalar Qt Creator, el IDE de Qt que permite correr las librerías para el uso de la interfaz gráfica, de lo contrario, el programa no correra porque no se podrá mostrar la interfaz. En caso de no poder o no querer instalar Qt Creator, se puede usar un comando para compilar un proyecto de Xcode y correrlo directamente desde ahí.
+Para correr los programas de C++ es necesario tener instalado Xcode en la MacBook. La versión que se utilizó para las pruebas y resultados en este repositorio fue Xcode 12.0. También puede ser útil instalar Qt Creator, el IDE de Qt que permite correr las librerías para el uso de la interfaz gráfica, de lo contrario, el programa no correrá porque no se podrá mostrar la interfaz. En caso de no poder o no querer instalar Qt Creator, se puede usar un comando para compilar un proyecto de Xcode y correrlo directamente desde ahí.
 
 El comando es:
 
@@ -168,9 +168,33 @@ https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac
 
 Este link ayuda a configurar el comando de conda para MacOS en caso de usarse para instalar python y OpenCV. Esto solo en caso que el comando __conda__ no funcione al momento de ejecutar las instrucciones arriba mencionadas.
 
-Es necesario instalar Cmake para correr Qt Creator (y en general el make o qmake) en C++ y generar ciertas dependencias de archivos necesarias. Para esto ver el siguiente link, aunque existe mucha otra documentación. 
+Utilizar Cmake para configurar el entorno.
+Linkear a Qt5 con el pkg (ver documento) y buscar el archivo "opencv.pc"
+
+Es necesario instalar Cmake para correr Qt Creator (y en general el make o qmake) en C++ y generar ciertas dependencias de archivos necesarias. Para esto ver el siguiente link, aunque existe mucha otra documentación.
 
 https://cmake.org/install/
+
+En caso de utilizar Qt Creator, realizar la siguiente configuración
+
+1. En la pestaña Projects (Proyecto) buscar la opción build
+2. Luego, buscar Build Enviroment
+3. Luego editar PATH, agregar después del último bin “ :/usr/local/bin/ “ sin comillas
+4. Click en ADD
+5. Agregar el path /usr/local/lib/pkgconfig/  que puede ser obtenido con el comando
+    find /usr/local -name "opencv.pc"
+6. El nombre de la variable debe ser PKG_CONFIG_PATH
+7. En caso de tener otro error, irse a la pestaña de RUN, buscar RUN ENVIROMENT
+8. Darle unset a la variable con el nombre DYLD_LIBRARY_PATH
+
+PROBADO CON LA LIBRERIA OPENCV 3.4.1 y el uso de los siguientes links:
+	•	https://www.learnopencv.com/configuring-qt-for-opencv-on-osx/
+	•	https://medium.com/@romogo17/how-to-build-and-install-from-source-opencv-with-qt-support-in-macos-921989518ab5
+
+Y el siguiente video:
+	•	https://www.youtube.com/watch?v=SIXnD-9uh1k
+
+En la carpeta [Pruebas Fase anterior](Pruebas%20Fase%20anterior) esta misma documentación y un ejemplo de un archivo.pro que puede usarse como configuración para el proyecto en caso de usar Qt Creator. Este IDE genera un .pro que tiene las configuraciones para correr el programa, cambiar ese contenido por el del archivo llamado __example.pro__
 
 ### Hardware <a name="versiones-hard"></a>
 El Hardware necesario para que esta herramienta funcione es una cámara web y una computadora o laptop que pueda correr __Python__ y __C++__.
