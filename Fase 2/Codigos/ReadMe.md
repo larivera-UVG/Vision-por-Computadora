@@ -138,6 +138,15 @@ Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones so
 
 #### Preparación para correr los programas en C++
 
+Link para instalación funcional de openCV en C++
+https://medium.com/beesightsoft/macos-mojave-10-14-3-setup-environment-for-opencv4-0-1-c-develop-fcae955d6b33
+
+corre desde la consola, aun no probado con Eclipse o algún otro IDE. __Probado en Xcode__
+
+Formato para correr desde consola:
+g++ $(pkg-config --cflags --libs opencv4) -std=c++11 Midemo.cpp -o Midemo
+
+
 Para correr los programas de C++ es necesario tener instalado Xcode en la MacBook. La versión que se utilizó para las pruebas y resultados en este repositorio fue Xcode 12.0. También puede ser útil instalar Qt Creator, el IDE de Qt que permite correr las librerías para el uso de la interfaz gráfica, de lo contrario, el programa no correra porque no se podrá mostrar la interfaz. En caso de no poder o no querer instalar Qt Creator, se puede usar un comando para compilar un proyecto de Xcode y correrlo directamente desde ahí.
 
 El comando es:
@@ -148,11 +157,18 @@ qmake -spec macx-xcode project.pro
 
 Es posible que no requiera ninguna instalación adicional, pero siempre verificar en caso de error.
 
+#### Otros adicionales de Software
+
+https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac-os-x-7c1c7247d896
+
+Este link ayuda a configurar el comando de conda para MacOS en caso de usarse para instalar python y OpenCV. Esto solo en caso que el comando __conda__ no funcione al momento de ejecutar las instrucciones arriba mencionadas. 
+
+
 ### Hardware <a name="versiones-hard"></a>
 El Hardware necesario para que esta herramienta funcione es una cámara web y una computadora o laptop que pueda correr __Python__ y __C++__.
 La cámara utilizada fue una de marca Logitech. La cámara debe colocarse sobre la mesa lo más perpendicular posible a esta para mejores resultados. La iluminación sobre la mesa debe ser adecuada para facilitar alto contraste entre los objetos de interés y la mesa de pruebas.
 
-Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__. Además, es necesario tener al menos 30 GB de espacio disponible (que al momento de instalar todo lo necesario deje al menos 5GB libres todavía.), ya que Xcode puede llegar a pesar entre 12 a 14 GB más las otras herramientas adicionales, se necesita espacio para instalar dichos programas. 
+Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__. Además, es necesario tener al menos 30 GB de espacio disponible (que al momento de instalar todo lo necesario deje al menos 5GB libres todavía.), ya que Xcode puede llegar a pesar entre 12 a 14 GB más las otras herramientas adicionales, se necesita espacio para instalar dichos programas.
 
 __ACTUALIZACION AL 15/11/2020__
 
