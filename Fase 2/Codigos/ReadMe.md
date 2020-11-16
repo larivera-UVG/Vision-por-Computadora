@@ -188,13 +188,22 @@ En caso de utilizar Qt Creator, realizar la siguiente configuración
 8. Darle unset a la variable con el nombre DYLD_LIBRARY_PATH
 
 PROBADO CON LA LIBRERIA OPENCV 3.4.1 y el uso de los siguientes links:
+
 	•	https://www.learnopencv.com/configuring-qt-for-opencv-on-osx/
+
 	•	https://medium.com/@romogo17/how-to-build-and-install-from-source-opencv-with-qt-support-in-macos-921989518ab5
 
 Y el siguiente video:
 	•	https://www.youtube.com/watch?v=SIXnD-9uh1k
 
 En la carpeta [Pruebas Fase anterior](Pruebas%20Fase%20anterior) esta misma documentación y un ejemplo de un archivo.pro que puede usarse como configuración para el proyecto en caso de usar Qt Creator. Este IDE genera un .pro que tiene las configuraciones para correr el programa, cambiar ese contenido por el del archivo llamado __example.pro__
+
+Para una mejor referencia, buscar lo siguiente:
+
+  - ¿Cómo instalar y crear el environment de qtcreator con cmake?
+
+Es mejor utilizar Xcode para correr estos programas de C++.
+
 
 ### Hardware <a name="versiones-hard"></a>
 El Hardware necesario para que esta herramienta funcione es una cámara web y una computadora o laptop que pueda correr __Python__ y __C++__.
