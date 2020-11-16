@@ -28,6 +28,7 @@
 ## Introducción
 
   Esta carpeta incluye los códigos en lenguaje Python con POO y programación multi-hilos donde aplique.
+  
   Actualización al 07/10/2020:
 
   Se tienen las siguientes carpetas:
