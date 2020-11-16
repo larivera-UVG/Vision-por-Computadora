@@ -7,9 +7,7 @@
 
 2. [Requerimientos](#Requerimientos)
 
-3. [Contenido de la Carpeta](#Contenido-de-la-Carpeta)
-
-4. [Algoritmo Para el Reconocimiento de la Pose de Agentes en Python](#Algoritmo-Para-el-Reconocimiento-de-la-Pose-de-Agentes-en-Python)
+3. [Algoritmo Para el Reconocimiento de la Pose de Agentes en Python](#Algoritmo-Para-el-Reconocimiento-de-la-Pose-de-Agentes-en-Python)
 
     1. [Librería Swarm_robotic.py](#Swarm)
 
@@ -17,7 +15,7 @@
 
     3. [Programa Principal e Interfaz de Usuario](#GUI)
 
-5. [Otra documentación](#otra-documentación)
+4. [Otra documentación](#otra-documentación)
 
     6. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
         1. [Versión inicial](#Al-5-de-julio-del-2020)
@@ -144,13 +142,6 @@ El Hardware necesario para que esta herramienta funcione es una cámara web y un
 La cámara utilizada fue una de marca Logitech. La cámara debe colocarse sobre la mesa lo más perpendicular posible a esta para mejores resultados. La iluminación sobre la mesa debe ser adecuada para facilitar alto contraste entre los objetos de interés.
 
 Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__.
-
-## Contenido de la Carpeta
-La carpeta contiene lo siguiente:
-
-1. [Codigos Python](Codigos%20Python) que contiene todos los códigos de la migración desde la versión original de __C++__ a __Python___
-
-2. [Codigos C++](Codigos%20C++) que contiene la versión original en __C++__ pero con aplicación de Progrmación Orientada a Objetos y multi-hilos.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
 ### Librería Swarm_robotic.py  <a name="Swarm"></a>
