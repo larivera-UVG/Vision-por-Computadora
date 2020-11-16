@@ -11,15 +11,16 @@
 
 4. [Algoritmo Para el Reconocimiento de la Pose de Agentes en Python](#Algoritmo-Para-el-Reconocimiento-de-la-Pose-de-Agentes-en-Python)
 
-1. [Librería Swarm_robotic.py](#Swarm)
+  1. [Librería Swarm_robotic.py](#Swarm)
 
-2. [Librería para la Toma de Pose](#TomaPose)
+  2. [Librería para la Toma de Pose](#TomaPose)
 
-3. [Programa Principal e Interfaz de Usuario](#GUI)
+  3. [Programa Principal e Interfaz de Usuario](#GUI)
 
 5. [Otra documentación](#otra-documentación)
 
 1. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
+
   1. [Versión inicial](#Al-5-de-julio-del-2020)
   2. [Versión 0.1](#Al-8-de-agosto-del-2020)
   3. [Versión 0.2](#Al-10-de-agosto-del-2020)
@@ -236,6 +237,3 @@ tempFloatY = (largoMesa / GlobalHeigth) * Cy;
 Donde __anchoMesa__ representa el ancho de la mesa física, así como __largoMesa__ es el largo de esta mesa y __GloblaWidth__, __GlobalHeigth__ representan las dimensiones de la imagen de donde se está obteniendo el marcador. Esto, al ser multiplicado por el centro del contorno (__Cx__ y __Cy__), devuelve las coordenadas reales del marcador en la mesa.
 
 Finalmente, esta posición, con el respectivo ángulo de rotación, se agregan al ID y esto es el identificador completo del robot en la mesa.
-
-## Otra documentación
-Una explicación más general del código se encuentra en el ReadMe de la carpeta [__Codigos__](Codigos).
