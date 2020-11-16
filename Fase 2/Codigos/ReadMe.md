@@ -28,7 +28,7 @@
 ## Introducción
 
   Esta carpeta incluye los códigos en lenguaje Python con POO y programación multi-hilos donde aplique.
-  
+
   Actualización al 07/10/2020:
 
   Se tienen las siguientes carpetas:
@@ -67,6 +67,8 @@ conda create -n opencv
 conda activate opencv
 conda install -c anaconda opencv
 ```
+![conda-install](./media/conda-create.png)
+![conda-install-opencv](./media/conda-install-opencv.png)
 
 estos comandos instalan la version 3.4.2 que para fines de uso, considero adecuados, si se desea la 4 (por alguna razón) ejecutar este comando (no probado)
 
