@@ -19,11 +19,11 @@
 
 5. [Otra documentación](#otra-documentación)
 
-6. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
-    1. [Versión inicial](#Al-5-de-julio-del-2020)
-    2. [Versión 0.1](#Al-8-de-agosto-del-2020)
-    3. [Versión 0.2](#Al-10-de-agosto-del-2020)
-    4. [Versión Release](#5-de-octubre-del-2020)
+    6. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
+        1. [Versión inicial](#Al-5-de-julio-del-2020)
+        2. [Versión 0.1](#Al-8-de-agosto-del-2020)
+        3. [Versión 0.2](#Al-10-de-agosto-del-2020)
+        4. [Versión Release](#5-de-octubre-del-2020)
 
 ## Introducción
 
