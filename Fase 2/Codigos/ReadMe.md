@@ -70,17 +70,21 @@ conda install -c anaconda opencv
 ![conda-install](./media/conda-create.png)
 ![conda-install-opencv](./media/conda-install-opencv.png)
 
-estos comandos instalan la version 3.4.2 que para fines de uso, considero adecuados, si se desea la 4 (por alguna razón) ejecutar este comando (no probado)
+![navigator](./media/navigator.png)
+
+estos comandos instalan la version 3.4.2 que para fines de uso, se considera adecuada.
+
+Si se desea la 4 (por alguna razón) ejecutar este comando (no probado)
 
 ```
 conda install -c conda-forge opencv
 ```
 
-esto instala opencv3
+esto instala __opencv3__
 
-Se procede a instalar opencv en el environment de anaconda llamado OpenCV (creado con las líneas de comando mencionadas arriba) y se requiere instalar spyder en este nuevo environment (probado).
+Con esto, ya se tiene instalado opencv en el environment de anaconda llamado OpenCV (creado con las líneas de comando mencionadas arriba) y se requiere instalar spyder en este nuevo environment (probado).
 
-__Tercero__
+__Tercero (opcional)__
   Esta versión de instalación se usa para correr OpenCV sin utilizar la Suite de Anaconda.
 
 https://www.youtube.com/watch?v=nO3csmVyoOQ
@@ -92,6 +96,20 @@ pip install opencv-python==4.1.2.30
 ```
 
 De preferencia, instalar python 3.7 (probado) no la version 3.8
+
+__Cuarto__
+
+Para la interfaz gráfica se usa Qt incluido en la librería de PySide2 (más adelante se explican que librerías), sin embargo es posible que Spyder no tenga instalado PySide2. Por lo tanto, se puede instalar directamente desde Ananconda Suite, pero es posible que el paquete no se encuentre entre la lista de disponibles.
+
+para solucionar esto, se puede instalar desde la consola. Por lo tanto __antes de cerrar la sesión abierta de opencv en consola _paso 2_)__ ejecutar el comando
+
+```
+conda install -c conda-forge pyside2
+```
+
+![conda-install-opencv](./media/conda-install-pyside.png)
+
+Esto, nuevamente, instala PySide2 en el environment de opencv en el Suite. Es posible que este disponible en otro environment ()
 
 #### Librerías utilizadas en Python <a name="lib_python"></a>
 Para una referencia, estas son las librerías que se usan en los distintos códigos de esta herramienta de __Python__:
