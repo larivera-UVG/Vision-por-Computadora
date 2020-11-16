@@ -101,7 +101,7 @@ __Cuarto__
 
 Para la interfaz gráfica se usa Qt incluido en la librería de PySide2 (más adelante se explican que librerías), sin embargo es posible que Spyder no tenga instalado PySide2. Por lo tanto, se puede instalar directamente desde Ananconda Suite, pero es posible que el paquete no se encuentre entre la lista de disponibles.
 
-para solucionar esto, se puede instalar desde la consola. Por lo tanto __antes de cerrar la sesión abierta de opencv en consola _paso 2_)__ ejecutar el comando
+para solucionar esto, se puede instalar desde la consola. Por lo tanto __antes de cerrar la sesión abierta de opencv en consola (_paso 2_)__ ejecutar el comando
 
 ```
 conda install -c conda-forge pyside2
