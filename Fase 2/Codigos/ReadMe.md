@@ -1,10 +1,6 @@
 # Read Me - Codigos
 
-# Codigos de lenguaje Python para Visión por Computadora
-
-## Introducción
-
-Esta carpeta incluye los códigos en lenguaje Python con POO y programación multi-hilos donde aplique.
+## Codigos de lenguaje Python para Visión por Computadora
 
 ## Indice:
 1. [Introducción](#Introducción)
@@ -15,89 +11,35 @@ Esta carpeta incluye los códigos en lenguaje Python con POO y programación mul
 
 4. [Algoritmo Para el Reconocimiento de la Pose de Agentes en Python](#Algoritmo-Para-el-Reconocimiento-de-la-Pose-de-Agentes-en-Python)
 
-   1. [Librería Swarm_robotic.py](#Swarm)
+1. [Librería Swarm_robotic.py](#Swarm)
 
-   2. [Librería para la Toma de Pose](#TomaPose)
+2. [Librería para la Toma de Pose](#TomaPose)
 
-   3. [Programa Principal e Interfaz de Usuario](#GUI)
+3. [Programa Principal e Interfaz de Usuario](#GUI)
 
 5. [Otra documentación](#otra-documentación)
-   1. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
-      1. [Versión inicial](#Al-5-de-julio-del-2020)
-      2. [Versión 0.1](#Al-8-de-agosto-del-2020)
-      3. [Versión 0.2](#Al-10-de-agosto-del-2020)
-      4. [Versión Release](#5-de-octubre-del-2020)
+
+1. [Versionado de los programs en python](#Versionado-de-los-programs-en-python)
+  1. [Versión inicial](#Al-5-de-julio-del-2020)
+  2. [Versión 0.1](#Al-8-de-agosto-del-2020)
+  3. [Versión 0.2](#Al-10-de-agosto-del-2020)
+  4. [Versión Release](#5-de-octubre-del-2020)
+
+## Introducción
+
+  Esta carpeta incluye los códigos en lenguaje Python con POO y programación multi-hilos donde aplique.
+
 ## Requerimientos
 
-Favor referirse a la sección de Requerimientos en el [ReadMe](https://github.com/larivera-UVG/Vision-por-Computadora/blob/master/Fase%202/ReadMe.md#Requerimientos) de la carpeta principal.
+### Software <a name="versiones-soft"></a>
 
-## Contenido de la Carpeta
-La carpeta contiene lo siguiente:
-
-1. [Codigos Python](Codigos%20Python) que contiene todos los códigos de la migración desde la versión original de __C++__ a __Python___
-
-2. [Codigos C++](Codigos%20C++) que contiene la versión original en __C++__ pero con aplicación de Progrmación Orientada a Objetos y multi-hilos.
-
-## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
-### Librería Swarm_robotic.py  <a name="Swarm"></a>
-### Librería para la Toma de Pose  <a name="TomaPose"></a>
-### Programa Principal e Interfaz de Usuario  <a name="GUI"></a>
-
-## Otra documentación
-### Versionado de los programs en python
-
-#### Al 5 de julio del 2020
-
-Se tiene la calibración ya incluida, con unas funciones por migrar a Python.
-Pruebas realizadas, exitosas. Calibración OK.
-
-Para una mejor calibración, utilizar figuras circulares en los bordes de la mesa, esto hace que el algoritmo funcione mejor.
-Luego de eso, con estas esquinas, se ajusta la perspectiva de la imagen, se guarda la matriz y ya se puede usar esa información.
-
-Función de guardar la matriz pendiente.
-
-#### Al 8 de agosto del 2020
-
-Versión final (pendiente guardar calibración) de la calibración. Se agrega la parte de generar código para la detección de los robots en la mesa. Se agrega una interfaz gráfica que se pretende ir mejorando.
-
-Los métodos y funciones están en el archivo: Calibracion.py
-El archivo general __main__ es llamado Final_TestBed.py
-
-Las imágenes agregadas en esta carpeta son pruebas correspondientes a la calibración para dejar constancia de su funcionamiento.
-la imagen Cod.jpg es el código generado para la detección de los robots, a manera de comparativa con el código de André Rodas.
-
-#### Al 10 de agosto del 2020
-
-Se añaden varias funciones tanto en la GUI como en las diferentes liberías usadas para estos códigos (Para mayor información leer el versionado en cada uno de los archivos que están incluidos dentro de esta carpeta.
-
-Esta versión ya cuenta con dos variaciones de documentos, una sin hilos y otra con hilos. De momento, la versión con hilos puede procesar e identificar los códigos, aunque faltaría un hilo de captura continua.
-
-
-#### 5 de octubre del 2020
-
-GUI mejor diseñada que unifica todas las funciones de esta herramienta. Mejoras al código en general y una versión _release_ que podría considerarse como final (a falta de revisar otros puntos de mejora si los hubiera.
-
-
-Actualización al 07/10/2020:
-
-Se tienen las siguientes carpetas:
-
-1. [Pruebas Fase anterior](Pruebas%20Fase%20anterior) que contiene los códigos realizados por André Rodas en C++ para Visión por Computadora. Estos códigos fueron pruebas realizadas para validar el funcionamiento así como para entender como estaban estructurados los programas.
-
-2. [Codigos Fase 2](Codigos%20Fase%202) que son los códigos en Python y C++ con implementación multi-hilos y POO así como otros elementos correspondientes ya a la Fase 2 de este proyecto. Dentro de estos está la versión final de la librería Swarm_robotic y toma_pose para la  toma de pose de agentes.
-
-3. [Pruebas Fase 2](Pruebas%20Fase%202) que contiene ejemplos del uso de la cámara con OpenCV en Python, así como ejemplos multi-hilos en Python para ilustrar y entender el funcionamiento de estas herramientas. Además incluye otros ejemplos.
-
-
-## Requerimientos <a name="Requerimientos"></a>
-  ### Software <a name="versiones-soft"></a>
   Para la versión en Python se utiliza la Suite de Anaconda que incluye diferentes programas relacionados con Python. Es recomendable utilizar esta suite ya que incluye todos las librerías que se necesitan y hace más fácil la instalación de cualquier otra que se necesite.
   Su versión de instalación para Windows, MacOS y Linux se puede obtener de aquí: https://www.anaconda.com/products/individual
   La versión de Python utilizada fue __v3.7.6__, que es la versión por default que trae Anaconda con el IDE de Spyder.
 
   La herramienta desarrollada y migrada en __Python__ consta de dos archivos llamados _Swarm_robotic.py_ cuya versión es la 0.11.4, el archivo _toma_pose.py_, versión 0.3.2 y la Interfaz de usuario con versión _0.14.0_. Cada uno de estos programas esta debidamente comentado para que el usuario sepa en que versión está, cual ha sido el proceso de desarrollo y en que parte se encuentra cada uno de ellos.
 
-  #### Instalación OpenCV utilizando Anaconda y MacOS <a name="Anaconda_install"></a>
+#### Instalación OpenCV utilizando Anaconda y MacOS <a name="Anaconda_install"></a>
   __Primero__
    Se requiere verificar que el comando de _conda_ funcione correctamente en MacOS, de lo contrario, realizar el siguiente proceso:
   https://medium.com/@sumitmenon/how-to-get-anaconda-to-work-with-oh-my-zsh-on-mac-os-x-7c1c7247d896
@@ -167,16 +109,68 @@ Librerias para la GUI, en teoria se puede usar __PyQt__ por que las funciones so
 4. from PySide2.QtGui import QImage, QPixmap
 
 
-  ### Hardware <a name="versiones-hard"></a>
+### Hardware <a name="versiones-hard"></a>
 El Hardware necesario para que esta herramienta funcione es una cámara web y una computadora o laptop que pueda correr __Python__ y __C++__.
 La cámara utilizada fue una de marca Logitech. La cámara debe colocarse sobre la mesa lo más perpendicular posible a esta para mejores resultados. La iluminación sobre la mesa debe ser adecuada para facilitar alto contraste entre los objetos de interés.
 
 Para estas implementaciones se utilizó una MacBook Air (13-inch, Early 2015) con procesador 1.6 GHz Intel Core i5 de dos núcleos y _software_ versión MacOs Catalina 10.15.7, aunque puede funcionar en cualquier otra que, como se mencionó, pueda correr __Python__ y __C++__.
-## Contenido del Repositorio <a name="RepoContent"></a>
-### Fase 2
-Los programas están ubicados en la carpeta [__Codigos__](Codigos). Estos códigos son todos los programas utilizados para la herramienta de la toma de pose, creación de marcadores y calibración de la cámara. Están implementados en Python y C++ con implementación de POO y programación multi-hilos. Además, incluyen otros programas de ejemplos y referencias para el uso de la herramienta, así como ilustrar el uso de multi-hilos y las funciones de OpenCV.
 
-Los documentos como manuales, la tesis de la fase 2 y otra documentación están ubicados en la carpeta [__Doc__](Doc).
+## Contenido de la Carpeta
+La carpeta contiene lo siguiente:
+
+1. [Codigos Python](Codigos%20Python) que contiene todos los códigos de la migración desde la versión original de __C++__ a __Python___
+
+2. [Codigos C++](Codigos%20C++) que contiene la versión original en __C++__ pero con aplicación de Progrmación Orientada a Objetos y multi-hilos.
+
+## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
+### Librería Swarm_robotic.py  <a name="Swarm"></a>
+### Librería para la Toma de Pose  <a name="TomaPose"></a>
+### Programa Principal e Interfaz de Usuario  <a name="GUI"></a>
+
+## Otra documentación
+### Versionado de los programs en python
+
+#### Al 5 de julio del 2020
+
+Se tiene la calibración ya incluida, con unas funciones por migrar a Python.
+Pruebas realizadas, exitosas. Calibración OK.
+
+Para una mejor calibración, utilizar figuras circulares en los bordes de la mesa, esto hace que el algoritmo funcione mejor.
+Luego de eso, con estas esquinas, se ajusta la perspectiva de la imagen, se guarda la matriz y ya se puede usar esa información.
+
+Función de guardar la matriz pendiente.
+
+#### Al 8 de agosto del 2020
+
+Versión final (pendiente guardar calibración) de la calibración. Se agrega la parte de generar código para la detección de los robots en la mesa. Se agrega una interfaz gráfica que se pretende ir mejorando.
+
+Los métodos y funciones están en el archivo: Calibracion.py
+El archivo general __main__ es llamado Final_TestBed.py
+
+Las imágenes agregadas en esta carpeta son pruebas correspondientes a la calibración para dejar constancia de su funcionamiento.
+la imagen Cod.jpg es el código generado para la detección de los robots, a manera de comparativa con el código de André Rodas.
+
+#### Al 10 de agosto del 2020
+
+Se añaden varias funciones tanto en la GUI como en las diferentes liberías usadas para estos códigos (Para mayor información leer el versionado en cada uno de los archivos que están incluidos dentro de esta carpeta.
+
+Esta versión ya cuenta con dos variaciones de documentos, una sin hilos y otra con hilos. De momento, la versión con hilos puede procesar e identificar los códigos, aunque faltaría un hilo de captura continua.
+
+
+#### 5 de octubre del 2020
+
+GUI mejor diseñada que unifica todas las funciones de esta herramienta. Mejoras al código en general y una versión _release_ que podría considerarse como final (a falta de revisar otros puntos de mejora si los hubiera.
+
+
+Actualización al 07/10/2020:
+
+Se tienen las siguientes carpetas:
+
+1. [Pruebas Fase anterior](Pruebas%20Fase%20anterior) que contiene los códigos realizados por André Rodas en C++ para Visión por Computadora. Estos códigos fueron pruebas realizadas para validar el funcionamiento así como para entender como estaban estructurados los programas.
+
+2. [Codigos Fase 2](Codigos%20Fase%202) que son los códigos en Python y C++ con implementación multi-hilos y POO así como otros elementos correspondientes ya a la Fase 2 de este proyecto. Dentro de estos está la versión final de la librería Swarm_robotic y toma_pose para la  toma de pose de agentes.
+
+3. [Pruebas Fase 2](Pruebas%20Fase%202) que contiene ejemplos del uso de la cámara con OpenCV en Python, así como ejemplos multi-hilos en Python para ilustrar y entender el funcionamiento de estas herramientas. Además incluye otros ejemplos.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a>
 El algoritmo fue originalmente desarrollo por André Rodas en el lenguaje de programación __C++__.
