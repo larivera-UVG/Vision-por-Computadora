@@ -218,11 +218,26 @@ Se actualizo el sistema operativo de la computadora MacBook Air de _MacOs Catali
 Todos las instrucciones anteriores funcionan perfectamente en esta versión más reciente, por lo que, valida nuevamente el funcionamiento de estas instrucciones.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes en Python
+
 ### Librería Swarm_robotic.py  <a name="Swarm"></a>
+Esta librería contiene todas las funciones (implementadas en POO) para utilizar la herramienta de Software. Entre ellas están las funciones de calibración, la de captura de fotografía (incluidas en la clase __camara__), así como las clases de __Robot__, que contiene todo lo relacionado a las características propias de cada robot y __vector_robot__ que crea un array de objetos de tipo robot para su manejo.
+
 ### Librería para la Toma de Pose  <a name="TomaPose"></a>
+El archivo toma_pose.py contiene las funciones process_image() y getRobot_fromSnapshot(). La primera procesa la imagen para la extracción de los contornos de los objetos detectados en la mesa. La segunda sirve para que, una vez identificado los contornos, analizarlos y extraer información de cada uno de ellos. Es decir, la función getRobot_fromSnapshot() es la encargada de obtener la posición y el ángulo de los robots en la mesa, así como el ID de cada uno.  
+
 ### Programa Principal e Interfaz de Usuario  <a name="GUI"></a>
+La interfaz se presenta en la siguiente imagen:
 
+![GUI](./media/interfaz-gui.png)
 
+Esta interfaz unifica todas las funciones en una sola (a diferencia de la implementación en C++ que tiene una interfaz por cada programa -generación de ID, calibración y toma de pose-).
+
+El botón __Calibrar__ inicia el proceso de calibración de la cámara. En el caso de que la calibración sea fallida (es decir, que una o varias de las esquinas no quede bien identificada) se puede presionar __Reiniciar Calibración__ y esto activa de nuevo el botón __Calibrar__ para realizar el proceso de nuevo.
+
+El botón __Generar Código__ genera un ID para el código que se coloque en la casilla __Ingrese Número__. De no ingresar nada, la herramienta lo setea en 0 y genera un cuadro negro. Este guarda automáticamente la imagen generada en la carpeta donde este guardado el programa.
+
+El botón __Tomar Pose__ se activa inmediatamente después que __Calibrar__ se presione y se ejecute. Este toma una foto e inicia la detección de pose de los robots. La casilla __tamaño códigos__ está pensada para ID de diferente tamaños, pero su input ya no es necesario debido a que se ajusto el algoritmo. Se dejó para pruebas y evitar fallos, pero de momento no es usada.
+El botón __Detener Procesamiento__ sirve para matar a los hilos, sin embargo, por la implementación realizada, el botón no se usa. 
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a>
 El algoritmo fue originalmente desarrollo por André Rodas en el lenguaje de programación __C++__.
