@@ -108,6 +108,7 @@ from PySide2.QtWidgets import QLabel, QApplication, QWidget, QPushButton,QLineEd
 import sys
 from PySide2.QtGui import QImage, QPixmap
 
+print(cv.__file__) #/Users/joseguerra/opt/anaconda3/envs/opencv/lib/python3.7/site-packages/cv2.cpython-37m-darwin.so
 
 n = 35 #para el boton1 de capturar
 n2 = 300 #para el boton3 del codigo
