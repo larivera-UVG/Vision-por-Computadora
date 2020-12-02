@@ -237,7 +237,7 @@ El botón __Calibrar__ inicia el proceso de calibración de la cámara. En el ca
 El botón __Generar Código__ genera un ID para el código que se coloque en la casilla __Ingrese Número__. De no ingresar nada, la herramienta lo setea en 0 y genera un cuadro negro. Este guarda automáticamente la imagen generada en la carpeta donde este guardado el programa.
 
 El botón __Tomar Pose__ se activa inmediatamente después que __Calibrar__ se presione y se ejecute. Este toma una foto e inicia la detección de pose de los robots. La casilla __tamaño códigos__ está pensada para ID de diferente tamaños, pero su input ya no es necesario debido a que se ajusto el algoritmo. Se dejó para pruebas y evitar fallos, pero de momento no es usada.
-El botón __Detener Procesamiento__ sirve para matar a los hilos, sin embargo, por la implementación realizada, el botón no se usa. 
+El botón __Detener Procesamiento__ sirve para matar a los hilos, sin embargo, por la implementación realizada, el botón no se usa.
 
 ## Algoritmo Para el Reconocimiento de la Pose de Agentes <a name="algoritmo-pose-python"></a>
 El algoritmo fue originalmente desarrollo por André Rodas en el lenguaje de programación __C++__.
