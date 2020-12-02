@@ -27,6 +27,7 @@
 %% Para la detección de bordes y ubicación de los marcadores en la mesa
 clear;
 clf;
+close all;  % Close all figures (except those of imtool.)
 anchoMesa = 16.0;
 largoMesa = 24.0;
 
@@ -40,34 +41,59 @@ imshow(I);
 I=rgb2gray(I);
 
 BW1 = edge(I,'Canny',0.7);
-figure(2);
-B = bwboundaries(BW1);
-imshow(BW1);
+B = bwboundaries(BW1,'noholes');
 
 max_size = 110;
 center_count = 1;
+
+
 for i=1:length(B)
     C = cell2mat(B(i));
     Cont = C';
     boundingBox = minBoundingBox(Cont);
     C2 = boundingBox(:,2);
     C4 = boundingBox(:,4);
+    C3 = boundingBox(:,4);
     sizeX = abs(C2(1) - C4(1));
     sizeY = abs(C2(2) - C4(2));
     
+    
+    C1 = boundingBox(:,1);
     figure(42);
     plot(boundingBox(2,[1:end 1]),boundingBox(1,[1:end 1]),'r');
     hold on;
     axis equal
     if sizeX > max_size || sizeY > max_size
+    
     Point2 = [(C2(1)+C4(1))/2,(C2(2)+C4(2))/2];
+    
+    Cx = Point2(1);
+    Cy = Point2(2);
+    X = abs(C1(1) - C2(1));
+    Y = abs(C1(2) - C4(2));
+    
+    
+    
     dummy_center = [Point2(1),Point2(2)];
+    
+    
     centers(center_count,:) = dummy_center;
-    center_count=center_count+1;
+    
 
     plot(Point2(2),Point2(1),'go');
     axis equal
+    
+    I2 = imcrop(I,[C2(1)-X, C2(2)-Y, (Cx+X), (Cy+Y)]);
+    figure(105);
+    hold on;
+    imshow(I2);
+    
+    pause(5);
+    
+    center_count=center_count+1;
+
     end
+
     %pause(2);
 end
 
