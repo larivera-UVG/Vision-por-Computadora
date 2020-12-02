@@ -64,7 +64,7 @@ tempFloatY = (largoMesa/GlobalHeigth) * centers(length(centers),2);
 % axis equal
 % hold off;
 
-
+%% Para probar la funcion de crear codigos, descomentar esta seccion o correr solamente esta
 % nombre = 'Codigo_ejemplo.png';
 % Cod = CreadorCodigos(35,nombre);
 % figure(2);
