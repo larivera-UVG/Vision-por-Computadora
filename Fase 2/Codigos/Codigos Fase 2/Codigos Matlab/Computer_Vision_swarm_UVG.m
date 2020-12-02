@@ -10,6 +10,10 @@
 % Creación de la función para generar marcadores visuales de
 % identificación.
 
+%% Version 0.1.0
+% Corrección al ploteo de las figuras y la posición del centro en la mesa
+% física Robotat.
+
 %% Para la detección y captura de foto con la cámara web
 % %clear;
 % %webcamlist
@@ -48,11 +52,11 @@ for i=1:length(B)
     boundingBox = minBoundingBox(Cont);
     C2 = boundingBox(:,2);
     C4 = boundingBox(:,4);
-    sizeX = abs(C2(1) - C4(1))
-    sizeY = abs(C2(2) - C4(2))
+    sizeX = abs(C2(1) - C4(1));
+    sizeY = abs(C2(2) - C4(2));
     
     figure(42);
-    plot(boundingBox(1,[1:end 1]),boundingBox(2,[1:end 1]),'r')
+    plot(boundingBox(2,[1:end 1]),boundingBox(1,[1:end 1]),'r');
     hold on;
     axis equal
     if sizeX > max_size || sizeY > max_size
@@ -61,14 +65,14 @@ for i=1:length(B)
     centers(center_count,:) = dummy_center;
     center_count=center_count+1;
 
-    plot(Point2(1),Point2(2),'go');
+    plot(Point2(2),Point2(1),'go');
     axis equal
     end
     %pause(2);
 end
 
-tempFloatX = (anchoMesa/GlobalWidth) * centers(length(centers),1);
-tempFloatY = (largoMesa/GlobalHeigth) * centers(length(centers),2);
+tempFloatX = (anchoMesa/GlobalWidth) * centers(length(centers),2);
+tempFloatY = (largoMesa/GlobalHeigth) * centers(length(centers),1);
 
 
 
