@@ -1,3 +1,16 @@
+%% Jose Pablo Guerra 
+% Codigo base para la herramienta de toma de pose de robotica swarm para la
+% mesa de la UVG en version Matlab.
+% Basado en el código de André Rodas para la Fase 1 de este proyecto. 
+
+%% Version 0.0.1
+% De momento se tiene la detección de la cámara y captura de foto
+% Detección de bordes y ubicación de centros -falta ubicación del ángulo de
+% rotación.
+% Creación de la función para generar marcadores visuales de
+% identificación.
+
+%% Para la detección y captura de foto con la cámara web
 % %clear;
 % %webcamlist
 % %Se requiere instalar un add on extra al momento de utilizar webcamlis
@@ -6,7 +19,8 @@
 % img = snapshot(cam);
 % figure(1);
 % imshow(img)
-% 
+
+%% Para la detección de bordes y ubicación de los marcadores en la mesa
 clear;
 clf;
 anchoMesa = 16.0;
@@ -56,13 +70,7 @@ end
 tempFloatX = (anchoMesa/GlobalWidth) * centers(length(centers),1);
 tempFloatY = (largoMesa/GlobalHeigth) * centers(length(centers),2);
 
-% 
-% figure(42);
-% %plot(boundingBox(1,[1:end 1]),boundingBox(2,[1:end 1]),'r')
-% hold on;
-% plot(Point2(1),Point2(2),'go');
-% axis equal
-% hold off;
+
 
 %% Para probar la funcion de crear codigos, descomentar esta seccion o correr solamente esta
 % nombre = 'Codigo_ejemplo.png';
