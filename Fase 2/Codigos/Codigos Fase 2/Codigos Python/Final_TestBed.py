@@ -305,7 +305,7 @@ class Window(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sistema Swarm - Mesa Robotat")
-        self.setGeometry(380,210,605,580)
+        self.setGeometry(370,210,650,600)
         #self.setIcon()
         self.image_frame = QLabel()
         self.capturar_button()
@@ -362,14 +362,14 @@ class Window(QWidget):
         
         #Para mostrar etiqueta de notas
         self.label_note1 = QLabel(self)
-        self.label_note1.move(n3-5,505)
+        self.label_note1.move(n3-5,540)
         self.label_note1.setText("NOTA 1(*): Calibrar hasta ver las 4 esquinas del tablero (Presionar Reiniciar Calibracion)")
         self.label_note1.setFixedWidth(600)
         self.label_note1.show()
         
         #Para mostrar etiqueta de notas
         self.label_note2 = QLabel(self)
-        self.label_note2.move(n3-5,525)
+        self.label_note2.move(n3-5,560)
         self.label_note2.setText("NOTA 2(**): Mejores resultados se obtienen con ilumacion directa sobre la mesa")
         self.label_note2.setFixedWidth(600)
         self.label_note2.show()
