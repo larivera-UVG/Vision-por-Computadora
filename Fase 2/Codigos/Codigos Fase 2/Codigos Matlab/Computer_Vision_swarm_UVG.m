@@ -15,14 +15,14 @@
 % física Robotat.
 
 %% Para la detección y captura de foto con la cámara web
-% %clear;
-% %webcamlist
-% %Se requiere instalar un add on extra al momento de utilizar webcamlis
-% 
-% %cam = webcam();
-% img = snapshot(cam);
-% figure(1);
-% imshow(img)
+clear;
+webcamlist
+%Se requiere instalar un add on extra al momento de utilizar webcamlis
+
+cam = webcam();
+img = snapshot(cam);
+figure(1);
+imshow(img)
 
 %% Para la detección de bordes y ubicación de los marcadores en la mesa
 clear;
