@@ -1,0 +1,942 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+		5E618435888B9D49F8540165 = {
+			buildActionMask = 2147483647;
+			files = (
+				);
+			isa = PBXShellScriptBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Qt Qmake";
+			shellPath = "/bin/sh";
+			shellScript = "make -C /Users/joseguerra/Desktop/Toma2 -f TomaPose_Robots.xcodeproj/qt_makeqmake.mak";
+			showEnvVarsInLog = "0";
+		};
+		997039BBD597DD36C6753BCF = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/Swarm_robotic.cpp";
+			name = "Swarm_robotic.cpp";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.cpp.cpp";
+		};
+		27F72CFABDC302F9F7D8D9EF = {
+			fileRef = "997039BBD597DD36C6753BCF";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		5AAA09CAB15CE73A5645F5A5 = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/main.cpp";
+			name = "main.cpp";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.cpp.cpp";
+		};
+		5BED63EC22E59B23FFECC111 = {
+			fileRef = "5AAA09CAB15CE73A5645F5A5";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		E15A2037159FC6D6C6EFAECC = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/mainwindow.cpp";
+			name = "mainwindow.cpp";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.cpp.cpp";
+		};
+		8FC767FAC75EDDB5A8F40194 = {
+			fileRef = "E15A2037159FC6D6C6EFAECC";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		9BC0320AE6137E5AE70C0D9D = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/tomarposerobots.cpp";
+			name = "tomarposerobots.cpp";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.cpp.cpp";
+		};
+		A8448F6B3C1F1FA122A0142B = {
+			fileRef = "9BC0320AE6137E5AE70C0D9D";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		8997F02A3BC9BE536C3D972F = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/moc_mainwindow.cpp";
+			name = "moc_mainwindow.cpp";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.cpp.cpp";
+		};
+		1F2435DCD4380D84C07225F1 = {
+			fileRef = "8997F02A3BC9BE536C3D972F";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		445D5C43890960FDF4F3987C = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/ui_mainwindow.h";
+			name = "ui_mainwindow.h";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.c.h";
+		};
+		C7E2A4D7EEE5B360613BC22C = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/Swarm_robotic.h";
+			name = "Swarm_robotic.h";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.c.h";
+		};
+		AC437589E55DFF112F654655 = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/mainwindow.h";
+			name = "mainwindow.h";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.c.h";
+		};
+		020256661158BD6A58CA6B99 = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/tomaposerobots.h";
+			name = "tomaposerobots.h";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.c.h";
+		};
+		3FAFB55263CAE0EC41CDB75E = {
+			isa = PBXFileReference;
+			path = "/usr/local/Cellar/qt/5.15.1/mkspecs/features/data/dummy.cpp";
+			name = "dummy.cpp";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "sourcecode.cpp.cpp";
+		};
+		75A5D56CBEE97D0E69C90FCD = {
+			fileRef = "3FAFB55263CAE0EC41CDB75E";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		6D58A9AC7D014BE238D5C49C = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/mainwindow.ui";
+			name = "mainwindow.ui";
+			sourceTree = "<absolute>";
+		};
+		5EB369B0CDF448A645AF2571 = {
+			fileRef = "6D58A9AC7D014BE238D5C49C";
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					);
+			};
+		};
+		FFF63274182CEE233808C939 = {
+			isa = PBXFileReference;
+			path = "/Users/joseguerra/Desktop/Toma2/TomaPose_Robots.pro";
+			name = "TomaPose_Robots.pro";
+			sourceTree = "<absolute>";
+			lastKnownFileType = "text";
+		};
+		25B08E2869634E9BCBA333A2 = {
+			isa = PBXGroup;
+			children = (
+				"8997F02A3BC9BE536C3D972F",
+				"445D5C43890960FDF4F3987C");
+			name = "Generated Sources";
+			sourceTree = "<group>";
+		};
+		2EB56BE3C2D93CDAB0C52E67 = {
+			isa = PBXGroup;
+			children = (
+				"997039BBD597DD36C6753BCF",
+				"5AAA09CAB15CE73A5645F5A5",
+				"E15A2037159FC6D6C6EFAECC",
+				"9BC0320AE6137E5AE70C0D9D",
+				"C7E2A4D7EEE5B360613BC22C",
+				"AC437589E55DFF112F654655",
+				"020256661158BD6A58CA6B99");
+			name = "Sources";
+			sourceTree = "<group>";
+		};
+		B8254625CFD509ED2A24A166 = {
+			isa = PBXGroup;
+			children = (
+				"3FAFB55263CAE0EC41CDB75E");
+			name = "Sources [moc_predefs]";
+			sourceTree = "<group>";
+		};
+		12E908B8A1C3C07C115504F5 = {
+			isa = PBXGroup;
+			children = (
+				"6D58A9AC7D014BE238D5C49C");
+			name = "Sources [uic]";
+			sourceTree = "<group>";
+		};
+		74B182DB50CB5611B5C1C297 = {
+			isa = PBXGroup;
+			children = (
+				"FFF63274182CEE233808C939");
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7EF0942E79C014DCEC8976BC = {
+			buildActionMask = 2147483647;
+			files = (
+				);
+			isa = PBXShellScriptBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Qt Preprocessors";
+			shellPath = "/bin/sh";
+			shellScript = "make -C /Users/joseguerra/Desktop/Toma2 -f TomaPose_Robots.xcodeproj/qt_preprocess.mak";
+			showEnvVarsInLog = "0";
+		};
+		F7E50F631C51CD5B5DC0BC43 = {
+			buildActionMask = 2147483647;
+			files = (
+				"27F72CFABDC302F9F7D8D9EF",
+				"5BED63EC22E59B23FFECC111",
+				"8FC767FAC75EDDB5A8F40194",
+				"A8448F6B3C1F1FA122A0142B",
+				"1F2435DCD4380D84C07225F1",
+				"75A5D56CBEE97D0E69C90FCD");
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Compile Sources";
+		};
+		7B2802140A331351ED363DB4 = {
+			isa = PBXFileReference;
+			name = "opencv_dnn";
+			path = "/usr/local/lib/libopencv_dnn.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		AA1B97176386606D551EFFDC = {
+			fileRef = "7B2802140A331351ED363DB4";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		56537984D5553E0283ECDF43 = {
+			isa = PBXFileReference;
+			name = "opencv_highgui";
+			path = "/usr/local/lib/libopencv_highgui.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		9232DA0D7D1814017437A363 = {
+			fileRef = "56537984D5553E0283ECDF43";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		DF3A8C5D27EFCF32558EE75A = {
+			isa = PBXFileReference;
+			name = "opencv_ml";
+			path = "/usr/local/lib/libopencv_ml.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		6E84C985B1785517221216A5 = {
+			fileRef = "DF3A8C5D27EFCF32558EE75A";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		66983C54BB147F4B81B6A6EF = {
+			isa = PBXFileReference;
+			name = "opencv_objdetect";
+			path = "/usr/local/lib/libopencv_objdetect.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		1E2F8DEFA8C39EC98FFE3A67 = {
+			fileRef = "66983C54BB147F4B81B6A6EF";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8AAAACFDB252ABED09161A09 = {
+			isa = PBXFileReference;
+			name = "opencv_shape";
+			path = "/usr/local/lib/libopencv_shape.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		53816C40D2310847397AC29B = {
+			fileRef = "8AAAACFDB252ABED09161A09";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		33964D2A20573D76DAE50939 = {
+			isa = PBXFileReference;
+			name = "opencv_stitching";
+			path = "/usr/local/lib/libopencv_stitching.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		049A8E5BB72C61A6D5F9186A = {
+			fileRef = "33964D2A20573D76DAE50939";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		53B7633754FC46FEDD8F11FD = {
+			isa = PBXFileReference;
+			name = "opencv_superres";
+			path = "/usr/local/lib/libopencv_superres.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		E0D539182A78F28676F4F114 = {
+			fileRef = "53B7633754FC46FEDD8F11FD";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		6C6CAEC0EA81CAAFFD89AC2C = {
+			isa = PBXFileReference;
+			name = "opencv_videostab";
+			path = "/usr/local/lib/libopencv_videostab.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		F0A9F27ED2CEED3241A0F29B = {
+			fileRef = "6C6CAEC0EA81CAAFFD89AC2C";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		9B9ED679BC1CBCB001E80921 = {
+			isa = PBXFileReference;
+			name = "opencv_calib3d";
+			path = "/usr/local/lib/libopencv_calib3d.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		0365F78C4443395CA6BDBEF4 = {
+			fileRef = "9B9ED679BC1CBCB001E80921";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CB101DF2FEB93B0B46094067 = {
+			isa = PBXFileReference;
+			name = "opencv_videoio";
+			path = "/usr/local/lib/libopencv_videoio.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		4B7C21B1359ADB5FD72B4438 = {
+			fileRef = "CB101DF2FEB93B0B46094067";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8F3220AC8D4D6E10B9C71087 = {
+			isa = PBXFileReference;
+			name = "opencv_imgcodecs";
+			path = "/usr/local/lib/libopencv_imgcodecs.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		5131C1459B4549772CF10504 = {
+			fileRef = "8F3220AC8D4D6E10B9C71087";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		87A059234557546133E4567E = {
+			isa = PBXFileReference;
+			name = "opencv_features2d";
+			path = "/usr/local/lib/libopencv_features2d.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		84F1796C590FAEBC2BAADD0F = {
+			fileRef = "87A059234557546133E4567E";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AEBD8FC60A11DC456B0BD274 = {
+			isa = PBXFileReference;
+			name = "opencv_video";
+			path = "/usr/local/lib/libopencv_video.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		0C6B141319017E3905870955 = {
+			fileRef = "AEBD8FC60A11DC456B0BD274";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		105F983FADB21488C39E44F7 = {
+			isa = PBXFileReference;
+			name = "opencv_photo";
+			path = "/usr/local/lib/libopencv_photo.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		B2288A2D34DDB0B2B89AF591 = {
+			fileRef = "105F983FADB21488C39E44F7";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0A35011D482E6D9089E763E8 = {
+			isa = PBXFileReference;
+			name = "opencv_imgproc";
+			path = "/usr/local/lib/libopencv_imgproc.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		27EB3E5BEB306CBF0B6EFA70 = {
+			fileRef = "0A35011D482E6D9089E763E8";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		D7F5BD1A361E16E138DC178E = {
+			isa = PBXFileReference;
+			name = "opencv_flann";
+			path = "/usr/local/lib/libopencv_flann.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		61F667D3AF55DBF060380CE9 = {
+			fileRef = "D7F5BD1A361E16E138DC178E";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		20CD8DC58640914DFBA73AEF = {
+			isa = PBXFileReference;
+			name = "opencv_core";
+			path = "/usr/local/lib/libopencv_core.dylib";
+			refType = 0;
+			sourceTree = "<absolute>";
+		};
+		48A078370DAF7CADDB64D54D = {
+			fileRef = "20CD8DC58640914DFBA73AEF";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		5C5DC61932732846AAF92C57 = {
+			isa = PBXFileReference;
+			name = "QtWidgets.framework";
+			path = "/usr/local/Cellar/qt/5.15.1/lib/QtWidgets.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		08AFBB16EDF35C951CCF7817 = {
+			fileRef = "5C5DC61932732846AAF92C57";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		E8DDC5BD6289F8D29F3E6606 = {
+			isa = PBXFileReference;
+			name = "QtGui.framework";
+			path = "/usr/local/Cellar/qt/5.15.1/lib/QtGui.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		A0A72F31B6377548356BC57E = {
+			fileRef = "E8DDC5BD6289F8D29F3E6606";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		723F90793B2C195E2CCB2233 = {
+			isa = PBXFileReference;
+			name = "AppKit.framework";
+			path = "/System/Library/Frameworks/AppKit.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		F2A75ACAC9DF6A3F4E5711E7 = {
+			fileRef = "723F90793B2C195E2CCB2233";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		1B2543FCC48E9436F21C4F63 = {
+			isa = PBXFileReference;
+			name = "Metal.framework";
+			path = "/System/Library/Frameworks/Metal.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		B3FE8FAC746D3D5BB24FA398 = {
+			fileRef = "1B2543FCC48E9436F21C4F63";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		D9174D5194EFD5598963C1B2 = {
+			isa = PBXFileReference;
+			name = "QtCore.framework";
+			path = "/usr/local/Cellar/qt/5.15.1/lib/QtCore.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		4FD8637DFE4F84D9760EB2D4 = {
+			fileRef = "D9174D5194EFD5598963C1B2";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		2B774D8E4178765CE52EAAF5 = {
+			isa = PBXFileReference;
+			name = "DiskArbitration.framework";
+			path = "/System/Library/Frameworks/DiskArbitration.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		A99B2AA0F9CBBDD12BA126A4 = {
+			fileRef = "2B774D8E4178765CE52EAAF5";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		A1A67BEAA744704B29168D39 = {
+			isa = PBXFileReference;
+			name = "IOKit.framework";
+			path = "/System/Library/Frameworks/IOKit.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		8D267F2E4776F0ECA2F49DC8 = {
+			fileRef = "A1A67BEAA744704B29168D39";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		D4B32C2222F82AC56BADEB21 = {
+			isa = PBXFileReference;
+			name = "OpenGL.framework";
+			path = "/System/Library/Frameworks/OpenGL.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		8771A8C96E9C391044035D99 = {
+			fileRef = "D4B32C2222F82AC56BADEB21";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		8D9815BDB5BD9F90D2BC05C5 = {
+			isa = PBXFileReference;
+			name = "AGL.framework";
+			path = "/System/Library/Frameworks/AGL.framework";
+			refType = 0;
+			sourceTree = "<absolute>";
+			lastKnownFileType = "wrapper.framework";
+		};
+		E45E51A644D5FC9F942ECE55 = {
+			fileRef = "8D9815BDB5BD9F90D2BC05C5";
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AF39DD055C3EF8226FBE929D = {
+			children = (
+				"7B2802140A331351ED363DB4",
+				"56537984D5553E0283ECDF43",
+				"DF3A8C5D27EFCF32558EE75A",
+				"66983C54BB147F4B81B6A6EF",
+				"8AAAACFDB252ABED09161A09",
+				"33964D2A20573D76DAE50939",
+				"53B7633754FC46FEDD8F11FD",
+				"6C6CAEC0EA81CAAFFD89AC2C",
+				"9B9ED679BC1CBCB001E80921",
+				"CB101DF2FEB93B0B46094067",
+				"8F3220AC8D4D6E10B9C71087",
+				"87A059234557546133E4567E",
+				"AEBD8FC60A11DC456B0BD274",
+				"105F983FADB21488C39E44F7",
+				"0A35011D482E6D9089E763E8",
+				"D7F5BD1A361E16E138DC178E",
+				"20CD8DC58640914DFBA73AEF",
+				"5C5DC61932732846AAF92C57",
+				"E8DDC5BD6289F8D29F3E6606",
+				"723F90793B2C195E2CCB2233",
+				"1B2543FCC48E9436F21C4F63",
+				"D9174D5194EFD5598963C1B2",
+				"2B774D8E4178765CE52EAAF5",
+				"A1A67BEAA744704B29168D39",
+				"D4B32C2222F82AC56BADEB21",
+				"8D9815BDB5BD9F90D2BC05C5");
+			isa = PBXGroup;
+			name = "Frameworks";
+			sourceTree = "<group>";
+		};
+		D1C883685E82D5676953459A = {
+			buildActionMask = 2147483647;
+			files = (
+				"AA1B97176386606D551EFFDC",
+				"9232DA0D7D1814017437A363",
+				"6E84C985B1785517221216A5",
+				"1E2F8DEFA8C39EC98FFE3A67",
+				"53816C40D2310847397AC29B",
+				"049A8E5BB72C61A6D5F9186A",
+				"E0D539182A78F28676F4F114",
+				"F0A9F27ED2CEED3241A0F29B",
+				"0365F78C4443395CA6BDBEF4",
+				"4B7C21B1359ADB5FD72B4438",
+				"5131C1459B4549772CF10504",
+				"84F1796C590FAEBC2BAADD0F",
+				"0C6B141319017E3905870955",
+				"B2288A2D34DDB0B2B89AF591",
+				"27EB3E5BEB306CBF0B6EFA70",
+				"61F667D3AF55DBF060380CE9",
+				"48A078370DAF7CADDB64D54D",
+				"08AFBB16EDF35C951CCF7817",
+				"A0A72F31B6377548356BC57E",
+				"F2A75ACAC9DF6A3F4E5711E7",
+				"B3FE8FAC746D3D5BB24FA398",
+				"4FD8637DFE4F84D9760EB2D4",
+				"A99B2AA0F9CBBDD12BA126A4",
+				"8D267F2E4776F0ECA2F49DC8",
+				"8771A8C96E9C391044035D99",
+				"E45E51A644D5FC9F942ECE55");
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Link Binary With Libraries";
+		};
+		30414803F31797EB689AE508 = {
+			buildActionMask = 2147483647;
+			files = (
+				);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+			name = "Copy Bundle Resources";
+		};
+		99542592E9780B9225F24AA8 = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9B01031861163F8279987F48 = {
+			isa = PBXFileReference;
+			includeInIndex = 0;
+			explicitFileType = "wrapper.application";
+			path = "TomaPose_Robots.app";
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FE0A091FDBFB3E9C31B7A1BD = {
+			children = (
+				"9B01031861163F8279987F48");
+			isa = PBXGroup;
+			name = "Products";
+			sourceTree = "<group>";
+		};
+		E8C543AB96796ECAA2E65C57 = {
+			children = (
+				"2EB56BE3C2D93CDAB0C52E67",
+				"25B08E2869634E9BCBA333A2",
+				"B8254625CFD509ED2A24A166",
+				"12E908B8A1C3C07C115504F5",
+				"74B182DB50CB5611B5C1C297",
+				"AF39DD055C3EF8226FBE929D",
+				"FE0A091FDBFB3E9C31B7A1BD");
+			isa = PBXGroup;
+			name = "TomaPose_Robots";
+			sourceTree = "<group>";
+		};
+		E030437E19B8619B4D03362C = {
+			buildPhases = (
+				"5E618435888B9D49F8540165",
+				"7EF0942E79C014DCEC8976BC");
+			dependencies = (
+				);
+			buildConfigurationList = 6CC3B5D2136C7CD6A5CF5A59;
+			isa = PBXAggregateTarget;
+			buildRules = (
+);
+			productName = "Qt Preprocess";
+			name = "Qt Preprocess";
+		};
+		C208A675866D0EEA4E82B4E9 = {
+			isa = PBXTargetDependency;
+			target = "E030437E19B8619B4D03362C";
+		};
+		BC4ADECF55A1E14204C5C94A = {
+			buildPhases = (
+				"F7E50F631C51CD5B5DC0BC43",
+				"D1C883685E82D5676953459A",
+				"30414803F31797EB689AE508",
+				"99542592E9780B9225F24AA8");
+			dependencies = (
+				"C208A675866D0EEA4E82B4E9");
+			productReference = "9B01031861163F8279987F48";
+			buildConfigurationList = 6CC3B5D2136C7CD6A5CF5A59;
+			isa = PBXNativeTarget;
+			buildRules = (
+);
+			productType = "com.apple.product-type.application";
+			name = "TomaPose_Robots";
+			productName = "TomaPose_Robots";
+		};
+		3AA6C32AC930069E80220CF1 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = "NO";
+				"ARCHS[sdk=macosx*]" = "x86_64";
+				COPY_PHASE_STRIP = "NO";
+				ENABLE_BITCODE = "NO";
+				GCC_OPTIMIZATION_LEVEL = "0";
+				ONLY_ACTIVE_ARCH = "YES";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "TomaPose_Robots";
+				QMAKE_FULL_VERSION = "1.0.0";
+				QMAKE_PKGINFO_TYPEINFO = "????";
+				QMAKE_SHORT_VERSION = "1.0";
+				QT_LIBRARY_SUFFIX = "";
+				SDKROOT = "macosx";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				CC = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang";
+				LDPLUSPLUS = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++";
+				INFOPLIST_FILE = "Info.plist";
+				SYMROOT = ".xcode";
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				DYLIB_CURRENT_VERSION = "1.0.0";
+				DYLIB_COMPATIBILITY_VERSION = "1.0";
+				MACOSX_DEPLOYMENT_TARGET = "10.13";
+				HEADER_SEARCH_PATHS = (
+					".",
+					"/usr/local/include/opencv",
+					"/usr/local/include",
+					"/usr/local/Cellar/qt/5.15.1/lib/QtWidgets.framework/Headers",
+					"/usr/local/Cellar/qt/5.15.1/lib/QtGui.framework/Headers",
+					"/usr/local/Cellar/qt/5.15.1/lib/QtCore.framework/Headers",
+					".",
+					"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OpenGL.framework/Headers",
+					"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/AGL.framework/Headers",
+					".",
+					"/usr/local/Cellar/qt/5.15.1/mkspecs/macx-clang");
+				LIBRARY_SEARCH_PATHS = (
+					"/usr/local/lib",
+					"/usr/local/Cellar/qt/5.15.1/lib",
+					"/System/Library/Frameworks/");
+				FRAMEWORK_SEARCH_PATHS = (
+					"/usr/local/Cellar/qt/5.15.1/lib",
+					"/usr/local/Cellar/qt/5.15.1/lib");
+				OTHER_CFLAGS = (
+					"-pipe",
+					"-O2",
+					"-Wall",
+					"-Wextra",
+					"-fPIC",
+					"-DQT_DEPRECATED_WARNINGS",
+					"-DQT_NO_DEBUG",
+					"-DQT_WIDGETS_LIB",
+					"-DQT_GUI_LIB",
+					"-DQT_CORE_LIB");
+				OTHER_CPLUSPLUSFLAGS = (
+					"-pipe",
+					"-stdlib=libc++",
+					"-O2",
+					"-std=gnu++11",
+					"-Wall",
+					"-Wextra",
+					"-fPIC",
+					"-DQT_DEPRECATED_WARNINGS",
+					"-DQT_NO_DEBUG",
+					"-DQT_WIDGETS_LIB",
+					"-DQT_GUI_LIB",
+					"-DQT_CORE_LIB");
+				OTHER_LDFLAGS = (
+						"-stdlib=libc++",
+						"-headerpad_max_install_names",
+						"-Wl,-rpath,@executable_path/../Frameworks",
+						"-F/usr/local/Cellar/qt/5.15.1/lib",
+						"-L/usr/local/lib");
+				ARCHS = "x86_64";
+			};
+			name = "Debug";
+		};
+		77418F46922677BB04ED38DD = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = "NO";
+				"ARCHS[sdk=macosx*]" = "x86_64";
+				COPY_PHASE_STRIP = "NO";
+				ENABLE_BITCODE = "NO";
+				GCC_OPTIMIZATION_LEVEL = "0";
+				ONLY_ACTIVE_ARCH = "YES";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "TomaPose_Robots";
+				QMAKE_FULL_VERSION = "1.0.0";
+				QMAKE_PKGINFO_TYPEINFO = "????";
+				QMAKE_SHORT_VERSION = "1.0";
+				QT_LIBRARY_SUFFIX = "";
+				SDKROOT = "macosx";
+				PRODUCT_NAME = "TomaPose_Robots";
+			};
+			name = "Debug";
+		};
+		339EE1B2CC4FC24589A0EA95 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = "NO";
+				"ARCHS[sdk=macosx*]" = "x86_64";
+				COPY_PHASE_STRIP = "NO";
+				ENABLE_BITCODE = "NO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "TomaPose_Robots";
+				QMAKE_FULL_VERSION = "1.0.0";
+				QMAKE_PKGINFO_TYPEINFO = "????";
+				QMAKE_SHORT_VERSION = "1.0";
+				QT_LIBRARY_SUFFIX = "";
+				SDKROOT = "macosx";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				CC = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang";
+				LDPLUSPLUS = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++";
+				INFOPLIST_FILE = "Info.plist";
+				SYMROOT = ".xcode";
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
+				DYLIB_CURRENT_VERSION = "1.0.0";
+				DYLIB_COMPATIBILITY_VERSION = "1.0";
+				MACOSX_DEPLOYMENT_TARGET = "10.13";
+				HEADER_SEARCH_PATHS = (
+					".",
+					"/usr/local/include/opencv",
+					"/usr/local/include",
+					"/usr/local/Cellar/qt/5.15.1/lib/QtWidgets.framework/Headers",
+					"/usr/local/Cellar/qt/5.15.1/lib/QtGui.framework/Headers",
+					"/usr/local/Cellar/qt/5.15.1/lib/QtCore.framework/Headers",
+					".",
+					"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/OpenGL.framework/Headers",
+					"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/AGL.framework/Headers",
+					".",
+					"/usr/local/Cellar/qt/5.15.1/mkspecs/macx-clang");
+				LIBRARY_SEARCH_PATHS = (
+					"/usr/local/lib",
+					"/usr/local/Cellar/qt/5.15.1/lib",
+					"/System/Library/Frameworks/");
+				FRAMEWORK_SEARCH_PATHS = (
+					"/usr/local/Cellar/qt/5.15.1/lib",
+					"/usr/local/Cellar/qt/5.15.1/lib");
+				OTHER_CFLAGS = (
+					"-pipe",
+					"-O2",
+					"-Wall",
+					"-Wextra",
+					"-fPIC",
+					"-DQT_DEPRECATED_WARNINGS",
+					"-DQT_NO_DEBUG",
+					"-DQT_WIDGETS_LIB",
+					"-DQT_GUI_LIB",
+					"-DQT_CORE_LIB");
+				OTHER_CPLUSPLUSFLAGS = (
+					"-pipe",
+					"-stdlib=libc++",
+					"-O2",
+					"-std=gnu++11",
+					"-Wall",
+					"-Wextra",
+					"-fPIC",
+					"-DQT_DEPRECATED_WARNINGS",
+					"-DQT_NO_DEBUG",
+					"-DQT_WIDGETS_LIB",
+					"-DQT_GUI_LIB",
+					"-DQT_CORE_LIB");
+				OTHER_LDFLAGS = (
+						"-stdlib=libc++",
+						"-headerpad_max_install_names",
+						"-Wl,-rpath,@executable_path/../Frameworks",
+						"-F/usr/local/Cellar/qt/5.15.1/lib",
+						"-L/usr/local/lib");
+				ARCHS = "x86_64";
+			};
+			name = "Release";
+		};
+		6666AA5E688052234F6758D8 = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = "NO";
+				"ARCHS[sdk=macosx*]" = "x86_64";
+				COPY_PHASE_STRIP = "NO";
+				ENABLE_BITCODE = "NO";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "TomaPose_Robots";
+				QMAKE_FULL_VERSION = "1.0.0";
+				QMAKE_PKGINFO_TYPEINFO = "????";
+				QMAKE_SHORT_VERSION = "1.0";
+				QT_LIBRARY_SUFFIX = "";
+				SDKROOT = "macosx";
+				PRODUCT_NAME = "TomaPose_Robots";
+			};
+			name = "Release";
+		};
+		DAC4C1AA5EDEA1C85E9CA5E6 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				"3AA6C32AC930069E80220CF1",
+				"339EE1B2CC4FC24589A0EA95");
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Release";
+		};
+		6CC3B5D2136C7CD6A5CF5A59 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				"77418F46922677BB04ED38DD",
+				"6666AA5E688052234F6758D8");
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Release";
+		};
+		6DB9C3763D02B1415CD9D565 = {
+			hasScannedForEncodings = 1;
+			compatibilityVersion = "Xcode 3.2";
+			isa = PBXProject;
+			mainGroup = "E8C543AB96796ECAA2E65C57";
+			productRefGroup = "FE0A091FDBFB3E9C31B7A1BD";
+			buildConfigurationList = "DAC4C1AA5EDEA1C85E9CA5E6";
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				"BC4ADECF55A1E14204C5C94A",
+				"E030437E19B8619B4D03362C");
+			attributes = {
+				TargetAttributes = {
+				};
+			};
+		};
+	};
+	rootObject = "6DB9C3763D02B1415CD9D565";
+}
